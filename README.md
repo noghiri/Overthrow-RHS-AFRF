@@ -1,11 +1,38 @@
 
 # Overthrow-Remastered
-Overthrow - Remastered is a rework of the original Overthrow mission created by armazac @ https://github.com/ArmaOverthrow/Overthrow
+Overthrow - Remastered (2021) is a rework of the original Overthrow mission created by armazac @ https://github.com/ArmaOverthrow/Overthrow
 
 ![image](https://cloud.githubusercontent.com/assets/19246239/17642726/b268a4da-6194-11e6-850a-8951aed0f930.png)
 
 # Overthrow
 A dynamic and persistent revolution campaign mod for ARMA 3 Apex
+
+# Overthrow 2021 Features
+* Drug prices for half ounces of weed and cocaine has standardized to 2010 prices by the DEA.
+* Drug selling now is based on stability and population in the real world way it works.
+* Drug selling is more profitable
+* Drug selling destabilizes a lot more frequently
+* Getting caught with drugs is based on stealth stats on character sheets
+* Drug buying is based on trading stats now, higher stat, lower the price
+* Backpack is reverted to original intended values
+* ACE_Fakebackpack is now renamed "Bucci Bag" appropriately priced and set at 250
+* Housing prices can now be bought from other players going over a Deedlock mechanic
+* Deedlock is set to 21 houses (buildings)
+* Buying houses now tell the player how much houses you own, how many you leased and the cap.
+* Players under 21 houses are protected from being evicted of their homes.
+* Evicting other players above 21 cap cannot be done to their home spawns.
+* Evicting other players will refund their MSRP price minus current market cut.
+* Taxes earned are standardized on a X*(0.0001(x)) format for 10k-79k 
+* Taxes are flat cutting to any income above 29k to balance the taxed money
+* all taxed money go to resistant funds for generals to buy expensive armies
+* Drugs are now more frequently sold at around 70-90% success in initiating trade
+* Initiating trade should also base on skill and RNG and stability/population
+
+# Overthrow 2021 Fixes
+* Workshop placement should no longer result on exploding ammo/repair boxes (Thanks to Waterpig on steam)
+* ACE_Fakebackpack is now no longer 1E60 infinitely huge capacity 
+
+# Overthrow 2019 Info below::
 
 # Current Features
 * GTA-inspired wanted/stealth system
@@ -31,5 +58,5 @@ A dynamic and persistent revolution campaign mod for ARMA 3 Apex
 * ACE3 (Fully integrated) [(Steam Workshop)](https://steamcommunity.com/sharedfiles/filedetails/?id=463939057)
 
 # To install
-* Overthrow is available on the [Steam Workshop](http://steamcommunity.com/sharedfiles/filedetails/?id=774201744)
-* or from [Github](https://github.com/ArmaOverthrow/Overthrow.Tanoa/releases/latest)
+* Overthrow 2021 is available on the [Steam Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2572102841)
+* Original 2019 [Github](https://github.com/ArmaOverthrow/Overthrow.Tanoa/releases/latest)
