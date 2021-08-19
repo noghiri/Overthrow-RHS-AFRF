@@ -32,5 +32,11 @@ OT_gangNames = [
 "Black Sun Empire",
 "Teddy Killerz",
 "Zombie Cats",
+"%1 Cats",
+"%1 Dummies",
+"Le Redditors of %2",
+"%1 Triad",
+"%1 Yakuza",
+"Ghost Shadows",
 "The Runners" //Patreon: Fital Shell
 ];

@@ -2,6 +2,11 @@
 Function: incomeSystem
 ---------------------------------------------------------------------------- */
 //Manages passive income for all players (Lease + taxes)
+//Capital tax due to players doing landlord simulator -Dorf
+//TLDR, below 10k and tax on, you're just linear taxing
+//from 10k to 70.9k it's a double digit percentage of lease, so 10k is 10% tax, 70k is 70% tax
+//from 70.9k to 100999k it's stuck to 71% up until it hits 100.9k where the player earns flat 29291
+//The rest is taxed to the resistance, viva la revolution
 
 waitUntil {sleep 1;server getVariable ["StartupType",""] != ""};
 income_system_lasthour = date select 3;
@@ -44,6 +49,9 @@ if(income_system_lasthour in [0,6,12,18]) then {
 			_tt = 0;
 			if(_tax > 0) then {
 				_tt = round(_lease * (_tax / 100));
+				if(_lease >= 10000 and _lease < 70999) then {_tt = round(_lease * (_lease*0.00001))};
+				if(_lease >= 70999 and _lease < 100999) then {_tt = round(_lease * (0.71))};
+				if(_lease >= 100999) then {_tt = (_lease - 29291)};
 			};
 			_totax = _totax + _tt;
 			[_lease-_tt,""Lease Income""] remoteExec [""OT_fnc_money"",_x,false];

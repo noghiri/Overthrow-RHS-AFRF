@@ -191,7 +191,10 @@ if(isMultiplayer || _startup == "LOAD") then {
 				[_civ, (OT_voices_local call BIS_fnc_selectRandom)] remoteExecCall ["setSpeaker", 0, _civ];
 				_civ setUnitLoadout _loadout;
 				_civ spawn OT_fnc_wantedSystem;
-				_civ setName _name;
+				systemChat ("Civ and name");
+				systemChat (str _civ);
+				systemChat (str _name);
+				_civ setName _name; //2 elements provided, 3 expected ?? 
 				_civ setVariable ["OT_spawntrack",true,true];
 
 				[_civ] joinSilent nil;

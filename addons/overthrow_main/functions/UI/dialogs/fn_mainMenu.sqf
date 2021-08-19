@@ -146,11 +146,15 @@ if(typename _b isEqualTo "ARRAY") then {
 			",_name,_ownername,[_lease, 1, 0, true] call CBA_fnc_formatNumber,round((damage _building) * 100),"%"];
 
 		}else{
-			ctrlEnable [1608,false];
+			//If player does NOT own the building
+			ctrlEnable [1608,false];  
 			ctrlEnable [1609,false];
 			ctrlEnable [1610,false];
 			if(typeof _building isEqualTo OT_item_Tent) then {
 				_name = "Camp";
+			} else {
+				ctrlSetText [1608,format["Sell ($%1)",[_sell, 1, 0, true] call CBA_fnc_formatNumber]];
+				ctrlEnable [1608,true]; //sell enabled 
 			};
 			if(typeof _building isEqualTo OT_flag_IND) then {
 				_name = _building getVariable "name";

@@ -129,10 +129,14 @@ private _getprice = {
     };
 }foreach("(inheritsFrom _x in [configFile >> ""CfgWeapons"" >> ""Binocular"",configFile >> ""CfgWeapons"" >> ""ItemCore"",configFile >> ""CfgWeapons"" >> ""ACE_ItemCore""])" configClasses ( configFile >> "CfgWeapons" ));
 
-//add Bags
+//add Bags 
+//wtf is this really working to find bags or find not _Base
+//Dorf: I changed (_cls find "_Base") isEqualTo -1
+//To the current code, equal to -1 implies not found. 
+//This hopes to find bags and lists them for sale on the shop.
 {
     private _cls = configName _x;
-    if ((_cls find "_Base") isEqualTo -1) then {
+    if ((_cls find "Bag_Base") isEqualTo 1) then {
         [_cls,"Surplus"] call _categorize;
     };
 }foreach("_parents = ([_x,true] call BIS_fnc_returnParents); 'Bag_Base' in _parents && !('Weapon_Bag_Base' in _parents) && (count (_x >> 'TransportItems') isEqualTo 0) && (count (_x >> 'MagazineItems') isEqualTo 0)" configClasses ( configFile >> "CfgVehicles" ));

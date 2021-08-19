@@ -214,7 +214,8 @@ OT_backpacks = [
 	["B_Carryall_cbr",60,0,0,1],
 	["B_Carryall_khk",60,0,0,1],
 	["B_Carryall_oli",60,0,0,1],
-	["B_Parachute",50,0,0,1]
+	["B_Parachute",50,0,0,1],
+	["ACE_FakeBackpack",956,0,0,1]
 ];
 if(OT_hasTFAR) then {
 	OT_backpacks append [
@@ -976,7 +977,7 @@ OT_Buildables = [
 	["Workshop",1000,[
 		["Land_Cargo_House_V4_F",[0,0,0],0,1,0,[],"","",true,false],
 		["Land_ClutterCutter_large_F",[0,0,0],0,1,0,[],"","",true,false],
-		["Box_NATO_AmmoVeh_F",[-2.91,-2.008,0],90,1,0,[],"","",true,false],
+		["Box_NATO_AmmoVeh_F",[-2.91,-3.2,0],90,1,0,[],"","",true,false],
 		["Land_WeldingTrolley_01_F",[-3.53163,1.73366,0],87.0816,1,0,[],"","",true,false],
 		["Land_ToolTrolley_02_F",[-3.47775,3.5155,0],331.186,1,0,[],"","",true,false]
 	],"OT_fnc_initWorkshop",true,"Attach weapons to vehicles"],

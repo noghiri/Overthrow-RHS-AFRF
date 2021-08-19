@@ -268,7 +268,6 @@ if (_canBuy) then {
 						_s pushback [_x,-1];
 					}foreach(OT_allBackpacks);
 				};
-
 				[_town,_standing,_s] call OT_fnc_buyDialog;
 			};
 		}

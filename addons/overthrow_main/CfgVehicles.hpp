@@ -29,6 +29,7 @@ class CfgVehicles {
 	class Item_Base_F;
 	class ThingX;
 	class CargoNet_01_ammo_base_F;
+	class Bag_Base;
 
 	//Overthrow Vehicles
 	class I_Truck_02_box_F;
@@ -109,6 +110,14 @@ class CfgVehicles {
             MACRO_ADDITEM(OT_BlowItem,1)
         };
     };
+	//This filters out "Bag" the infinite bag bag, remove this if you wanna be OP i guess.
+	class ACE_FakeBackpack: Bag_Base {
+		scope = 1;
+		scopecurator =2
+		maximumLoad = "295";
+		mass = 50;
+		displayName = "Bucci Bag";
+	};
 
 	//ACE Interactions
     class Man;
