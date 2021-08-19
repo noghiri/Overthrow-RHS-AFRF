@@ -15,7 +15,7 @@ A dynamic and persistent revolution campaign mod for ARMA 3 Apex
 * Getting caught with drugs is based on stealth stats on character sheets
 * Drug buying is based on trading stats now, higher stat, lower the price
 * Backpack is reverted to original intended values
-* ACE_Fakebackpack is now renamed "Bucci Bag" appropriately priced and set at 250
+* "Bag" class of 'ACE_Fakebackpack' within 'Base_Bag' is now renamed "Bucci Bag" appropriately priced and set at 295 MaximumSize
 * Housing prices can now be bought from other players going over a Deedlock mechanic
 * Deedlock is set to 21 houses (buildings)
 * Buying houses now tell the player how much houses you own, how many you leased and the cap.
