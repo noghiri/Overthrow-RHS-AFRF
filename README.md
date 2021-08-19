@@ -41,10 +41,12 @@ A dynamic and persistent revolution campaign mod for ARMA 3 Apex
 * NATO FOB at 041062 ruins should not spawn 2 units under rocks
 * JOBS/missions/Quests Escort/Scout/Recon are currently broken I think
 
-# Overthrow 2019 Features (From original)
+# Overthrow 2019 Features (From original edited to reflect reality)
 * GTA-inspired wanted/stealth system
-* Dynamic political system with regional stability affecting presence of 2 different opposing factions to the player (BLUFOR and criminal elements)
-* Buy and sell just about in any-game item/vehicle/weapon for currency at local shops and gun dealers
+* Dynamic political system with regional stability affecting presence of 2 different opposing factions to the player (BLUFOR and OPFOR Gangs)
+* Buy just about in any-game drugs/item/vehicle/weapon for currency at local shops and gun dealers
+* Sell only certain items/drugs for currency at local shops
+* Sell in volume of any drug/item/weapon/gear at a controlled port town
 * Capture towns and military objectives one by one
 * Dynamic economy/Regional pricing/Trade
 * Buy, sell and lease real estate with prices affected by regional politics
@@ -52,7 +54,7 @@ A dynamic and persistent revolution campaign mod for ARMA 3 Apex
 * Manipulate the markets with guns or piles of cash
 * Recruit and arm civilians
 * Recruit civilians simply just to loot for you
-* Designed to work in both single player and multiplayer
+* Designed to work in ~~both single player and~~ multiplayer only
 
 # Required DLC
 * APEX
