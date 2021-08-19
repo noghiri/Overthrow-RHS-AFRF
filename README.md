@@ -41,9 +41,7 @@ A dynamic and persistent revolution campaign mod for ARMA 3 Apex
 * NATO FOB at 041062 ruins should not spawn 2 units under rocks
 * JOBS/missions/Quests Escort/Scout/Recon are currently broken I think
 
-# Overthrow 2019 Info below::
-
-# Current Features
+# Overthrow 2019 Features (From original)
 * GTA-inspired wanted/stealth system
 * Dynamic political system with regional stability affecting presence of 2 different opposing factions to the player (BLUFOR and criminal elements)
 * Buy and sell just about in any-game item/vehicle/weapon for currency at local shops and gun dealers
