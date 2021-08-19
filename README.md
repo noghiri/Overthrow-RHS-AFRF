@@ -22,15 +22,24 @@ A dynamic and persistent revolution campaign mod for ARMA 3 Apex
 * Players under 21 houses are protected from being evicted of their homes.
 * Evicting other players above 21 cap cannot be done to their home spawns.
 * Evicting other players will refund their MSRP price minus current market cut.
-* Taxes earned are standardized on a X*(0.0001(x)) format for 10k-79k 
-* Taxes are flat cutting to any income above 29k to balance the taxed money
-* all taxed money go to resistant funds for generals to buy expensive armies
+* Taxes earned are standardized on a X*(0.0001(x)) format for 10k-79k (lease income only)
+* Taxes beyond 79k results in a flat cutting to any income above 29k to balance monopoly
+* All extra taxed money go to resistant funds as usual, for generals to buy expensive armies
 * Drugs are now more frequently sold at around 70-90% success in initiating trade
-* Initiating trade should also base on skill and RNG and stability/population
+* Initiating trade should also base on skill, a little RNG based on stability/population of the town
 
 # Overthrow 2021 Fixes
 * Workshop placement should no longer result on exploding ammo/repair boxes (Thanks to Waterpig on steam)
 * ACE_Fakebackpack is now no longer 1E60 infinitely huge capacity 
+
+# Overthrow 2021 Future Fixes/Changes
+* Standardizing trucks so "Truck_F" no longer is infinite carry capacity
+* Giving Non-DLC players a truck to rival the FART truck's AOE 150m pick up radius
+* unset home to FOB to garrison troops there shouldn't be a requirement to garrison troops
+* george town => katouka = stuck in rock near beach
+* Reattach lights to homes so your homes aren't 404 at night
+* NATO FOB at 041062 ruins should not spawn 2 units under rocks
+ 
 
 # Overthrow 2019 Info below::
 
