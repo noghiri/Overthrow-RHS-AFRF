@@ -46,7 +46,7 @@ A dynamic and persistent revolution campaign mod for ARMA 3 Apex
 * Dynamic political system with regional stability affecting presence of 2 different opposing factions to the player (BLUFOR and OPFOR Gangs)
 * Buy just about in any-game drugs/item/vehicle/weapon for currency at local shops and gun dealers
 * Sell only certain items/drugs for currency at local shops
-* Sell in volume of any drug/item/weapon/gear at a controlled port town
+* Sell in volume of any item/weapon/gear at a controlled port town
 * Capture towns and military objectives one by one
 * Dynamic economy/Regional pricing/Trade
 * Buy, sell and lease real estate with prices affected by regional politics
