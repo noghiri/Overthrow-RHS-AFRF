@@ -1,14 +1,11 @@
-
 # Overthrow-Remastered (2021)
-A rework of the original Overthrow mission created by armazac @ https://github.com/ArmaOverthrow/Overthrow
+
+A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex by armazac @ https://github.com/ArmaOverthrow/Overthrow
 
 # Wiki
 https://github.com/guilemouse/Overthrow/wiki
 
 ![image](https://cloud.githubusercontent.com/assets/19246239/17642726/b268a4da-6194-11e6-850a-8951aed0f930.png)
-
-# Overthrow
-A dynamic and persistent revolution campaign mod for ARMA 3 Apex
 
 # Overthrow 2021 Features
 * Drug prices for half ounces of weed and cocaine has standardized to 2010 prices by the DEA.
