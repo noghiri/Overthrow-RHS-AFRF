@@ -27,10 +27,13 @@ A dynamic and persistent revolution campaign mod for ARMA 3 Apex
 * All extra taxed money go to resistant funds as usual, for generals to buy expensive armies
 * Drugs are now more frequently sold at around 70-90% success in initiating trade
 * Initiating trade should also base on skill, a little RNG based on stability/population of the town
+* Standardized truck functions, all big trucks have infinite gear intake through Y menu
+* All trucks boosted in maximumLoad, small trucks doubled, big trucks became mobile ammo boxes
 
 # Overthrow 2021 Fixes
 * Workshop placement should no longer result on exploding ammo/repair boxes (Thanks to Waterpig on steam)
 * ACE_Fakebackpack is now no longer 1E60 infinitely huge capacity 
+* Harbour NPC no longer runs away and dies during firefight
 
 # Overthrow 2021 Future Fixes/Changes
 * Standardizing trucks so "Truck_F" no longer is infinite carry capacity
