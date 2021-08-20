@@ -37,7 +37,7 @@ A dynamic and persistent revolution campaign mod for ARMA 3 Apex
 * Standardized truck capacity to big trucks, small trucks, and cars
 
 # Overthrow 2021 Future Fixes/Changes
-* ~~Standardizing trucks so "Truck_F" no longer is infinite carry capacity
+* ~~Standardizing trucks so "Truck_F" no longer is infinite carry capacity~~
 * unset home to FOB to garrison troops there shouldn't be a requirement to garrison troops
 * george town => katouka = stuck in rock near beach
 * Reattach lights to homes so your homes aren't 404 at night
