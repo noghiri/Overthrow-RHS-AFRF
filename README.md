@@ -34,15 +34,15 @@ A dynamic and persistent revolution campaign mod for ARMA 3 Apex
 * Workshop placement should no longer result on exploding ammo/repair boxes (Thanks to Waterpig on steam)
 * ACE_Fakebackpack is now no longer 1E60 infinitely huge capacity 
 * Harbour NPC no longer runs away and dies during firefight
+* Standardized truck capacity to big trucks, small trucks, and cars
 
 # Overthrow 2021 Future Fixes/Changes
-* Standardizing trucks so "Truck_F" no longer is infinite carry capacity
-* Giving Non-DLC players a truck to rival the FART truck's AOE 150m pick up radius
+* ~~Standardizing trucks so "Truck_F" no longer is infinite carry capacity
 * unset home to FOB to garrison troops there shouldn't be a requirement to garrison troops
 * george town => katouka = stuck in rock near beach
 * Reattach lights to homes so your homes aren't 404 at night
 * NATO FOB at 041062 ruins should not spawn 2 units under rocks
-* JOBS/missions/Quests Escort/Scout/Recon are currently broken I think
+* JOBS/missions/Quests Escort/Scout/~~Recon~~ are currently broken I think
 
 # Overthrow 2019 Features (From original edited to reflect reality)
 * GTA-inspired wanted/stealth system
