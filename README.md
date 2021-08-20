@@ -1,8 +1,9 @@
 
 # Overthrow-Remastered (2021)
-Overthrow - Remastered (2021) is a rework of the original Overthrow mission created by armazac @ https://github.com/ArmaOverthrow/Overthrow
+A rework of the original Overthrow mission created by armazac @ https://github.com/ArmaOverthrow/Overthrow
 
-We have a working Wiki https://github.com/guilemouse/Overthrow/wiki
+# Wiki
+https://github.com/guilemouse/Overthrow/wiki
 
 ![image](https://cloud.githubusercontent.com/assets/19246239/17642726/b268a4da-6194-11e6-850a-8951aed0f930.png)
 
