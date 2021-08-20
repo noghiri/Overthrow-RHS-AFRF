@@ -37,10 +37,56 @@ class CfgVehicles {
 		scope = 2;
 		author = "ARMAzac";
 		displayName = "KamAZ Recovery";
+        maximumLoad = 22000;
 		class Library {
 			libTextDesc = "The Field Assistance and Recovery Truck (FART) is a specialized heavy truck used for field repairs and gear recovery after a battle. It can recover all items and bodies within a 150m radius into it's cargohold.";
 		};
 	};
+    //Vanilla Vehicles Redone 
+    //Reasons: Due to the existence of infinite carry capability from the KamAZ Recovery, bigger trucks have been renamed to carry forth the same results, without auto AOE Loot
+    //The following vehicle schemes are scheduled as 
+    //Small trucks (Civ Faction) = 8000 Maximum carry weight (double that of an offroad vehicle)
+    class Van_01_transport_base_F;
+    class Van_01_box_base_F;
+    class Van_02_vehicle_base_F;
+    class Van_02_transport_base_F;
+    class Van_02_medevac_base_F;
+
+    class C_Van_01_transport_F: Van_01_transport_base_F {
+        maximumLoad = 8000;
+    };
+    class C_Van_01_box_F: Van_01_box_base_F {
+        maximumLoad = 8000;
+    };
+    class C_Van_02_vehicle_F: Van_02_vehicle_base_F {
+        maximumLoad = 8000;
+    };
+    class C_Van_02_transport_F: Van_02_transport_base_F {
+        maximumLoad = 8000;
+    };
+    class C_Van_02_medevac_F: Van_02_medevac_base_F {
+        maximumLoad = 8000;
+    };
+    //Bigger trucks = 22000 maximum carry weight (same as ammo box)
+    class Truck_02_base_F;
+    class Truck_02_transport_base_F;
+    class Truck_02_medical_base_F;
+
+	class C_Truck_02_covered_F: Truck_02_base_F {
+        maximumLoad = 22000;
+    };
+    class C_Truck_02_transport_F: Truck_02_transport_base_F {
+        maximumLoad = 22000;
+    };
+    class I_Truck_02_covered_F: Truck_02_base_F {
+        maximumLoad = 22000;
+    };
+    class I_Truck_02_medical_F: Truck_02_medical_base_F {
+        maximumLoad = 22000;
+    };
+    class I_Truck_02_transport_F: Truck_02_transport_base_F {
+        maximumLoad = 22000;
+    };
 
 	//ACE actions----
 	//Map
@@ -110,6 +156,7 @@ class CfgVehicles {
             MACRO_ADDITEM(OT_BlowItem,1)
         };
     };
+    //Bag Exploit fix
 	//This filters out "Bag" the infinite bag bag, remove this if you wanna be OP i guess.
 	class ACE_FakeBackpack: Bag_Base {
 		scope = 1;

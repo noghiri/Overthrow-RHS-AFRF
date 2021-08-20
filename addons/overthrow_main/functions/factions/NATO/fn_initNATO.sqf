@@ -456,6 +456,8 @@ private _revealed = server getVariable ["revealedFOBs",[]];
 	private _count = 0;
 	private _group = creategroup blufor;
 	while {_count < _garrison} do {
+		//@TODO modify start position to fix spawning in rocks
+		//_start setVectorUp surfaceNormal position _start 
 		private _start = [[[_pos,50]]] call BIS_fnc_randomPos;
 
 		private _civ = _group createUnit [OT_NATO_Units_LevelOne call BIS_fnc_selectRandom, _start, [],0, "NONE"];

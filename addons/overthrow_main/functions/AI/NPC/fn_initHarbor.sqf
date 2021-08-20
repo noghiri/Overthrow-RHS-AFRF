@@ -23,7 +23,13 @@ _unit forceAddUniform (OT_clothes_harbor call BIS_fnc_selectRandom);
 
 [_unit,"self"] call OT_fnc_setOwner;
 
-_unit addEventHandler ["FiredNear", {
+/*_unit addEventHandler ["FiredNear", {
 	_u = _this select 0;
 	_u setUnitPos "DOWN";
 }];
+*/
+
+//Prevents harbour guy from moving on firefight
+//remove allowDamage if you want him to die
+_unit disableAI "MOVE";
+_unit allowdamage false;

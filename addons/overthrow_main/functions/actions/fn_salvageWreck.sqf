@@ -63,14 +63,31 @@ private _doSalvage = {
 	};
 	sleep 2;
     _done = 0;
+
+    //_found_truck goes here cause in a for loop is kinda wacky.
+    //within the loops vehicle doesnt look like it will change.
+    private _found_truck = false;
+    private _i_count = count (OT_all_trucks);
+    for [{private _i = 0}, {_i < _i_count}, {_i = _i + 1}] do { 
+        if (_veh isKindOf (OT_all_trucks select _i)) then {
+            _found_truck = true;
+            _i = _i_count;
+        };
+    };
+
     for "_x" from 0 to (_steel - 1) do {
-        if(!(_veh isKindOf "Truck_F" || _veh isKindOf "ReammoBox_F") && !(_veh canAdd "OT_Steel")) exitWith {
+
+
+        //if it's not a truck or a ammo box and if it cannot add more steel then ...
+        //if(!(_veh isKindOf "Truck_F" || _veh isKindOf "ReammoBox_F") && !(_veh canAdd "OT_Steel")) exitWith {
+        if(!(_found_truck || _veh isKindOf "ReammoBox_F") && !(_veh canAdd "OT_Steel")) exitWith {
             "Vehicle is full, use a truck || ammobox for more storage" call OT_fnc_notifyMinor;
         };
         _done = _done + 1;
         _veh addItemCargoGlobal ["OT_Steel", 1];
     };
-    if(_plastic > 0 && ((_veh isKindOf "Truck_F" || _veh isKindOf "ReammoBox_F") || (_veh canAdd "OT_Plastic"))) then {
+    //if(_plastic > 0 && ((_veh isKindOf "Truck_F" || _veh isKindOf "ReammoBox_F") || (_veh canAdd "OT_Plastic"))) then {
+    if(_plastic > 0 && ((_found_truck || _veh isKindOf "ReammoBox_F") || (_veh canAdd "OT_Plastic"))) then {
         _veh addItemCargoGlobal ["OT_Plastic", _plastic];
         format["Salvaged: %1 x Steel, %1 x Plastic",_done,_plastic] call OT_fnc_notifyMinor;
     }else{

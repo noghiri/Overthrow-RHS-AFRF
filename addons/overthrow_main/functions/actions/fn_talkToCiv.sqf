@@ -463,7 +463,7 @@ if (_canBuyBoats) then {
 			_ferryoptions = [];
 			{
 				private _p = markerPos(_x);
-				private _t = _p call OT_fnc_nearestTown;
+				private _t = _p call OT_fnc_nearestTown; //town name
 				private _dist = (player distance _p);
 				private _cost = floor(_dist * 0.005);
 				private _go = {
@@ -535,6 +535,7 @@ if (_canBuyBoats) then {
 								moveOut player;
 								_driver globalchat "Alright, bye";
 							};
+							//@TODO add stat stealth check in future plox -dorf
 							if(random 100 > 90) then {
 								[player] spawn OT_fnc_NATOsearch;
 							};

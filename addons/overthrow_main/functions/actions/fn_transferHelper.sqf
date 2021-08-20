@@ -67,7 +67,18 @@ _this spawn {
 			_x params [["_cls",""], ["_max",0]];
 			private _count = 0;
 			private _full = false;
-			private _istruck = (_veh isKindOf "Truck_F" || _veh isKindOf "ReammoBox_F");
+
+			private _found_truck = false;
+			private _i_count = count (OT_all_trucks);
+			for [{private _i = 0}, {_i < _i_count}, {_i = _i + 1}] do { 
+				if (_veh isKindOf (OT_all_trucks select _i)) then {
+					_found_truck = true;
+					_i = _i_count;
+				};
+			};
+			//If we find truck_F or ammo box then ...
+			//private _istruck = (_veh isKindOf "Truck_F" || _veh isKindOf "ReammoBox_F");
+			private _istruck = (_found_truck || _veh isKindOf "ReammoBox_F");
 
 			while {_count < _max} do {
 				if(!(_veh canAdd [_cls,1]) && !_istruck) exitWith {_full = true};

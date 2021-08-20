@@ -28,8 +28,20 @@ if(_veh isEqualTo player) exitWith {
 	"No warehouse within range" call OT_fnc_notifyMinor;
 };
 
+//For loop outside of while, cause vehicle does not change and 2X instead of X^2
+private _found_truck = false;
+private _i_count = count (OT_all_trucks);
+for [{private _i = 0}, {_i < _i_count}, {_i = _i + 1}] do { 
+	if (_veh isKindOf (OT_all_trucks select _i)) then {
+		_found_truck = true;
+		_i = _i_count;
+	};
+};
+
 while {_count < _num} do {
-	if ((!(_veh isKindOf "Truck_F")) && (!(_veh isKindOf OT_item_Storage)) && (!(_veh canAdd _cls))) exitWith {hint "This vehicle is full, use a truck for more storage"; closeDialog 0; _num = _count};
+	//If vehicle is not a truck and vehicle is not an item storage and item cannot be added further... then ...
+	//if ((!(_veh isKindOf "Truck_F")) && (!(_veh isKindOf OT_item_Storage)) && (!(_veh canAdd _cls))) exitWith {hint "This vehicle is full, use a truck for more storage"; closeDialog 0; _num = _count};
+	if (!_found_truck && !(_veh isKindOf OT_item_Storage) && !(_veh canAdd _cls)) exitWith {hint "This vehicle is full, use a truck for more storage"; closeDialog 0; _num = _count};
 	[_cls, _veh] call {
 		params ["_cls", "_veh"];
 		if(_cls isKindOf ["Rifle",configFile >> "CfgWeapons"]) exitWith {

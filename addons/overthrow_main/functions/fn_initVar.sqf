@@ -247,6 +247,13 @@ OT_boats = [
 	["C_Boat_Civil_01_rescue_F",300,1,1,1],
 	["C_Boat_Transport_02_F",600,1,0,1]
 ];
+//Case sensitive trucks for civilians categorized
+OT_C_trucks_big = ["C_Truck_02_covered_F", "C_Truck_02_transport_F"];
+OT_C_trucks_small = ["C_Van_01_transport_F", "C_Van_01_box_F", "C_Van_02_vehicle_F", "C_Van_02_transport_F", "C_Van_02_medevac_F"];
+OT_I_trucks_big = ["I_Truck_02_covered_F", "I_Truck_02_medical_F", "I_Truck_02_transport_F"];
+//FART truck added to civilian trucks
+OT_all_trucks = ["OT_I_Truck_recovery"] + OT_C_trucks_big + OT_I_trucks_big;
+OT_isTruck = false;
 OT_vehicles = [];
 OT_helis = [];
 OT_allVehicles = [];
@@ -315,6 +322,7 @@ if(isServer) then {
 	call compile preprocessFileLineNumbers "\overthrow_main\data\gangnames.sqf";
 };
 
+//gets classes that's public scoped, threat less than 0.5, and either car class or support vehicles that are indie or civ sided
 private _allVehs = "
     ( getNumber ( _x >> ""scope"" ) isEqualTo 2
     &&
@@ -341,6 +349,9 @@ private _mostExpensive = 0;
 	OT_vehicles pushback [_cls,_cost,0,getNumber (_clsConfig >> "armor"),2];
 	OT_allVehicles pushback _cls;
 	if(getText (_clsConfig >> "faction") == "CIV_F") then {
+		//This text singular avoids Truck_F: Car_F... -Dorf 2021
+		//TextSingular identifies vehicles by very general categories like "truck"
+		//This spawns NPC drivers that does not drive go karts (afaik)
 		if(getText(_clsConfig >> "textSingular") != "truck" && getText(_clsConfig >> "driverAction") != "Kart_driver") then {
 			OT_vehTypes_civ pushback _cls;
 

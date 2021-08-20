@@ -245,7 +245,9 @@ if(!dialog) then {
 						private _driver = driver _veh;
 						private _e = [];
 						{
-							private _p = [_pos,[0,50]] call SHK_pos_fnc_pos;
+							//@TODO modify this to fix spawn in rock maybe.
+							//Changed from [0,50] to [0,100],[0,360],0
+							private _p = [_pos,[0,100],random 360,0] call SHK_pos_fnc_pos;
 							moveOut _x;
 							_x allowDamage false;
 							_x setPos _p;

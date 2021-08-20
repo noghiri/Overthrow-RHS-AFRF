@@ -45,8 +45,20 @@ private _target = _sorted select 0;
         _unit globalchat format["Looting bodies within 100m into the %1",(typeof _t) call OT_fnc_vehicleGetName];
 
         private _istruck = true;
+
+		private _found_truck = false;
+		private _i_count = count (OT_all_trucks);
+		for [{private _i = 0}, {_i < _i_count}, {_i = _i + 1}] do { 
+			if (_t isKindOf (OT_all_trucks select _i)) then {
+				_found_truck = true;
+				_i = _i_count;
+			};
+		};
+
         if(count _this isEqualTo 2) then {
-        	_istruck = (_t isKindOf "Truck_F") || (_t isKindOf "ReammoBox_F");
+			//If _t is a kind of Truck_F or a kind of ammo box then...
+        	//_istruck = (_t isKindOf "Truck_F") || (_t isKindOf "ReammoBox_F");
+			_istruck = _found_truck || (_t isKindOf "ReammoBox_F");
         };
 
 		_unit doMove getpos _t;

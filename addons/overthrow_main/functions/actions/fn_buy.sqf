@@ -203,8 +203,20 @@ if(_b != "Vehicle") then {
 	};
 }else{
 	_veh = vehicle player;
-	if ((!(_veh isKindOf "Truck_F")) && (!(_veh canAdd [_cls,1]))) then {
-		"This vehicle is full, use a truck for more storage" call OT_fnc_notifyMinor;
+	//Vehicle class changed from "Truck_F" to FART
+	//If no vehicle of qualified Truck_F and no vehicle can add more items
+	//if ((!(_veh isKindOf "Truck_F")) && (!(_veh canAdd [_cls,1]))) then {
+	private _found_truck = false;
+	private _i_count = count (OT_all_trucks);
+	for [{private _i = 0}, {_i < _i_count}, {_i = _i + 1}] do { 
+		if (_veh isKindOf (OT_all_trucks select _i)) then {
+			_found_truck = true;
+			_i = _i_count;
+		};
+	};
+	if ((!_found_truck) && (!(_veh canAdd [_cls,1]))) then {
+
+		"This vehicle is full." call OT_fnc_notifyMinor;
 		_handled = false;
 	};
 };

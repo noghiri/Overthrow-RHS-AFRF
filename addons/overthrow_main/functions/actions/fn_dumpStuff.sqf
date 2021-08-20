@@ -3,7 +3,19 @@ params ["_unit","_t",["_linkedItems",false]];
 _full = false;
 _istruck = true;
 if(count _this isEqualTo 2) then {
-	_istruck = (_t isKindOf "Truck_F") || (_t isKindOf "ReammoBox_F");
+
+	private _found_truck = false;
+	private _i_count = count (OT_all_trucks);
+	for [{private _i = 0}, {_i < _i_count}, {_i = _i + 1}] do { 
+		if (_t isKindOf (OT_all_trucks select _i)) then {
+			_found_truck = true;
+			_i = _i_count;
+		};
+	};
+	//Dorf: ammo boxes should hold more things and certain trucks too.
+	//_istruck becomes true when _t is found as Truck_F or ammo box is found
+	//_istruck = (_t isKindOf "Truck_F") || (_t isKindOf "ReammoBox_F");
+	_istruck = _found_truck || (_t isKindOf "ReammoBox_F");
 };
 
 if(binocular _unit != "") then {
