@@ -5,7 +5,7 @@ A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex b
 # Overthrow Wikipedia
 [For guides and more info.](https://github.com/guilemouse/Overthrow/wiki)
 
-![image](https://cloud.githubusercontent.com/assets/19246239/17642726/b268a4da-6194-11e6-850a-8951aed0f930.png)
+![image](https://i.imgur.com/HvXVlKa.png)
 
 # Overthrow 2021 Features
 * Drug prices for half ounces of weed and cocaine has standardized to 2010 prices by the DEA.
