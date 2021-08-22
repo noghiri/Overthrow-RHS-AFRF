@@ -19,6 +19,7 @@ private _online_owner = objNull; //This is actually player name not UID
 //Cannot lease, cannot sell, cannot see owner of building
 if(typename _b isEqualTo "ARRAY") then {
 	private _building = (_b select 0);
+	private _price = (_b select 1); //For money check to a player trying to SELL a house of someone else while they cannot afford to buy
 	private _building_hasOwner = _building call OT_fnc_hasOwner;
 	//Owner uid and stuff needs to rely on array aspect above
 
@@ -38,10 +39,14 @@ if(typename _b isEqualTo "ARRAY") then {
 		//If bubble is popped and it's over cap, it will allow the ability to sell their house 
 		//Either offline or remote execution methods without their permission via refund eviction 
 		if(!_owner_is_player) then {
+			if(_player_money < _price) exitWith {"You cannot afford this house" call OT_fnc_notifyMinor}; //Eviction money check.
+
 			//Loop to check if owner is online first 
 			{
 				if(getplayeruid _x isEqualTo _owner_uid) exitWith {_owner_isonline = true;_owner_on = "Online";_online_owner = _x};
 			}foreach(allplayers);
+			private _player_money = player getVariable ["money",0];
+
 			//House Owner is ONLINE then use remote calculations
 			if (_owner_isonline) then {
 				//Makes a private home check to see if they spawn using this house 

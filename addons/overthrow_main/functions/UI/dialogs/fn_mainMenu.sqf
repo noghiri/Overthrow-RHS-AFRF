@@ -153,7 +153,8 @@ if(typename _b isEqualTo "ARRAY") then {
 			if(typeof _building isEqualTo OT_item_Tent) then {
 				_name = "Camp";
 			} else {
-				ctrlSetText [1608,format["Sell ($%1)",[_sell, 1, 0, true] call CBA_fnc_formatNumber]];
+				//Evicts and refund to the building owner. 
+				ctrlSetText [1608,format["Refund ($%1) to Owner",[_sell, 1, 0, true] call CBA_fnc_formatNumber]];
 				ctrlEnable [1608,true]; //sell enabled 
 			};
 			if(typeof _building isEqualTo OT_flag_IND) then {
