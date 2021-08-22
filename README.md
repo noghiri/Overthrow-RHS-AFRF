@@ -22,7 +22,7 @@ A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex b
 * Players under 21 houses are protected from being evicted of their homes.
 * Evicting other players above 21 cap cannot be done to their home spawns.
 * Evicting other players will refund their MSRP price minus current market cut.
-* Taxes earned are standardized on a X*(0.0001(x)) format for 10k-79k (lease income only)
+* Taxes earned are standardized on a X*(0.00001(x)) format for 10k-79k (lease income only)
 * Taxes beyond 79k results in a flat cutting to any income above 29k to balance monopoly
 * All extra taxed money go to resistant funds as usual, for generals to buy expensive armies
 * Drugs are now more frequently sold at around 70-90% success in initiating trade
@@ -35,14 +35,16 @@ A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex b
 * ACE_Fakebackpack is now no longer 1E60 infinitely huge capacity 
 * Harbour NPC no longer runs away and dies during firefight
 * Standardized truck capacity to big trucks, small trucks, and cars
-
+* No more blank ammo
+* JOBS should be fixed now (testing)
+ 
 # Overthrow 2021 Future Fixes/Changes
 * ~~Standardizing trucks so "Truck_F" no longer is infinite carry capacity~~
 * unset home to FOB to garrison troops there shouldn't be a requirement to garrison troops
 * george town => katouka = stuck in rock near beach
 * Reattach lights to homes so your homes aren't 404 at night
 * NATO FOB at 041062 ruins should not spawn 2 units under rocks
-* JOBS/missions/Quests Escort/Scout/~~Recon~~ are currently broken I think
+* ~~JOBS/missions/Quests Escort/Scout/Recon~~ are currently broken I think
 
 # Overthrow 2019 Features (From original edited to reflect reality)
 * GTA-inspired wanted/stealth system
