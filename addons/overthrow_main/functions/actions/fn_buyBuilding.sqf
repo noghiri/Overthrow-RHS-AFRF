@@ -39,13 +39,13 @@ if(typename _b isEqualTo "ARRAY") then {
 		//If bubble is popped and it's over cap, it will allow the ability to sell their house 
 		//Either offline or remote execution methods without their permission via refund eviction 
 		if(!_owner_is_player) then {
+			private _player_money = player getVariable ["money",0];
 			if(_player_money < _price) exitWith {"You cannot afford this house" call OT_fnc_notifyMinor}; //Eviction money check.
 
 			//Loop to check if owner is online first 
 			{
 				if(getplayeruid _x isEqualTo _owner_uid) exitWith {_owner_isonline = true;_owner_on = "Online";_online_owner = _x};
 			}foreach(allplayers);
-			private _player_money = player getVariable ["money",0];
 
 			//House Owner is ONLINE then use remote calculations
 			if (_owner_isonline) then {
