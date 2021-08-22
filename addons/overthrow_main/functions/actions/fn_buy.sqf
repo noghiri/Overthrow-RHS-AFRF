@@ -19,7 +19,7 @@ private _civ = OT_interactingWith;
 if(!isNil "_civ" && _civ getVariable ["factionrep",false] && !((_cls isKindOf "Land") || (_cls isKindOf "Air") || (_cls isKindOf "Ship"))) then {
 	_faction = _civ getVariable ["faction",""];
 	if !(_faction isEqualTo "") then {
-		_increase = floor (_price / 1000);
+		_increase = floor (_price / 1000); //Looks like rep is bound to 1k
 		if(_increase > 0) then {
 			private _factionName = server getvariable format["factionname%1",_faction];
 			server setVariable [format["standing%1",_faction],(server getVariable [format["standing%1",_faction],0]) + _increase,true];
