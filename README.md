@@ -16,7 +16,7 @@ A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex b
 * Drug buying is based on trading stats now, higher stat, lower the price
 * Backpack is reverted to original intended values
 * "Bag" class of 'ACE_Fakebackpack' within 'Base_Bag' is now renamed "Bucci Bag" appropriately priced and set at 295 Max carry weight
-* Housing prices can now be bought from other players going over a Deedlock mechanic
+* Houses can now be bought from other players going over a Deedlock mechanic
 * Deedlock is set to 21 houses (buildings)
 * Buying houses now tell the player how much houses you own, how many you leased and the cap.
 * Players under 21 houses are protected from being evicted of their homes.
