@@ -44,7 +44,7 @@ A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex b
 * george town => katouka = stuck in rock near beach
 * Reattach lights to homes so your homes aren't 404 at night
 * NATO FOB at 041062 ruins should not spawn 2 units under rocks
-* ~~JOBS/missions/Quests Escort/Scout/Recon~~ are currently broken I think
+* ~~JOBS/missions/Quests Escort/Scout/Reconare currently broken I think~~ 
 
 # Overthrow 2019 Features (From original edited to reflect reality)
 * GTA-inspired wanted/stealth system
