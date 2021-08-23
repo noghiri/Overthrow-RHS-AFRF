@@ -9,5 +9,7 @@ OT_inputHandler = {
 		OT_context setVariable ["money",_in + _val,true];
 	};
 };
-
-["How much to put in this safe?",player getvariable ["money",100]] call OT_fnc_inputDialog;
+//Dorf 2021:
+// added [_money, 1, 0, false] call CBA_fnc_formatNumber
+//Money deposited should be 0 if none is found, cause no money.
+["How much to put in this safe?",[player getvariable ["money",0], 1, 0, false] call CBA_fnc_formatNumber] call OT_fnc_inputDialog;

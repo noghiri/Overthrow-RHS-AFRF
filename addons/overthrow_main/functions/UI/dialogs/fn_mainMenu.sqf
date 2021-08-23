@@ -30,6 +30,10 @@ private _ctrl = (findDisplay 8001) displayCtrl 1100;
 private _standing = [_town] call OT_fnc_support;
 
 private _rep = server getVariable ["rep",0];
+//For testing use this;
+//[server getVariable ["rep",1], 1, 0, true] call CBA_fnc_formatNumber
+//_rep is formatted to xxx,xxx,xxx placements to avoid funny exponential displays.
+_rep = [_rep, 1, 0, true] call CBA_fnc_formatNumber
 private _extra = "";
 
 if(isMultiplayer && { ((getplayeruid player) in (server getVariable ["generals",[]])) }) then {
@@ -49,11 +53,17 @@ _ctrl ctrlSetStructuredText parseText format[
 		<t align='left' size='0.65'>Fuel Price: $%10/L</t><br/>
 		%11
 	",
-	_town, ["","+"] select (_standing > -1), _standing, OT_nation, ["","+"] select (_rep > -1), _rep,
-	player getVariable ["influence",0],
-	_weather, server getVariable "forecast",
+	_town,								//1 
+	["","+"] select (_standing > -1), 	//2
+	_standing, 							//3
+	OT_nation, 							//4
+	["","+"] select (_rep > -1), 		//5
+	_rep,								//6
+	player getVariable ["influence",0],	//7
+	_weather, 							//8
+	server getVariable "forecast",		//9
 	[OT_nation,"FUEL",100] call OT_fnc_getPrice,
-	_extra
+	_extra								//11
 ];
 
 _ctrl = (findDisplay 8001) displayCtrl 1106;
