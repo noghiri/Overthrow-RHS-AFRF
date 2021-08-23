@@ -646,19 +646,42 @@ if (_canSellDrugs) then {
 					]);
 
 				if(side _civ isEqualTo civilian) then {
-					_price = round(_price * 1.2);
-					if(player call OT_fnc_unitSeenNATO) then {
+					//Dinky Code by Dorf to balance sale chances in populated areas vs non
+					//Most populated places should be easier to sell with cheaper priced drugs
+					//Least populated places should be harder to sell with higher priced drugs
+					//private _playerInTown = (getPos player) call OT_fnc_nearestTown;
+					private _stability = (server getVariable format["stability%1", _town])/100;
+					private _population = server getVariable format["population%1",_town];
+					if (_stability < 0.25) then {_stability = 0.25}; //Max 25% stability discount
+					if(_population > 1000) then {_population = 1000};
+					
+					//private _baseprice = (_price * 1); // constant of base price could be changed
+
+					private _inverse_population = abs((_population - 1000)/1000) + 2;
+					//This pricing should reflect drug pricing from increase of population is higher pricing
+					//In addition too greater stability, the more expensive the drugs
+					//_price = _price = [_town,_drugcls] call OT_fnc_getDrugPrice;
+					_price = round (_price);
+					private _stealth = player getVariable ["OT_stealth",[1,1]] select 1;
+					private _trade = player getvariable ["OT_trade",[1,1]] select 1;
+					//This is a 100% chance to avoid the cops only if you're lvl 20 on stealth.
+					if((player call OT_fnc_unitSeenNATO) && (random 100 > (100 - ((_stealth - 1)*5)))) then {
 						[player] remoteExec ["OT_fnc_NATOsearch",2,false];
 					}else{
-						private _trade = player getvariable ["OT_trade",[1,1]] select 1;
-						//Trade skill impacts selling capability
-						if((random 100) > (60-((_trade - 1)*3))) then {
+						//Trade skill impacts selling capability in addition to...
+						//large number in below code to dictate a percentage bonus to selling in
+						//higher population areas (aka easier to sell with more people around)
+						private _rng_cap = 100 - round(abs((_population - 1000)/1000) * 30); //30 Percent bonus chance to sell
+						//if (_rng_cap > random 100) then { //dictated 70% to 99% of success 
+						//if((random 100) > (60-((_trade - 1)*3))) then { //Dictates almost 40% to 100% chance of success
+						if ((_rng_cap - 20 + _trade) > random 100) then { 
+							//Above Dictates 50% minimum without skill, 70% with max skill, 79% without skill high demand, and 99% with skill high demand,
 							[_civ,player,["How much?",format["$%1",_price],"OK"],
 							{
 								private _drugSell = _this select 0;
 								[
 									round(
-										([(getpos player) call OT_fnc_nearestTown,_drugSell] call OT_fnc_getDrugPrice)*1.2
+										([(getpos player) call OT_fnc_nearestTown,_drugSell] call OT_fnc_getDrugPrice) //*1.2 constant here removed;
 									)
 								] call OT_fnc_money;
 								player removeItem _drugSell;
