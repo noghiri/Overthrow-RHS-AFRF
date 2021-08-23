@@ -1,12 +1,3 @@
-# Warning: 2021 August 23rd 
-* This game is no longer save compatible by a mistake
-* Do not start a new game on this current build
-* I have made a mistake writing a variable "player getVariable ["OT_fitness", [1,1]]" when the original was just "OT_fitness" = 1. 
-* Current build is reverted to the functional state of this new perk system (unintended, for loss of compatibility however)
-* Due to this mistake in adding an array in the character stats, these are no longer usable although it functions on a new save
-* I will re-write these new stats into the game, it will take a day or two probably of imagination
-* Appologies! Never code during 5AM.
-
 # Overthrow-Remastered (2021)
 
 A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex by [armazac](https://github.com/ArmaOverthrow/Overthrow)
