@@ -688,10 +688,16 @@ if (_canSellDrugs) then {
 								OT_interactingWith addItem _drugSell;
 								OT_interactingWith setVariable ["OT_Talking",false,true];
 								private _town = (getpos player) call OT_fnc_nearestTown;
-								if((random 100 > 50) && !isNil "_town") then {
+								//Cocaine makes stability drop more.
+								private _drug_chance = 50;
+								if (_drugname isEqualTo "Blow") {
+									_drug_chance = 15; //85% chance.
+								};
+								if((random 100 > _drug_chance) && !isNil "_town") then {
 									[_town,-1] call OT_fnc_stability;
 								};
-								if(random 100 > 80) then {
+								//Trade gains the ability to gain more influence
+								if(random 100 > (80 - (_trade + 1)*2)) then {
 									1 call OT_fnc_influence;
 								};
 							}, [OT_drugSelling]] call OT_fnc_doConversation;

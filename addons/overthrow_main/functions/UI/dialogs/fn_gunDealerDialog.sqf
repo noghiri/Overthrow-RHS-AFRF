@@ -79,9 +79,27 @@ createDialog "OT_dialog_buy";
 			_pic = _cls call OT_fnc_weaponGetPic;
 		};
 		if(_cls in OT_allDrugs) then {
-			_price = [_town,_cls] call OT_fnc_getDrugPrice;
+			//Original script line;
+			//_price = [_town,_cls] call OT_fnc_getDrugPrice;
+			private _trade = player getvariable ["OT_trade",[1,1]] select 1; //buff is a player's trade skill
+			private _stability = (server getVariable format["stability%1", _town])/100;
+			private _population = server getVariable format["population%1",_town];
+
+			//Dorf modified into;
+			if(_stability < 0.25) then {_stability = 0.25}; //Max 25% stability discount
+			if(_population > 1000) then {_population = 1000};
+			private _baseprice = cost getVariable _cls select 0;
+			//This makes bigger populations contribute to 1, small population 2;
+			private _inverse_population = abs((_population - 1000)/1000) + 1;
+
+			//This pricing should reflect drug pricing from increase of population is higher pricing
+			//In addition too greater stability, the more expensive the drugs
+			_price = _baseprice * (_stability * _inverse_population); //Reduces pricing by stability 
+			//_price = round (_price * ((30 + _buff - 1)/100)); //Added buff constant to reduce price by half of purchase - Dorf cant math rn it 5 am;
+			_price = _price - _trade + 1; //20 bucks discount;
+			if (_price < 40) then {_price = 40 - _trade + 1}; //Bottom dollar price, cannot be lower than 40;
 		}else{
-			_price = [OT_nation,_cls] call OT_fnc_getPrice;
+			_price = [OT_nation,_cls] call OT_fnc_getPrice; //Normal buy/sell pricing
 		};
 		private _idx = lbAdd [1500,format["%1",_txt]];
 		lbSetData [1500,_idx,_cls];
