@@ -690,7 +690,7 @@ if (_canSellDrugs) then {
 								private _town = (getpos player) call OT_fnc_nearestTown;
 								//Cocaine makes stability drop more.
 								private _drug_chance = 50;
-								if (_drugname isEqualTo "Blow") {
+								if (_drugname isEqualTo "Blow") then {
 									_drug_chance = 15; //85% chance.
 								};
 								if((random 100 > _drug_chance) && !isNil "_town") then {
