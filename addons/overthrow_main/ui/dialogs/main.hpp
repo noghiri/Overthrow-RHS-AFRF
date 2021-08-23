@@ -1272,7 +1272,17 @@ class OT_dialog_char
 			y = 0.423 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[""fitness""] call buyPerk;";
+			action="[""fitness"", false] call buyPerk;";
+		};
+		class RscButton_1603: RscOverthrowButton //RscButton_X+3
+		{
+			idc = 1603;
+			text = "Reset Level (-1000 Influence)"; //--- ToDo: Localize;
+			x = 0.273125 * safezoneW + safezoneX;
+			y = 0.467 * safezoneH + safezoneY; //423 + 44
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="[""fitness"", true] call buyPerk;";
 		};
 		class RscStructuredText_1101: RscOverthrowStructuredText
 		{
@@ -1293,7 +1303,17 @@ class OT_dialog_char
 			y = 0.423 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[""trade""] call buyPerk;";
+			action="[""trade"", false] call buyPerk;";
+		};
+		class RscButton_1604: RscOverthrowButton //RscButton_X+3
+		{
+			idc = 1604;
+			text = "Reset Level (-1000 Influence)"; //--- ToDo: Localize;
+			x = 0.427812 * safezoneW + safezoneX;
+			y = 0.467 * safezoneH + safezoneY; //423 + 44
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="[""trade"", true] call buyPerk;";
 		};
 		class RscStructuredText_1102: RscOverthrowStructuredText
 		{
@@ -1314,7 +1334,17 @@ class OT_dialog_char
 			y = 0.423 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[""stealth""] call buyPerk;";
+			action="[""stealth"", false] call buyPerk;";
+		};
+		class RscButton_1605: RscOverthrowButton //RscButton_1602+3
+		{
+			idc = 1605;
+			text = "Reset Stealth Level (-1000 Influence)"; //--- ToDo: Localize;
+			x = 0.5825 * safezoneW + safezoneX;
+			y = 0.467 * safezoneH + safezoneY; //423 + 44
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="[""stealth"", true] call buyPerk;";
 		};
 		////////////////////////////////////////////////////////
 		// GUI EDITOR OUTPUT END
