@@ -535,26 +535,8 @@ if (_canBuyBoats) then {
 								moveOut player;
 								_driver globalchat "Alright, bye";
 							};
-							private _stealth = objNull;
-							private _trade = objNull;
-
-							//debug for old character sheet stats ahead; delete when converted in future;
-							if (player getvariable ["OT_stealth",[1,1]] isEqualType []) then {
-								_stealth = player getVariable ["OT_stealth",[1, 1]];
-							} else {
-								_stealth = [player getVariable ["OT_stealth", 1], 1];
-							};
-							if (player getvariable ["OT_trade",[1,1]] isEqualType []) then {
-								_trade = player getVariable ["OT_trade",[1, 1]];
-							} else {
-								_trade = [player getVariable ["OT_trade", 1], 1];
-							};
-
-							//debug ends
-
 							//Max 80% chance nato search is avoided when selling.
-							//_stealth = player getvariable ["OT_stealth",[1,1]] select 1;
-							_stealth = _stealth select 1;
+							private _stealth = player getvariable ["OT_stealth",[1,1]] select 1;
 							if(random 100 > round ((_stealth - 1) * 4)) then {
 								[player] spawn OT_fnc_NATOsearch;
 							};
@@ -680,26 +662,8 @@ if (_canSellDrugs) then {
 					//In addition too greater stability, the more expensive the drugs
 					//_price = _price = [_town,_drugcls] call OT_fnc_getDrugPrice;
 					_price = round (_price);
-
-					private _stealth = objNull;
-					private _trade = objNull;
-
-					//debug for old character sheet stats ahead; delete when converted in future;
-					if (player getvariable ["OT_stealth",[1,1]] isEqualType []) then {
-						_stealth = player getVariable ["OT_stealth",[1, 1]];
-					} else {
-						_stealth = [player getVariable ["OT_stealth", 1], 1];
-					};
-					if (player getvariable ["OT_trade",[1,1]] isEqualType []) then {
-						_trade = player getVariable ["OT_trade",[1, 1]];
-					} else {
-						_trade = [player getVariable ["OT_trade", 1], 1];
-					};
-					_stealth = _stealth select 1;
-					_trade = _trade select 1;
-					//debug ends, delete when saves are new;
-					//_stealth = player getVariable ["OT_stealth",[1,1]] select 1;
-					//_trade = player getvariable ["OT_trade",[1,1]] select 1;
+					private _stealth = player getVariable ["OT_stealth",[1,1]] select 1;
+					private _trade = player getvariable ["OT_trade",[1,1]] select 1;
 					//This is a 100% chance to avoid the cops only if you're lvl 20 on stealth.
 					if((player call OT_fnc_unitSeenNATO) && (random 100 > (100 - ((_stealth - 1)*5)))) then {
 						[player] remoteExec ["OT_fnc_NATOsearch",2,false];

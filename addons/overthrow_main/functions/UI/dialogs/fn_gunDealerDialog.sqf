@@ -81,16 +81,7 @@ createDialog "OT_dialog_buy";
 		if(_cls in OT_allDrugs) then {
 			//Original script line;
 			//_price = [_town,_cls] call OT_fnc_getDrugPrice;
-
-			//debug goes here.
-			private _trade = objNull;
-			if (player getvariable ["OT_trade",[1,1]] isEqualType []) then {
-				_trade = player getVariable ["OT_trade",[1, 1]];
-			} else {
-				_trade = [player getVariable ["OT_trade", 1], 1];
-			};
-			//debug ends here;
-			_trade = _trade select 1; //buff is a player's trade skill
+			private _trade = player getvariable ["OT_trade",[1,1]] select 1; //buff is a player's trade skill
 			private _stability = (server getVariable format["stability%1", _town])/100;
 			private _population = server getVariable format["population%1",_town];
 
