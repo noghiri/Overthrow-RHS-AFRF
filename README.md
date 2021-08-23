@@ -39,6 +39,7 @@ A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex b
 * Standardized truck capacity to big trucks, small trucks, and cars
 * No more blank ammo
 * JOBS should be fixed now (testing)
+* Exponential numbers no longer show up as 1+91023e6 etc
  
 # Overthrow 2021 Future Fixes/Changes
 * ~~Standardizing trucks so "Truck_F" no longer is infinite carry capacity~~
