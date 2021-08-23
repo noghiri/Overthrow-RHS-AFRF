@@ -161,7 +161,7 @@ if(isplayer _target) then {
 			[_target] call OT_fnc_revealToNATO;
 		}else{
 			if(isplayer _target) then {
-				private _stealth = _target getVariable ["OT_stealth",[1,0]] select 1;
+				private _stealth = _target getVariable ["OT_arr_stealth",[1,0]] select 1;
 				_chance = 100;
 				if(_stealth > 1) then {
 					//This is a 100% maximum chance for someone to roll a d20 on character sheet to be invisible to searches.

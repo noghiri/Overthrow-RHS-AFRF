@@ -6,28 +6,28 @@ disableSerialization;
 //We set perk variables here if they don't exist.
 //Character stats have turned into an array [stat,rng_stat];
 //rng_stat is used in calculation but stat is used to calculate level ups
-private _fitness = player getVariable ["OT_fitness",[1, 1]];
+private _fitness = player getVariable ["OT_arr_fitness",[1, 1]];
 private _ctrl = (findDisplay 8003) displayCtrl 1100;
 _ctrl ctrlSetStructuredText parseText format["<t size=""2"">Fitness</t><br/><t size=""1.1"">Level %1</t><br/><t size=""0.7"">Increases the distance you can sprint</t>",_fitness select 1];
 
-private _trade = player getVariable ["OT_trade",[1, 1]];
+private _trade = player getVariable ["OT_arr_trade",[1, 1]];
 _ctrl = (findDisplay 8003) displayCtrl 1101;
 _ctrl ctrlSetStructuredText parseText format["<t size=""2"">Trade</t><br/><t size=""1.1"">Level %1</t><br/><t size=""0.7"">Ability to negotiate better purchasing prices</t>",_trade select 1];
 
-private _stealth = player getVariable ["OT_stealth",[1, 1]];
+private _stealth = player getVariable ["OT_arr_stealth",[1, 1]];
 _ctrl = (findDisplay 8003) displayCtrl 1102;
 _ctrl ctrlSetStructuredText parseText format["<t size=""2"">Stealth</t><br/><t size=""1.1"">Level %1</t><br/><t size=""0.7"">Less chance of NATO finding illegal items</t>",_stealth select 1];
 
 getPerkLevel = {
 	params ["_perk", "_perk_level"];
-	_perk_level = player getVariable [format["OT_%1",_perk],[1,1]];
+	_perk_level = player getVariable [format["OT_arr_%1",_perk],[1,1]];
 	_perk_level = _perk_level select 0;
 	_perk_level;
 };
 
 getPerkPrice = {
 	private _perk = _this select 0;
-	private _selected_perk = player getVariable [format["OT_%1",_perk],[1,1]];
+	private _selected_perk = player getVariable [format["OT_arr_%1",_perk],[1,1]];
 	private _price = 10;
 	_selected_perk = _selected_perk select 0;
 	if(_selected_perk isEqualTo 2) then {
@@ -100,7 +100,7 @@ buyPerk = {
 	disableSerialization;
 
 	//We set perk variables here if they don't exist.
-	_selected_perk_arr = player getVariable [format["OT_%1",_perk],[1, 1]];
+	_selected_perk_arr = player getVariable [format["OT_arr_%1",_perk],[1, 1]];
 	_selected_perk = _selected_perk_arr select 0;
 	_selected_perk_rng = _selected_perk_arr select 1;
 	_price = [_perk] call getPerkPrice;
@@ -119,7 +119,7 @@ buyPerk = {
 		_selected_perk_rng = _selected_perk_rng + 1 + floor(1/(ceil(random 2))) + floor(1/(ceil(random 2))) + floor(1/(ceil(random 2))) + floor(1/(ceil(random 2.5)));
 	};
 	//This is actually where you "set" the variables for perks...
-	player setVariable [format["OT_%1",_perk],[_selected_perk, _selected_perk_rng],true];
+	player setVariable [format["OT_arr_%1",_perk],[_selected_perk, _selected_perk_rng],true];
 	private _idcc = 1100;
 	private _idc = 1600;
 	if(_perk isEqualTo "trade") then {_idc = 1601;_idcc = 1101};
@@ -168,7 +168,7 @@ buyPerk = {
 	};
 	private _perk_names = ["fitness", "trade", "stealth"];
 	for [{private _i = 0}, {_i < 3}, {_i = _i + 1}] do {
-		_selected_perk_arr = player getVariable [format["OT_%1",_perk_names select _i],[1,1]];
+		_selected_perk_arr = player getVariable [format["OT_arr_%1",_perk_names select _i],[1,1]];
 		_selected_perk = _selected_perk_arr select 0;
 		_reset_price = [_perk_names select _i] call getResetPrice;
 		_idc = 1600 + _i + 3;

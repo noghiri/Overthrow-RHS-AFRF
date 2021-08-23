@@ -536,7 +536,7 @@ if (_canBuyBoats) then {
 								_driver globalchat "Alright, bye";
 							};
 							//Max 80% chance nato search is avoided when selling.
-							private _stealth = player getvariable ["OT_stealth",[1,1]] select 1;
+							private _stealth = player getvariable ["OT_arr_stealth",[1,1]] select 1;
 							if(random 100 > round ((_stealth - 1) * 4)) then {
 								[player] spawn OT_fnc_NATOsearch;
 							};
@@ -662,8 +662,8 @@ if (_canSellDrugs) then {
 					//In addition too greater stability, the more expensive the drugs
 					//_price = _price = [_town,_drugcls] call OT_fnc_getDrugPrice;
 					_price = round (_price);
-					private _stealth = player getVariable ["OT_stealth",[1,1]] select 1;
-					private _trade = player getvariable ["OT_trade",[1,1]] select 1;
+					private _stealth = player getVariable ["OT_arr_stealth",[1,1]] select 1;
+					private _trade = player getvariable ["OT_arr_trade",[1,1]] select 1;
 					//This is a 100% chance to avoid the cops only if you're lvl 20 on stealth.
 					if((player call OT_fnc_unitSeenNATO) && (random 100 > (100 - ((_stealth - 1)*5)))) then {
 						[player] remoteExec ["OT_fnc_NATOsearch",2,false];
