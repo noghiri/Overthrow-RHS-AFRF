@@ -161,10 +161,12 @@ if(isplayer _target) then {
 			[_target] call OT_fnc_revealToNATO;
 		}else{
 			if(isplayer _target) then {
-				private _stealth = _target getVariable ["OT_stealth",1];
+				private _stealth = _target getVariable ["OT_stealth",[1,0]] select 1;
 				_chance = 100;
 				if(_stealth > 1) then {
-					_chance = 100 - (_stealth * 20);
+					//This is a 100% maximum chance for someone to roll a d20 on character sheet to be invisible to searches.
+					//_stealth is maximum 21.
+					_chance = ((_stealth - 1) * 5); 
 				};
 				if((random 100) < _chance) then {
 					[_cop,"We found some illegal items && confiscated them, be on your way"] remoteExec ["globalchat",_target,false];

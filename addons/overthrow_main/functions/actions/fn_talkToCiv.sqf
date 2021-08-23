@@ -535,8 +535,9 @@ if (_canBuyBoats) then {
 								moveOut player;
 								_driver globalchat "Alright, bye";
 							};
-							//@TODO add stat stealth check in future plox -dorf
-							if(random 100 > 90) then {
+							//Max 80% chance nato search is avoided when selling.
+							private _stealth = player getvariable ["OT_stealth",[1,1]] select 1;
+							if(random 100 > round ((_stealth - 1) * 4)) then {
 								[player] spawn OT_fnc_NATOsearch;
 							};
 							if(!alive _driver) exitWith{};
@@ -649,7 +650,9 @@ if (_canSellDrugs) then {
 					if(player call OT_fnc_unitSeenNATO) then {
 						[player] remoteExec ["OT_fnc_NATOsearch",2,false];
 					}else{
-						if((random 100) > 68) then {
+						private _trade = player getvariable ["OT_trade",[1,1]] select 1;
+						//Trade skill impacts selling capability
+						if((random 100) > (60-((_trade - 1)*3))) then {
 							[_civ,player,["How much?",format["$%1",_price],"OK"],
 							{
 								private _drugSell = _this select 0;

@@ -1267,7 +1267,7 @@ class OT_dialog_char
 		class RscButton_1600: RscOverthrowButton
 		{
 			idc = 1600;
-			text = "Increase Level (-10 Influence)"; //--- ToDo: Localize;
+			text = "Roll for Level Increase (-10 Influence) 1/5"; //--- ToDo: Localize;
 			x = 0.273125 * safezoneW + safezoneX;
 			y = 0.423 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
@@ -1287,7 +1287,7 @@ class OT_dialog_char
 		class RscStructuredText_1101: RscOverthrowStructuredText
 		{
 			idc = 1101;
-			text = "Increase Level (-10 Influence)"; //--- ToDo: Localize;
+			text = ""; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.269 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
@@ -1298,7 +1298,7 @@ class OT_dialog_char
 		class RscButton_1601: RscOverthrowButton
 		{
 			idc = 1601;
-			text = "Increase Level (-10 Influence)"; //--- ToDo: Localize;
+			text = "Roll for Level Increase (-10 Influence) 1/5"; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.423 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
@@ -1329,7 +1329,7 @@ class OT_dialog_char
 		class RscButton_1602: RscOverthrowButton
 		{
 			idc = 1602;
-			text = "Increase Level (-10 Influence)"; //--- ToDo: Localize;
+			text = "Roll for Level Increase (-10 Influence) 1/5"; //--- ToDo: Localize;
 			x = 0.5825 * safezoneW + safezoneX;
 			y = 0.423 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
