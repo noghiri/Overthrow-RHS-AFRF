@@ -553,7 +553,8 @@ if (_canBuyBoats) then {
 							//debug ends
 
 							//Max 80% chance nato search is avoided when selling.
-							_stealth = player getvariable ["OT_stealth",[1,1]] select 1;
+							//_stealth = player getvariable ["OT_stealth",[1,1]] select 1;
+							_stealth = _stealth select 1;
 							if(random 100 > round ((_stealth - 1) * 4)) then {
 								[player] spawn OT_fnc_NATOsearch;
 							};
@@ -694,9 +695,11 @@ if (_canSellDrugs) then {
 					} else {
 						_trade = [player getVariable ["OT_trade", 1], 1];
 					};
+					_stealth = _stealth select 1;
+					_trade = _trade select 1;
 					//debug ends, delete when saves are new;
-					_stealth = player getVariable ["OT_stealth",[1,1]] select 1;
-					_trade = player getvariable ["OT_trade",[1,1]] select 1;
+					//_stealth = player getVariable ["OT_stealth",[1,1]] select 1;
+					//_trade = player getvariable ["OT_trade",[1,1]] select 1;
 					//This is a 100% chance to avoid the cops only if you're lvl 20 on stealth.
 					if((player call OT_fnc_unitSeenNATO) && (random 100 > (100 - ((_stealth - 1)*5)))) then {
 						[player] remoteExec ["OT_fnc_NATOsearch",2,false];

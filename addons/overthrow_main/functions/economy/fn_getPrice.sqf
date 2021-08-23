@@ -11,6 +11,7 @@ if (player getvariable ["OT_trade",[1,1]] isEqualType []) then {
 //Debug ends;
 
 //_trade = player getvariable ["OT_trade",[1,1]] select 1;
+_trade = _trade select 1;
 private _discount = 0;
 if(_trade > 1) then {
 	//Combined with standing this is a full 60% off or 40% off with no standing.
