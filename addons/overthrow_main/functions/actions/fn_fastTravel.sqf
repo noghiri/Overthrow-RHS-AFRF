@@ -122,7 +122,13 @@ OT_FastTravel_MapSingleClickEHId = addMissionEventHandler ["MapSingleClick", {
 						{_x allowDamage false} foreach(crew vehicle player);
 						private _road = _roads select 0;
 						_pos = position _road findEmptyPosition [10,120,typeOf (vehicle player)];
-						vehicle player setPos _pos;
+						if (count (_pos) isEqualTo 3) then {
+							//Script Error was here 
+							//0 elements provided, 3 expected. Now we check if it's good.
+							vehicle player setPos _pos;
+						} else {
+							hint "No roads found near that location, try again.";
+						};
 					};
 				}else{
 					player setpos (_pos findEmptyPosition [2,100]);
