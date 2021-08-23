@@ -78,6 +78,7 @@ if(typeof _this isEqualTo "Land_Cargo_House_V4_F") then {
 
 if(_this isKindOf "Man" || _this isKindOf "FlagCarrier") exitWith {};
 
+//OT_AceremoveAction error undefined variable??
 [_this, 0, ["ACE_MainActions"], OT_ACEremoveAction] call ace_interact_menu_fnc_addActionToObject;
 [_this, 0, ["ACE_MainActions","OT_Remove"], OT_ACEremoveActionConfirm] call ace_interact_menu_fnc_addActionToObject;
 
