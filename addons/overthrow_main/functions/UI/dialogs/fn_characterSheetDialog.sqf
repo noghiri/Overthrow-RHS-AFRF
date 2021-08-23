@@ -6,28 +6,66 @@ disableSerialization;
 //We set perk variables here if they don't exist.
 //Character stats have turned into an array [stat,rng_stat];
 //rng_stat is used in calculation but stat is used to calculate level ups
-private _fitness = player getVariable ["OT_fitness",[1, 1]];
-private _ctrl = (findDisplay 8003) displayCtrl 1100;
+private _fitness = objNull;
+private _stealth = objNull;
+private _trade = objNull;
+//debug for old character sheet stats ahead; delete when converted in future;
+if (player getvariable ["OT_fitness",[1,1]] isEqualType []) then {
+	_fitness = player getVariable ["OT_fitness",[1, 1]];
+} else {
+	_fitness = [player getVariable ["OT_fitness", 1], 1];
+};
+//debug ends
+//private _ctrl = (findDisplay 8003) displayCtrl 1100;
 _ctrl ctrlSetStructuredText parseText format["<t size=""2"">Fitness</t><br/><t size=""1.1"">Level %1</t><br/><t size=""0.7"">Increases the distance you can sprint</t>",_fitness select 1];
 
-private _trade = player getVariable ["OT_trade",[1, 1]];
+//debug for old character sheet stats ahead; delete when converted in future;
+if (player getvariable ["OT_trade",[1,1]] isEqualType []) then {
+	_trade = player getVariable ["OT_trade",[1, 1]];
+} else {
+	_trade = [player getVariable ["OT_trade", 1], 1];
+};
+//debug ends
+//private _trade = player getVariable ["OT_trade",[1, 1]];
 _ctrl = (findDisplay 8003) displayCtrl 1101;
 _ctrl ctrlSetStructuredText parseText format["<t size=""2"">Trade</t><br/><t size=""1.1"">Level %1</t><br/><t size=""0.7"">Ability to negotiate better purchasing prices</t>",_trade select 1];
 
-private _stealth = player getVariable ["OT_stealth",[1, 1]];
+//debug for old character sheet stats ahead; delete when converted in future;
+if (player getvariable ["OT_stealth",[1,1]] isEqualType []) then {
+	_stealth = player getVariable ["OT_stealth",[1, 1]];
+} else {
+	_stealth = [player getVariable ["OT_stealth", 1], 1];
+};
+//debug ends
+//private _stealth = player getVariable ["OT_stealth",[1, 1]];
 _ctrl = (findDisplay 8003) displayCtrl 1102;
 _ctrl ctrlSetStructuredText parseText format["<t size=""2"">Stealth</t><br/><t size=""1.1"">Level %1</t><br/><t size=""0.7"">Less chance of NATO finding illegal items</t>",_stealth select 1];
 
 getPerkLevel = {
 	params ["_perk", "_perk_level"];
 	_perk_level = player getVariable [format["OT_%1",_perk],[1,1]];
-	_perk_level = _perk_level select 0;
+	//This is purely to debug old perk system and will be removed when starting new game in this version of OT.
+	if (_perk_level isEqualType []) then {
+		//finds array and obtains level
+		_perk_level = _perk_level select 0;
+	} else {
+		//finds not an array, creates one based on old stats;
+		_perk_level = [_perk_level,1];
+	};
 	_perk_level;
 };
 
 getPerkPrice = {
+
 	private _perk = _this select 0;
-	private _selected_perk = player getVariable [format["OT_%1",_perk],[1,1]];
+	//debug for old character sheet stats ahead; delete when converted in future;
+	if (player getVariable [format["OT_%1",_perk],[1,1]] isEqualType []) then {
+		private _selected_perk = player getVariable [format["OT_%1",_perk],[1,1]];
+	} else {
+		private _selected_perk = [player getVariable [format["OT_%1",_perk],1], 1];
+	};
+	//debug ends
+	//private _selected_perk = player getVariable [format["OT_%1",_perk],[1,1]];
 	private _price = 10;
 	_selected_perk = _selected_perk select 0;
 	if(_selected_perk isEqualTo 2) then {
@@ -98,7 +136,13 @@ buyPerk = {
 	//RNG included will incentivise spending influence to reset your skills.
 	params ["_perk", "_reset_perk", "_price", "_reset_price", "_selected_perk_arr", "_selected_perk", "_selected_perk_rng"];
 	disableSerialization;
-
+	//debug for old character sheet stats ahead; delete when converted in future;
+	if (player getVariable [format["OT_%1",_perk],[1,1]] isEqualType []) then {
+		private _selected_perk_arr = player getVariable [format["OT_%1",_perk],[1,1]];
+	} else {
+		private _selected_perk_arr = [player getVariable [format["OT_%1",_perk],1], 1];
+	};
+	//debug ends
 	//We set perk variables here if they don't exist.
 	_selected_perk_arr = player getVariable [format["OT_%1",_perk],[1, 1]];
 	_selected_perk = _selected_perk_arr select 0;
