@@ -230,7 +230,7 @@ if(typename _b isEqualTo "ARRAY") then {
 			{
 				if((_x select 0) distance _building < 5) exitWith {_base = _x};
 			}foreach(server getvariable ["bases",[]]);
-
+			//Fix this so _ownername is not coming up empty variable;
 			_ownername = players_NS getVariable format["name%1",_base select 2];
 			ctrlSetText [1608,"Sell"];
 			ctrlEnable [1608,true];
