@@ -33,7 +33,7 @@ private _rep = server getVariable ["rep",0];
 //For testing use this;
 //[server getVariable ["rep",1], 1, 0, true] call CBA_fnc_formatNumber
 //_rep is formatted to xxx,xxx,xxx placements to avoid funny exponential displays.
-_rep = [_rep, 1, 0, true] call CBA_fnc_formatNumber
+private _rep_formatted = [_rep, 1, 0, true] call CBA_fnc_formatNumber;
 private _extra = "";
 
 if(isMultiplayer && { ((getplayeruid player) in (server getVariable ["generals",[]])) }) then {
@@ -58,7 +58,7 @@ _ctrl ctrlSetStructuredText parseText format[
 	_standing, 							//3
 	OT_nation, 							//4
 	["","+"] select (_rep > -1), 		//5
-	_rep,								//6
+	_rep_formatted,						//6
 	player getVariable ["influence",0],	//7
 	_weather, 							//8
 	server getVariable "forecast",		//9
