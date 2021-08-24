@@ -52,6 +52,7 @@ class OT_dialog_resistance
             colorBackground[] = {0,0,0,0.2};
             colorActive[] = {0,0,0,0};
         };
+		//this button idc 1600 makes a general;
         class RscButton_1600: RscOverthrowButton
         {
             idc = 1600;
