@@ -221,7 +221,7 @@ class OT_dialog_place
 			idc = 1606;
 			action = "closeDialog 0;'Base' spawn OT_fnc_place";
 
-			text = "FOB"; //--- ToDo: Localize;
+			text = "FOB (Permanent)"; //--- ToDo: Localize;
 			x = 0.159687 * safezoneW + safezoneX;
 			y = 0.797 * safezoneH + safezoneY;
 			w = 0.0928125 * safezoneW;

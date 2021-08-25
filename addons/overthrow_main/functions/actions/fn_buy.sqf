@@ -203,9 +203,9 @@ if(_b != "Vehicle") then {
 	};
 }else{
 	_veh = vehicle player;
-	//Vehicle class changed from "Truck_F" to FART
-	//If no vehicle of qualified Truck_F and no vehicle can add more items
-	//if ((!(_veh isKindOf "Truck_F")) && (!(_veh canAdd [_cls,1]))) then {
+	//Changed truck code to depend on new global variable of OT_all_trucks;
+	//it's a combination of arrays of a categorized truck list that can be tweaked with ease;
+	//For now it includes FART + All Big trucks (ind/civ) that has more than 4 wheels.
 	private _found_truck = false;
 	private _i_count = count (OT_all_trucks);
 	for [{private _i = 0}, {_i < _i_count}, {_i = _i + 1}] do { 
