@@ -14,3 +14,5 @@ OT_allJobs = [];
 
 job_system_counter = 12;
 ["job_system","_counter%10 isEqualTo 0","call OT_fnc_jobLoop"] call OT_fnc_addActionLoop;
+//dorf added this here to solve job problems.
+publicVariable "OT_allJobs";

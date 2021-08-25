@@ -2,6 +2,7 @@ if (!isServer) exitwith {};
 OT_NATO_GroundForces = [];
 OT_NATO_Group_Recon = "";
 OT_NATO_Group_Engineers = "";
+
 {
 	private _name = configName _x;
 	if((_name find "Recon") > -1) then {
@@ -95,7 +96,6 @@ for "_i" from 1 to 5 do {
 	_loadouts pushback ([_loadout,OT_allBLUSMG] call OT_fnc_randomizeLoadout);
 };
 spawner setVariable [format["loadouts_%1",OT_NATO_Unit_PoliceCommander],_loadouts,false];
-
 
 OT_NATO_Units_LevelTwo = OT_NATO_Units_LevelOne + OT_NATO_Units_LevelTwo;
 
@@ -483,6 +483,21 @@ private _revealed = server getVariable ["revealedFOBs",[]];
 	};
 }foreach(server getVariable ["NATOfobs",[]]);
 
+
+//Dorf added pub variables below; Will swap to case-by-case server calls in future;
+publicVariable "OT_NATO_GroundForces";
+publicVariable "OT_NATO_Group_Recon";
+publicVariable "OT_NATO_Group_Engineers";
+
+publicVariable "OT_NATO_Units_LevelOne";
+publicVariable "OT_NATO_Units_LevelTwo";
+publicVariable "OT_NATO_Units_CTRGSupport";
+
+publicVariable "OT_NATOobjectives";
+publicVariable "OT_NATOcomms";
+publicVariable "OT_NATOhvts";
+publicVariable "OT_NATOHelipads";
+//Dorfs pub variables done;
 publicVariable "OT_allObjectives";
 publicVariable "OT_allComms";
 OT_NATOInitDone = true;
