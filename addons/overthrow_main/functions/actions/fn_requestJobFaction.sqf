@@ -1,9 +1,10 @@
 
-closeDialog 0;
+closeDialog 0; //close last dialogue window (i think)
 private _gotjob = false;
 private _jobdef = [];
 private _activeJobs = spawner getVariable ["OT_activeJobIds",[]];
 private _completed = server getVariable ["OT_completedJobIds",[]];
+private _gangid = OT_interactingWith getVariable ["OT_gangid",-1]; //not sure if necessary but gang id is checked below...
 private _params = [];
 private _id = "";
 private _jobcode = {};
