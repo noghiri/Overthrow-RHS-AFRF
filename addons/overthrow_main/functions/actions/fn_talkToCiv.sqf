@@ -203,6 +203,7 @@ if (_canMission) then {
 				_s pushback [_x,-1];
 			};
 		}foreach(_gear);
+		//Some factions do not offer ANY gear; i think maybe? RHS influenced?
 		createDialog "OT_dialog_buy";
 		[OT_nation,_standing,_s,1.2] call OT_fnc_buyDialog;
 	}];
