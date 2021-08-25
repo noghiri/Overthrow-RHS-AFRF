@@ -3,6 +3,8 @@ if !(job_system_counter < 12) then {
   job_system_counter = 0;
   {
     _x params ["_name",["_target",""],"_condition","_code","_repeat","_chance","_expires","_requestable"];
+    //If i understand correctly "_chance" is just some random 100 call... why tf is this random 100 vs random 100....
+    _chance = 50; //Now it's 50% jobs;
     if !(_requestable) then {
         private _jobdef = _x;
         private _completed = server getVariable ["OT_completedJobIds",[]];
