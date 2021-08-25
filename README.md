@@ -31,7 +31,7 @@ A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex b
 * Initiating trade should also base on skill, a little RNG based on stability/population of the town
 * Standardized truck functions, all big trucks have infinite gear intake through Y menu
 * All trucks boosted in maximumLoad, small trucks doubled, big trucks became mobile ammo boxes in loot carry capacity
-* General make is toggle option now, make/revoke general.
+* General make is toggle option now, make/revoke general. (requires admin)
 
 # Overthrow 2021 Fixes
 * Workshop placement should no longer result on exploding ammo/repair boxes (Thanks to Waterpig on steam)
