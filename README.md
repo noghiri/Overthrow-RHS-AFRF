@@ -39,7 +39,7 @@ A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex b
 * Harbour NPC no longer runs away and dies during firefight
 * Standardized truck capacity to big trucks, small trucks, and cars
 * No more blank ammo
-* JOBS should be fixed now (testing)
+* JOBS should be fixed now (99%)
 * Exponential numbers no longer show up as 1+91023e6 etc
 * Barracks in NATO FOBs no longer throw errors
 
