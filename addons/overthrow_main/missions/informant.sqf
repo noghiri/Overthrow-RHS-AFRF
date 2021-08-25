@@ -23,7 +23,7 @@ private _params = [_destination,_destinationName,_jobid];
 private _markerPos = _destination; //randomize the marker position a bit
 
 //Build a mission description and title
-private _description = format["A defector from the resistance is hiding in %1 under NATO protection and giving them sensitive information. He needs to be silenced. <br/><br/>Reward: $1500",_destinationName];
+private _description = format["A defector from the resistance is hiding in %1 under NATO protection and giving them sensitive information. He needs to be silenced. <br/><br/>Reward: $4500",_destinationName]; //Added from 1500 to 4500 due to this is a group quest most of time...
 private _title = format["NATO informant in %1",_destinationName];
 
 //This next number multiplies the reward
@@ -56,7 +56,7 @@ private _difficulty = 1.8;
         _group setVariable ["Vcm_Disable",true,true];
 
         //reward to killer
-        _civ setVariable ["OT_bounty",1500,true];
+        _civ setVariable ["OT_bounty",4500,true]; //This is the informant.sqf quest upgraded to 4500
 
         //Save him for access later
         spawner setVariable [format["informant%1",_jobid],_civ,false];

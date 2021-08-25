@@ -9,7 +9,7 @@ if(count _groups isEqualTo 0) exitWith {[]};
 private _group = _groups select 0;
 private _numtokill = count units _group;
 
-private _reward = _numtokill * 25;
+private _reward = _numtokill * 50; //Changed from 25
 
 //Build a mission description
 private _description = format["Nothing spurs on the resistance more than just killing some blues. There is a group of %1 NATO within 300m of here, go find them and take care of them.<br/><br/>Reward: $%2",_numtokill,_reward];
