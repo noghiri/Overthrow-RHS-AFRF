@@ -226,12 +226,16 @@ if(typename _b isEqualTo "ARRAY") then {
 		};
 
 		if(typeof _building isEqualTo OT_flag_IND) then {
+			//This counts as player FOBs.
+			//This block here detects barracks in comms alpha even though it's not owned by ind.
 			_base = [];
 			{
 				if((_x select 0) distance _building < 5) exitWith {_base = _x};
 			}foreach(server getvariable ["bases",[]]);
 			//Fix this so _ownername is not coming up empty variable;
+			//Added "Someone" hardcoded to try and define unmarked buildings.
 			_ownername = players_NS getVariable format["name%1",_base select 2];
+			if(isNil "_ownername") then {_ownername = "Someone"};
 			ctrlSetText [1608,"Sell"];
 			ctrlEnable [1608,true];
 			ctrlSetText [1608,"Garrison"];
@@ -281,7 +285,8 @@ if(typename _b isEqualTo "ARRAY") then {
 					ctrlEnable [1608,false];
 					ctrlEnable [1609,false];
 					ctrlEnable [1610,false];
-
+					//_ownername is not really defined here;
+					private _ownername = "Someone";
 					_buildingTxt = format["
 						<t align='left' size='0.8'>Barracks</t><br/>
 					",_ownername];
