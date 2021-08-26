@@ -36,7 +36,7 @@ if (!isNil "_town" && {OT_Map_EachFrameLastTown != _town}) then {
 				_stability,
 				"%",
 				_plusmin,
-				_rep,
+				[_rep, 1, 0, true] call CBA_fnc_formatNumber,
 				_abandon
 			], -0.5, 1, 5, 1, 0, 5] call OT_fnc_dynamicText;
 		};

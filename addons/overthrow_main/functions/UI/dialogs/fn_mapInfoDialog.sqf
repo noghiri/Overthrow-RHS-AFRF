@@ -33,7 +33,7 @@ OT_MapSingleClickEHId = addMissionEventHandler["MapSingleClick", {
 				_stability,
 				"%",
 				_plusmin,
-				_rep,
+				[_rep, 1, 0, true] call CBA_fnc_formatNumber,
 				_abandon
 			];
 		};
