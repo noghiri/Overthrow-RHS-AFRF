@@ -20,7 +20,7 @@ private _price_bool = false; //Previously added list items were moved so this ch
 if !(_SearchTerm isEqualTo "") then {
 	_search_bool = true; //search term boolean is not empty;
 };
-backpackItems player select 2 call OT_fnc_weaponGetPic isEqualTo "";
+
 {
 	private _d = warehouse getVariable [_x,false];
 	if(_d isEqualType []) then {
