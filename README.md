@@ -9,7 +9,7 @@ A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex b
 
 # Overthrow 2021 Features
 * Perks are D20 based and can be reset
-* Perks in stealth and trade are useful for their intended uses
+* Perks in stealth and trade are useful for their intended uses (WIP)
 * Drug prices for half ounces of weed and cocaine has standardized to 2010 prices by the DEA.
 * Drug selling now is based on stability and population in the real world way it works.
 * Drug selling is more profitable
