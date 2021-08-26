@@ -213,11 +213,24 @@ if(_cost > 0) then {
 				// @todo remove this when done
 				createVehicle ["Land_ClutterCutter_large_F", (getpos modeTarget), [], 0, "CAN_COLLIDE"];
 			};
-
+			//SJossy -from martial law
+			private _proceed = true;
+			if(_typecls isEqualTo "Base") then {
+				if(({side _x isEqualTo west || side _x isEqualTo east} count ((getpos modeTarget) nearEntities 200)) > 0) exitWith {
+					"You cannot build a FOB so close to enemies." call OT_fnc_notifyMinor;
+					_proceed = false;
+				};
+				createDialog "OT_dialog_name";
+				ctrlSetText [1400,"Base"];
+			};
+			if!(_proceed) exitWith {};
+			//ML Ends;
+			/* Old code;
 			if(_typecls isEqualTo "Base") then {
 				createDialog "OT_dialog_name";
 				ctrlSetText [1400,"Base"];
 			};
+			*/
 			if(_typecls == "Camp") then {
 				private _mrkid = format["%1-camp",getplayeruid player];
 				createMarker [_mrkid,getpos modeTarget];
