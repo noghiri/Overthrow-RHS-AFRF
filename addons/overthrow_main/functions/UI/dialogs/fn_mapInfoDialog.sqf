@@ -1,4 +1,3 @@
-
 if (visibleMap) exitWith {};
 if (!isNil "OT_MapSingleClickEHId" || !isNil "OT_MapEHId") exitWith {};
 
@@ -49,7 +48,25 @@ OT_MapSingleClickEHId = addMissionEventHandler["MapSingleClick", {
 				_abandon
 			];
 		};
+		if (_type == "Faction") exitWith {
+			private _faction = _name;
+			private _name = getText (configFile >> "cfgFactionClasses" >> _faction >> "displayName");
+			private _standing = server getVariable [format["standing%1",_faction],0];
+			_txt = format [
+				"<t size='1.2' color='#222222'>%1</t><br/><t size='0.5' color='#222222'>Standing: %2</t>",
+				_name,
+				_standing
+			];
+		};
 		if (_type == "Business") exitWith {
+			private _target = "";
+			private _input = "None";
+			private _output = "Money";
+			
+			{
+				if ((_x select 1) == _name) exitWith {_target = _x};
+			}forEach OT_economicData;
+			
 			private _abandon = "Inactive";
 			if(_name in (server getVariable ["GEURowned",[]])) then {
 				_abandon = "Owned";
