@@ -373,7 +373,7 @@ if(_obpos distance player < 250) then {
 
 		if(_obpos distance player < 250) then {
 			if(_obname in (server getVariable ["GEURowned",[]])) then {
-				ctrlSetText [1201,"\A3\ui_f\data\map\markers\flags\Tanoa_ca.paa"];
+				ctrlSetText [1201,OT_flagImage]; //Changed from \A3\ui_f\data\map\markers\flags\Tanoa_ca.paa to OT_flagimage
 				_areaText = format["
 					<t align='left' size='0.8'>%1</t><br/>
 					<t align='left' size='0.65'>Operational</t><br/>
