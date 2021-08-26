@@ -35,7 +35,7 @@ A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex b
 * Search via ITEM NAME instead of ITEM CLASS NAME. For warehouses and imports.
 
 # Overthrow 2021 Fixes
-* Workshop placement should no longer result on exploding ammo/repair boxes (Thanks to Waterpig on steam)
+* Workshop placement should no longer result on exploding ammo/repair boxes (Thanks to [Waterpig](https://github.com/Majkl-J) on steam)
 * ACE_Fakebackpack is now no longer 1E60 infinitely huge capacity 
 * Harbour NPC no longer runs away and dies during firefight
 * Standardized truck capacity to big trucks, small trucks, and cars
