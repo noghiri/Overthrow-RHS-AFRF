@@ -29,7 +29,7 @@ _unit forceAddUniform (OT_clothes_harbor call BIS_fnc_selectRandom);
 }];
 */
 
-//Prevents harbour guy from moving on firefight
+//Prevents priest guy from moving on firefight
 //remove allowDamage if you want him to die
 _unit disableAI "MOVE";
 _unit allowdamage false;

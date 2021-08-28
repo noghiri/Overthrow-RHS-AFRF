@@ -1,7 +1,7 @@
 params ["_town","_spawnid"];
 sleep random 0.2;
 
-spawner setvariable [format["townspawnid%1",_town],_spawnid,true]; //changed to public maybe fixes get variable issues
+spawner setvariable [format["townspawnid%1",_town],_spawnid,true]; //changed to public maybe fixes get variable issues (it did)
 
 private _hometown = _town;
 private _groups = [];
@@ -32,19 +32,6 @@ if(_numCiv > 50) then {
 };
 
 private _hour = date select 3;
-
-/*
-private _church = server getVariable [format["churchin%1",_town],[]];
-if !(_church isEqualTo []) then {
-	//spawn the priest
-	_group = createGroup civilian;
-	_group setBehaviour "SAFE";
-	_groups pushback _group;
-	_pos = [[[_church,20]]] call BIS_fnc_randomPos;
-	_civ = _group createUnit [OT_civType_priest, _pos, [],0, "NONE"];
-	[_civ] call OT_fnc_initPriest;
-	sleep 0.3;
-};*/
 
 private _count = 0;
 

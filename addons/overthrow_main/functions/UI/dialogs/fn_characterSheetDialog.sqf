@@ -3,9 +3,12 @@ createDialog "OT_dialog_char";
 openMap false;
 
 disableSerialization;
-//We set perk variables here if they don't exist.
-//Character stats have turned into an array [stat,rng_stat];
-//rng_stat is used in calculation but stat is used to calculate level ups
+//OT_arr_statName = [1, 1]; At initiated 
+//OT_arr_statName = [5, 21]; At maximum
+//OT_arr_statName = [5, 5]; At minimum 
+//Declaring of these variables here if they don't exist.
+//Character perk stats have turned into an array [perk_stat,perk_stat_rng] specifically [_perk, _selected_perk];
+//rng of perk stat is used in calculation but perk stat is used to calculate level ups
 private _fitness = player getVariable ["OT_arr_fitness",[1, 1]];
 private _ctrl = (findDisplay 8003) displayCtrl 1100;
 _ctrl ctrlSetStructuredText parseText format["<t size=""2"">Fitness</t><br/><t size=""1.1"">Level %1</t><br/><t size=""0.7"">Increases the distance you can sprint</t>",_fitness select 1];
@@ -93,8 +96,8 @@ if(_stealth select 0 isEqualTo 1) then {
 
 buyPerk = {
 	//Dorf: I rewrote this to sort of loop the function into accepting the reset button while displaying its costs;
-	//Reset costs Constant + half of the influence of a Player to let them dump unspent resources;
-	//In the future these perks should be balanced where there is still 5 level ups but, the levels can increase to 10 due to RNG.
+	//Reset costs Constant + 1/4 of the influence of a Player to let them dump unspent resources;
+	//In the future these perks should be balanced where there is still 5 level ups but, the levels can increase to 21 due to RNG.
 	//RNG included will incentivise spending influence to reset your skills.
 	params ["_perk", "_reset_perk", "_price", "_reset_price", "_selected_perk_arr", "_selected_perk", "_selected_perk_rng"];
 	disableSerialization;
@@ -114,8 +117,8 @@ buyPerk = {
 		_selected_perk_rng = 1;
 	} else {
 		_selected_perk = _selected_perk + 1;
-		//This is mimicking 3 Dice rolls where if all hits, you get a +3 to your stat.
-		//Max stat you're possible to obtain per character is a 20, 5 (base guaranteed) + 15 (from 3d5); (edited to have 5% chance of hitting full 21, usable 20%)
+		//This is mimicking X Dice rolls where if all hits, you get a +X to your stat.
+		//Max stat you're possible to obtain per character is a 21, 5 (base guaranteed) + 16 (from 3d2); (full is 21% but usable is subtracted to 20%)
 		_selected_perk_rng = _selected_perk_rng + 1 + floor(1/(ceil(random 2))) + floor(1/(ceil(random 2))) + floor(1/(ceil(random 2))) + floor(1/(ceil(random 2.5)));
 	};
 	//This is actually where you "set" the variables for perks...

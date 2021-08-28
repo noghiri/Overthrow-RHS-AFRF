@@ -20,6 +20,7 @@ player setVariable ["OT_shopTarget","Self",false];
 
 private _canRecruit = true;
 
+private _canBank = false; //for the priest;
 private _canBuy = false;
 private _canBuyVehicles = false;
 private _canBuyBoats = false;
@@ -41,6 +42,7 @@ if (_civ getvariable ["notalk",false]) then {_canSellDrugs = false;_canRecruit =
 if (_civ getvariable ["factionrep",false]) then {_canSellDrugs = false;_canRecruit = false;_canBuyGuns=false;_canIntel=false;_canMission=true};
 if (_civ getvariable ["crimleader",false]) then {_canSellDrugs = true;_canRecruit = false;_canBuyGuns=false;_canIntel=false;_canMission=false;_canGangJob=true};
 if (_civ getvariable ["criminal",false]) then {_canSellDrugs = true;_canRecruit = false;_canBuyGuns=false;_canIntel=false;_canMission=false};
+if (_civ getvariable ["priest",false]) then {_canSellDrugs = true;_canRecruit = false;_canBuyGuns=false;_canIntel=false;_canMission=false;_canBank = true};
 
 if (_civ call OT_fnc_hasOwner) then {_canRecruit = false;_canIntel = false;_canSellDrugs=false};
 
@@ -238,6 +240,38 @@ if (_canMission) then {
 		createDialog "OT_dialog_buy";
 		[OT_nation,_standing,_s,5] call OT_fnc_buyDialog;
 	}];
+};
+
+if (_canBank) then {
+	private _civ = OT_interactingWith;
+	private _town = (getpos player) call OT_fnc_nearestTown;
+	private _name = _civ getvariable ["name","Archcrypto"];
+	private _support = [_town] call OT_fnc_support;
+	_options pushback format["<t align='center' size='2'>%1</t><br/><br/><t align='center' size='0.8'>Current Town Standing: %2<br/><br/>""What do you want?""</t>",_name,_support];
+	_options pushBack [format["Where is my Money?"], {
+		if(_support < 50) then {
+			format["Resistance Support in this town is too low (%1) < 50",_support] call OT_fnc_notifyMinor;
+		}else{
+			[_support, player getVariable ["money", 0]] call OT_fnc_bankDialog;
+		};
+	}];
+
+	_options pushBack [format["I want to help."], {
+		if(_support < 50) then {
+			[_support, player getVariable ["money", 0]] call OT_fnc_donateDialog;
+		} else {
+			"Go with Blockchain, You did all you can here." call OT_fnc_notifyMinor;
+		};
+	}];
+
+	_options pushBack [format["Why's the church locked?"], {
+		if(_support > 0) then {
+			"I'm mining Crypto." call OT_fnc_notifyMinor;
+		} else {
+			"None of your business Fiat pockets." call OT_fnc_notifyMinor;
+		};
+	}];
+
 };
 
 if (_canBuy) then {

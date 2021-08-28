@@ -1352,6 +1352,192 @@ class OT_dialog_char
 	};
 };
 
+class OT_dialog_bank
+{
+	idd=8005;
+	movingenable=false;
+
+	class controls
+	{
+		////////////////////////////////////////////////////////
+		// GUI EDITOR OUTPUT START (by ARMAzac, v1.063, #Humesu)
+		////////////////////////////////////////////////////////
+
+		class RscStructuredText_1100: RscOverthrowStructuredText
+		{
+			idc = 1100;
+			x = 0.29375 * safezoneW + safezoneX;
+			y = 0.269 * safezoneH + safezoneY;
+			w = 0.4125 * safezoneW;
+			h = 0.184 * safezoneH;
+			colorBackground[] = {0.2,0.2,0.2,1};
+		};
+
+		class RscButton_1600: RscOverthrowButton
+		{
+			idc = 1600;
+			text = "Deposit 100% of your Cash Money into Crypto"; //--- ToDo: Localize;
+			action = "closeDialog 0;[""deposit"", 100] call handleMoney;";
+			x = 0.298906 * safezoneW + safezoneX;
+			y = 0.478 * safezoneH + safezoneY;
+			w = 0.402187 * safezoneW;
+			h = 0.055 * safezoneH;
+			sizeEx = 0.017 * safezoneH;
+		};
+		class RscButton_1601: RscOverthrowButton
+		{
+			idc = 1601;
+			text = "Deposit 50% of your Cash Money into Crypto"; //--- ToDo: Localize;
+			action = "closeDialog 0;[""deposit"", 50] call handleMoney;";
+			x = 0.298906 * safezoneW + safezoneX;
+			y = 0.544 * safezoneH + safezoneY;
+			w = 0.402187 * safezoneW;
+			h = 0.055 * safezoneH;
+			sizeEx = 0.017 * safezoneH;
+		};
+		class RscButton_1602: RscOverthrowButton
+		{
+			idc = 1602;
+			text = "Deposit 25% of your Cash Money into Crypto"; //--- ToDo: Localize;
+			action = "closeDialog 0;[""deposit"", 25] call handleMoney;";
+			x = 0.298906 * safezoneW + safezoneX;
+			y = 0.61 * safezoneH + safezoneY;
+			w = 0.402187 * safezoneW;
+			h = 0.055 * safezoneH;
+			sizeEx = 0.017 * safezoneH;
+		};
+		class RscButton_1603: RscOverthrowButton
+		{
+			idc = 1603;
+			text = "Withdrawal 100% of your Crypto into Cash Money"; //--- ToDo: Localize;
+			action = "closeDialog 0;[""withdrawal"", 100] call handleMoney;";
+			x = 0.298906 * safezoneW + safezoneX;
+			y = 0.676 * safezoneH + safezoneY;
+			w = 0.402187 * safezoneW;
+			h = 0.055 * safezoneH;
+			sizeEx = 0.017 * safezoneH;
+		};
+		class RscButton_1604: RscOverthrowButton
+		{
+			idc = 1604;
+			text = "Withdrawal 50% of your Crypto into Cash Money"; //--- ToDo: Localize;
+			action = "closeDialog 0;[""withdrawal"", 50] call handleMoney;";
+			x = 0.298906 * safezoneW + safezoneX;
+			y = 0.742 * safezoneH + safezoneY;
+			w = 0.402187 * safezoneW;
+			h = 0.055 * safezoneH;
+			sizeEx = 0.017 * safezoneH;
+		};
+		class RscButton_1605: RscOverthrowButton
+		{
+			idc = 1605;
+			text = "Withdrawal 25% of your Crypto into Cash Money"; //--- ToDo: Localize;
+			action = "closeDialog 0;[""withdrawal"", 25] call handleMoney;";
+			x = 0.298906 * safezoneW + safezoneX;
+			y = 0.808 * safezoneH + safezoneY;
+			w = 0.402187 * safezoneW;
+			h = 0.055 * safezoneH;
+			sizeEx = 0.017 * safezoneH;
+		};
+		////////////////////////////////////////////////////////
+		// GUI EDITOR OUTPUT END
+		////////////////////////////////////////////////////////
+	};
+};
+
+class OT_dialog_donate
+{
+	idd=8006;
+	movingenable=false;
+
+	class controls
+	{
+		////////////////////////////////////////////////////////
+		// GUI EDITOR OUTPUT START (by ARMAzac, v1.063, #Humesu)
+		////////////////////////////////////////////////////////
+
+		class RscStructuredText_1100: RscOverthrowStructuredText
+		{
+			idc = 1100;
+			x = 0.29375 * safezoneW + safezoneX;
+			y = 0.269 * safezoneH + safezoneY;
+			w = 0.4125 * safezoneW;
+			h = 0.184 * safezoneH;
+			colorBackground[] = {0.2,0.2,0.2,1};
+		};
+
+		class RscButton_1600: RscOverthrowButton
+		{
+			idc = 1600;
+			text = "Lorem Ipsum dolor sit amet blah blah blah"; //--- ToDo: Localize;
+			action = "closeDialog 0;0 call OT_fnc_choiceMade;";
+			x = 0.298906 * safezoneW + safezoneX;
+			y = 0.478 * safezoneH + safezoneY;
+			w = 0.402187 * safezoneW;
+			h = 0.055 * safezoneH;
+			sizeEx = 0.017 * safezoneH;
+		};
+		class RscButton_1601: RscOverthrowButton
+		{
+			idc = 1601;
+			text = "Lorem Ipsum dolor sit amet blah blah blah"; //--- ToDo: Localize;
+			action = "closeDialog 0;1 call OT_fnc_choiceMade;";
+			x = 0.298906 * safezoneW + safezoneX;
+			y = 0.544 * safezoneH + safezoneY;
+			w = 0.402187 * safezoneW;
+			h = 0.055 * safezoneH;
+			sizeEx = 0.017 * safezoneH;
+		};
+		class RscButton_1602: RscOverthrowButton
+		{
+			idc = 1602;
+			text = "Lorem Ipsum dolor sit amet blah blah blah"; //--- ToDo: Localize;
+			action = "closeDialog 0;2 call OT_fnc_choiceMade;";
+			x = 0.298906 * safezoneW + safezoneX;
+			y = 0.61 * safezoneH + safezoneY;
+			w = 0.402187 * safezoneW;
+			h = 0.055 * safezoneH;
+			sizeEx = 0.017 * safezoneH;
+		};
+		class RscButton_1603: RscOverthrowButton
+		{
+			idc = 1603;
+			text = "Lorem Ipsum dolor sit amet blah blah blah"; //--- ToDo: Localize;
+			action = "closeDialog 0;3 call OT_fnc_choiceMade;";
+			x = 0.298906 * safezoneW + safezoneX;
+			y = 0.676 * safezoneH + safezoneY;
+			w = 0.402187 * safezoneW;
+			h = 0.055 * safezoneH;
+			sizeEx = 0.017 * safezoneH;
+		};
+		class RscButton_1604: RscOverthrowButton
+		{
+			idc = 1604;
+			text = "Lorem Ipsum dolor sit amet blah blah blah"; //--- ToDo: Localize;
+			action = "closeDialog 0;4 call OT_fnc_choiceMade;";
+			x = 0.298906 * safezoneW + safezoneX;
+			y = 0.742 * safezoneH + safezoneY;
+			w = 0.402187 * safezoneW;
+			h = 0.055 * safezoneH;
+			sizeEx = 0.017 * safezoneH;
+		};
+		class RscButton_1605: RscOverthrowButton
+		{
+			idc = 1605;
+			text = "Lorem Ipsum dolor sit amet blah blah blah"; //--- ToDo: Localize;
+			action = "closeDialog 0;5 call OT_fnc_choiceMade;";
+			x = 0.298906 * safezoneW + safezoneX;
+			y = 0.808 * safezoneH + safezoneY;
+			w = 0.402187 * safezoneW;
+			h = 0.055 * safezoneH;
+			sizeEx = 0.017 * safezoneH;
+		};
+		////////////////////////////////////////////////////////
+		// GUI EDITOR OUTPUT END
+		////////////////////////////////////////////////////////
+	};
+};
+
 class OT_dialog_tute
 {
 	idd=-1;

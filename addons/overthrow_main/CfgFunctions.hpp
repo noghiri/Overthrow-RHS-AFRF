@@ -191,6 +191,8 @@ class CfgFunctions
 			class craftDialog {};
 			class uploadData {};
 			class logisticsDialog {};
+			class bankDialog {};
+			class donateDialog {};
 		};
 
 		class Display
@@ -381,6 +383,7 @@ class CfgFunctions
 			class spawnNATOObjective {};
 			class spawnPolice {};
 			class spawnShops {};
+			class spawnPriests {};
 		};
 
 		/*
