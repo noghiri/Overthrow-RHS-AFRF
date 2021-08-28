@@ -243,13 +243,17 @@ if (_canMission) then {
 };
 
 if (_canBank) then {
+	//All these private variables if they're used inside option needs to be put INSIDE option;
 	private _civ = OT_interactingWith;
 	private _town = (getpos player) call OT_fnc_nearestTown;
 	private _name = _civ getvariable ["name","Archcrypto"];
 	private _support = [_town] call OT_fnc_support;
 	_options pushback format["<t align='center' size='2'>%1</t><br/><br/><t align='center' size='0.8'>Current Town Standing: %2<br/><br/>""What do you want?""</t>",_name,_support];
+	
 	_options pushBack [format["Where is my Money?"], {
-		if(_support < 50) then {
+		private _support = [_town] call OT_fnc_support;
+
+		if(_support < 50) then { //Bug test at 50, but real at 20;
 			format["Resistance Support in this town is too low (%1) < 50",_support] call OT_fnc_notifyMinor;
 		}else{
 			[_support, player getVariable ["money", 0]] call OT_fnc_bankDialog;
@@ -257,23 +261,105 @@ if (_canBank) then {
 	}];
 
 	_options pushBack [format["I want to help."], {
-		if(_support < 50) then {
-			[_support, player getVariable ["money", 0]] call OT_fnc_donateDialog;
-		} else {
-			"Go with Blockchain, You did all you can here." call OT_fnc_notifyMinor;
-		};
-	}];
+		private _civ = OT_interactingWith;
+		private _town = (getpos player) call OT_fnc_nearestTown;
+		private _name = _civ getvariable ["name","Archcrypto"];
+		private _support = [_town] call OT_fnc_support;
+		private _talk = ["I want to help."];
 
-	_options pushBack [format["Why's the church locked?"], {
-		if(_support > 0) then {
-			"I'm mining Crypto." call OT_fnc_notifyMinor;
+		private _code = {};
+		if(_support < 90) then { //Bug test at 20 but real at 90
+			private _money = player getVariable ["money", 0];
+			if (_money > 2000) then {
+				_talk pushback "Nice, you can buy us some GPUs.";
+				[_support, player getVariable ["money", 0]] call OT_fnc_donateDialog;
+				_code = {};
+			} else {
+				_talk pushback format ["$%1?!?, go sell some Drugs. You can't sponsor a single GPU.", _money];
+				"You need more than $2000 to help an Archcrypto" call OT_fnc_notifyMinor;
+				_code = {};
+			};
 		} else {
-			"None of your business Fiat pockets." call OT_fnc_notifyMinor;
+			_talk pushback "Go with the Blockchain, You did all you can here.";
+			"This Archcrypto do not need more help here." call OT_fnc_notifyMinor;
+			_code = {};
 		};
+
+		[
+			player, //player;
+			_civ,	//OT_interactWith;	
+			_talk,	//Convo the NPC replies with in system chat;
+			_code,	//Code to execute, can include other nested call OT_fnc_doConversation;
+			[_town,_support,_name] //Params to be passed into ( i assume in _code);
+		] call OT_fnc_doConversation;
+
 	}];
+	
+	// Works good, maybe more options in future;
+	_options pushBack [
+		format["Why's the church locked?"], {
+			private _civ = OT_interactingWith;
+			private _town = (getpos player) call OT_fnc_nearestTown;
+			private _name = _civ getvariable ["name","Archcrypto"];
+			private _support = [_town] call OT_fnc_support;
+
+			private _talk = ["Why's the church locked?"];
+			private _code = {
+
+			};
+
+			if(_support > 0) then {
+				_talk pushback "I been mining Crypto here since 2013.";
+				_code = {};
+			} else {
+				_talk pushback "None of your business Fiat hoarder.";
+				_code = {};
+			};
+
+			[
+				player, //player;
+				_civ,	//OT_interactWith;	
+				_talk,	//Convo the NPC replies with in system chat;
+				_code,	//Code to execute, can include other nested call OT_fnc_doConversation;
+				[_town,_support,_name] //Params to be passed into ( i assume in _code);
+			] call OT_fnc_doConversation;
+		}
+	];
+
+	_options pushBack [
+		format["Who keeps Ringing that Bell!?"], {
+			private _civ = OT_interactingWith;
+			private _town = (getpos player) call OT_fnc_nearestTown;
+			private _name = _civ getvariable ["name","Archcrypto"];
+			private _support = [_town] call OT_fnc_support;
+
+			private _talk = ["Who keeps Ringing that Bell!?"];
+			private _code = {
+
+			};
+
+			if(_support > 50) then {
+				_talk pushback "I ring the bell to let other Crypto holders know the servers are still operational.";
+				_code = {};
+			} else {
+				_talk pushback "I'm glad you asked Stranger!";
+				_talk pushback "On the top floor, the turbo-encabulator inside has reached a high level of development. So whenever a forescent skor motion is required, it may also be employed in conjunction with a drawn reciprocation dingle arm, to reduce sinusoidal repleneration.";
+				_talk pushback "And that's why I ring the bell every 5 minutes.";
+				_code = {};
+			};
+
+			[
+				player, //player;
+				_civ,	//OT_interactWith;	
+				_talk,	//Convo the NPC replies with in system chat;
+				_code,	//Code to execute, can include other nested call OT_fnc_doConversation;
+				[_town,_support,_name] //Params to be passed into ( i assume in _code);
+			] call OT_fnc_doConversation;
+		}
+	];
 
 };
-
+//_options call OT_fnc_playerDecision;
 if (_canBuy) then {
 	_options pushBack [
 		"Buy",{
@@ -309,6 +395,7 @@ if (_canBuy) then {
 	];
 };
 
+//The gun dealer does not have a title card;
 if (_canTute) then {
 	//gun dealer
 	_options pushBack [format["Do you have any jobs for me?"], {
@@ -371,6 +458,8 @@ if (_canTute) then {
 								params ["_town","_gangid","_gang","_name"];
 								private _civ = OT_interactingWith;
 								private _cash = player getVariable ["money",0];
+								//CHecks to see if player has 50 or more money;
+								//[player, OT_interactingWith, ["Player Pick option 1", formatted response], {params for class and code to do}, [_variables matching params]] OT_fnc_doConversation.
 								if(_cash >= 50) then {
 									[
 										player,
@@ -407,11 +496,11 @@ if (_canTute) then {
 			};
 
 			[
-				player,
-				_civ,
-				_talk,
-				_code,
-				[_town,_gangid,_gang,_name]
+				player, //player;
+				_civ,	//OT_interactWith;	
+				_talk,	//Convo the NPC replies with in system chat;
+				_code,	//Code to execute, can include other nested call OT_fnc_doConversation;
+				[_town,_gangid,_gang,_name] //Params to be passed into ( i assume in _code);
 			] call OT_fnc_doConversation;
 		}
 	];
@@ -503,6 +592,11 @@ if (_canBuyBoats) then {
 				private _cost = floor(_dist * 0.005);
 				private _go = {
 					_this spawn {
+						//spawn cannot call other local functions on the same scope as itself.
+						//It can, however, call other global functions.
+						//If you want to call a local function which has NOT been created inside a spawned function, then do this:
+						//_fncOne = { systemChat"This is _fncOne" }; _fncTwo = { call (_this select 0) }; [_fncOne] spawn _fncTwo;
+
 						private _destpos = _this;
 						player setVariable ["OT_ferryDestination",_destpos,false];
 						private _desttown = _destpos call OT_fnc_nearestTown;
@@ -591,9 +685,14 @@ if (_canBuyBoats) then {
 					};
 				};
 				if(_dist > 1000) then {
+					//_t is town name;
+					//_cost is cost calculated from distance (assumed);
+					//_go is a spawn;
+					//_p is marked position;
 					_ferryoptions pushback [format["%1 (-$%2)",_t,_cost],_go,_p];
 				};
 			}foreach(OT_ferryDestinations);
+			//Looks like _ferryoptions is an array of single elements.
 			_ferryoptions call OT_fnc_playerDecision;
 		}
 	];
