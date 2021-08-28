@@ -7,6 +7,20 @@ A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex b
 
 ![overthrowape_logo_tankbg](https://user-images.githubusercontent.com/1497274/130343157-f2abe68c-c644-4c6e-89e6-b526d9bbaa33.png)
 
+# Overthrow 2021 Priest-Dev 
+## (Work in Progress 1wk-2wk expected merge to main branch)
+* ALl changes are subject to more changes and complaints
+* In development to revive priests into tech-priests (not the 40k kind)
+* Tech-priests are currently called "Arch-Crypto" _fullname. 
+* They will spawn near churches, work as a money sink to raise late/mid game resistance support in different cities.
+* They will keep a bank for you, linked like the network of warehouses 
+* Banking with them will make passive income to completely absolve the need for trading in the late game (out rank it in efficiency).
+* Currency of "money" or cash in hand, will have a capacity of 1-5 million
+* After 1-5 million, the rest will automatically get converted into the denominations of this new currency system.
+* You cannot buy anything in-land with new currency, but its purpose is to faciliate the growth of income for late game assaults
+* It will also hopefully prevent spamming the server with 1000++++ huntIR monitors for late game trade to make the best money.
+* May even Cap off the infinite sizes of trucks working from import shops. (Maybe)
+
 # Overthrow 2021 Features
 * Perks are D20 based and can be reset
 * Perks in stealth and trade are useful for their intended uses (WIP)
