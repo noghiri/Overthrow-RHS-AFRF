@@ -67,8 +67,13 @@ buildcam camCommit 0;
 showCinemaBorder false;
 waitUntil {camCommitted buildcam};
 
+//Previously there was only > 0 is NVG enabled
+//Now it's disabling NVGs if player does not use NVG;
+//SHould work good, optionally set a key in editing buildings mode to toggle on/off NVGs with N key.
 if(currentVisionMode player > 0) then {
 	camUseNVG true;
+} else {
+	camUseNVG false;
 };
 
 buildFocus setPos _playerpos;
