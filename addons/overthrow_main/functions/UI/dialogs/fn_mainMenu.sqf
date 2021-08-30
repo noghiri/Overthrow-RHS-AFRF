@@ -234,7 +234,10 @@ if(typename _b isEqualTo "ARRAY") then {
 			}foreach(server getvariable ["bases",[]]);
 			//Fix this so _ownername is not coming up empty variable;
 			//Added "Someone" hardcoded to try and define unmarked buildings.
-			_ownername = players_NS getVariable format["name%1",_base select 2];
+			_ownername = objNull; 
+			if (count(_bases) > 2) then { //produces a divide by zero error, this if hope to counter that;
+				_ownername = players_NS getVariable format["name%1",_base select 2]; 
+			};
 			if(isNil "_ownername") then {_ownername = "Someone"};
 			ctrlSetText [1608,"Sell"];
 			ctrlEnable [1608,true];
