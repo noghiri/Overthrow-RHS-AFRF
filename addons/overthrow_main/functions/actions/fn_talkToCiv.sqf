@@ -260,40 +260,160 @@ if (_canBank) then {
 		};
 	}];
 
-	_options pushBack [format["I want to help."], {
-		private _civ = OT_interactingWith;
-		private _town = (getpos player) call OT_fnc_nearestTown;
-		private _name = _civ getvariable ["name","Archcrypto"];
-		private _support = [_town] call OT_fnc_support;
-		private _talk = ["I want to help."];
+	_options pushBack [
+		format["I want to help."], {
+			private _civ = OT_interactingWith;
+			private _town = (getpos player) call OT_fnc_nearestTown;
+			private _name = _civ getvariable ["name","Archcrypto"];
+			private _support = [_town] call OT_fnc_support;
+			private _talk = ["I want to help."];
 
-		private _code = {};
-		if(_support < 90) then { //Bug test at 20 but real at 90
-			private _money = player getVariable ["money", 0];
-			if (_money > 2000) then {
-				_talk pushback "Nice, you can buy us some GPUs.";
-				[_support, player getVariable ["money", 0]] call OT_fnc_donateDialog;
-				_code = {};
+			private _code = {};
+			if(_support > -1) then { //Bug test at -1 but real at 20
+				private _money = player getVariable ["money", 0];
+				if (_money > 2000) then {
+					_talk pushback "Nice, you can buy us some new GPUs.";
+					//[_town, _support, player getVariable ["money", 0]] call OT_fnc_donateDialog;
+					_code = {
+						private _abandoned = server getVariable ["NATOabandoned",[]];
+						{
+							if (_x in _abandoned) then {
+								_totalpop = _totalpop + (server getVariable [format["population%1",_x],0]);
+							};
+						}foreach(OT_allTowns);
+
+						_ferryoptions = [];
+						{
+							private _p = markerPos(_x);
+							private _t = _p call OT_fnc_nearestTown; //town name
+							private _dist = (player distance _p);
+							private _cost = floor(_dist * 0.005);
+							private _go = {
+								_this spawn {
+									//spawn cannot call other local functions on the same scope as itself.
+									//It can, however, call other global functions.
+									//If you want to call a local function which has NOT been created inside a spawned function, then do this:
+									//_fncOne = { systemChat"This is _fncOne" }; _fncTwo = { call (_this select 0) }; [_fncOne] spawn _fncTwo;
+
+									private _destpos = _this;
+									player setVariable ["OT_ferryDestination",_destpos,false];
+									private _desttown = _destpos call OT_fnc_nearestTown;
+									private _pos = (getpos player) findEmptyPosition [10,100,OT_vehType_ferry];
+									if (count _pos isEqualTo 0) exitWith {
+										"Not enough space, please clear an area nearby" call OT_fnc_notifyMinor;
+									};
+									private _cost = floor((player distance _destpos) * 0.005);
+									player setVariable ["OT_ferryCost",_cost,false];
+									_money = player getVariable ["money",0];
+									if(_money < _cost) then {
+										"You cannot afford that!" call OT_fnc_notifyMinor
+									}else{
+										[-_cost] call OT_fnc_money;
+										_veh = OT_vehType_ferry createVehicle _pos;
+
+										clearWeaponCargoGlobal _veh;
+										clearMagazineCargoGlobal _veh;
+										clearBackpackCargoGlobal _veh;
+										clearItemCargoGlobal _veh;
+
+										private _dir = 0;
+										while {!(surfaceIsWater ([_pos,800,_dir] call BIS_fnc_relPos)) && _dir < 360} do {
+											_dir = _dir + 45;
+										};
+
+										_veh setDir _dir;
+										player reveal _veh;
+										createVehicleCrew _veh;
+										_veh lockDriver true;
+										private _driver = driver _veh;
+										player moveInCargo _veh;
+
+										_driver globalchat format["Departing for %1 in 10 seconds",_desttown];
+
+										sleep 5;
+										_driver globalchat format["Departing for %1 in 5 seconds",_desttown];
+										sleep 5;
+
+										private _g = group (driver _veh);
+										private _wp = _g addWaypoint [_destpos,50];
+										_wp setWaypointType "MOVE";
+										_wp setWaypointSpeed "NORMAL";
+
+										_veh addEventHandler ["GetOut", {
+											params ["_vehicle","_position","_unit"];
+											_unit setVariable ["OT_ferryDestination",[],false];
+										}];
+
+										systemChat format["Departing for %1, press Y to skip (-$%2)",_desttown,_cost];
+
+										waitUntil {
+											!alive player
+											|| !alive _veh
+											|| !alive _driver
+											|| (vehicle player isEqualTo player)
+											|| (player distance _destpos < 80)
+										};
+
+										if(vehicle player isEqualTo _veh && alive _driver) then {
+											_driver globalchat format["We've arrived in %1, enjoy your stay",_desttown];
+										};
+										sleep 15;
+										if(vehicle player isEqualTo _veh && alive _driver) then {
+											moveOut player;
+											_driver globalchat "Alright, bye";
+										};
+										//Max 80% chance nato search is avoided when selling.
+										private _stealth = player getvariable ["OT_arr_stealth",[1,1]] select 1;
+										if(random 100 > round ((_stealth - 1) * 4)) then {
+											[player] spawn OT_fnc_NATOsearch;
+										};
+										if(!alive _driver) exitWith{};
+										_timeout = time + 800;
+
+										_wp = _g addWaypoint [_pos,0];
+										_wp setWaypointType "MOVE";
+										_wp setWaypointSpeed "NORMAL";
+
+										waitUntil {_veh distance _pos < 100 || time > _timeout};
+										if(!alive _driver) exitWith{};
+
+										deleteVehicle _driver;
+										deleteVehicle _veh;
+									};
+								};
+							};
+							if(_dist > 1000) then {
+								//_t is town name;
+								//_cost is cost calculated from distance (assumed);
+								//_go is a spawn;
+								//_p is marked position;
+								_ferryoptions pushback [format["%1 (-$%2)",_t,_cost],_go,_p];
+							};
+						}foreach(OT_allTowns);
+						//Looks like _ferryoptions is an array of single elements.
+						_ferryoptions call OT_fnc_playerDecision;
+				
+					};
+				} else {
+					_talk pushback format ["$%1?!?, go hustle Drugs. You can't afford a single GPU here.", _money];
+					"You need more than $2000 to help an Archcrypto" call OT_fnc_notifyMinor;
+					_code = {};
+				};
 			} else {
-				_talk pushback format ["$%1?!?, go sell some Drugs. You can't sponsor a single GPU.", _money];
-				"You need more than $2000 to help an Archcrypto" call OT_fnc_notifyMinor;
+				_talk pushback "Our Blockchain does not trust you here.";
+				"This Archcrypto needs at least 20 town support" call OT_fnc_notifyMinor;
 				_code = {};
 			};
-		} else {
-			_talk pushback "Go with the Blockchain, You did all you can here.";
-			"This Archcrypto do not need more help here." call OT_fnc_notifyMinor;
-			_code = {};
-		};
 
-		[
-			player, //player;
-			_civ,	//OT_interactWith;	
-			_talk,	//Convo the NPC replies with in system chat;
-			_code,	//Code to execute, can include other nested call OT_fnc_doConversation;
-			[_town,_support,_name] //Params to be passed into ( i assume in _code);
-		] call OT_fnc_doConversation;
-
-	}];
+			[
+				player, //player;
+				_civ,	//OT_interactWith;	
+				_talk,	//Convo the NPC replies with in system chat;
+				_code,	//Code to execute, can include other nested call OT_fnc_doConversation;
+				[_town,_support,_name] //Params to be passed into ( i assume in _code);
+			] call OT_fnc_doConversation;
+		}
+	];
 	
 	// Works good, maybe more options in future;
 	_options pushBack [

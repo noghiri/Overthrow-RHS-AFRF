@@ -1,10 +1,10 @@
 if!(hasInterface) exitWith {};
 _amount = _this select 0;
-_rep = (player getVariable ["money",0])+_amount;
-if(_rep < 0) then {
-    _rep = 0;
+_total_money = (player getVariable ["money",0])+_amount;
+if(_total_money < 0) then {
+    _total_money = 0;
 };
-player setVariable ["money",_rep,true];
+player setVariable ["money",_total_money,true];
 playSound "3DEN_notificationDefault";
 _plusmin = "";
 if(_amount > 0) then {

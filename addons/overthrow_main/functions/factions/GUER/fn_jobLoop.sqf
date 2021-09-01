@@ -4,7 +4,7 @@ if !(job_system_counter < 12) then {
   {
     _x params ["_name",["_target",""],"_condition","_code","_repeat","_chance","_expires","_requestable"];
     //If i understand correctly "_chance" is just some random 100 call... why tf is this random 100 vs random 100....
-    _chance = 50; //Now it's 50% jobs;
+    _chance = 120; //Now it's 120% jobs;
     if !(_requestable) then {
         private _jobdef = _x;
         private _completed = server getVariable ["OT_completedJobIds",[]];
@@ -52,6 +52,7 @@ if !(job_system_counter < 12) then {
                 private _loc = server getVariable _x;
                 private _inSpawnDistance = _loc call OT_fnc_inSpawnDistance;
                 if(([_inSpawnDistance,_stability,_x] call _condition) && !(_id in _completed) && !(_id in _activeJobs)) exitWith {
+                  _activeJobs pushback _id;
                   spawner setVariable ["OT_activeJobIds",_activeJobs,false]; //new addition i assume to fix jobs
                   [_id,_jobdef,[_x]] call OT_fnc_assignJob;
                 };
@@ -67,6 +68,7 @@ if !(job_system_counter < 12) then {
                 private _inSpawnDistance = _loc call OT_fnc_inSpawnDistance;
                 private _stability = server getVariable [format["stability%1",_loc call OT_fnc_nearestTown],100];
                 if(([_inSpawnDistance,_base,_stability] call _condition) && !(_id in _completed) && !(_id in _activeJobs)) exitWith {
+                  _activeJobs pushback _id;
                   spawner setVariable ["OT_activeJobIds",_activeJobs,false]; //new addition i assume to fix jobs
                   [_id,_jobdef,[_base,_loc]] call OT_fnc_assignJob;
                 };
@@ -84,6 +86,7 @@ if !(job_system_counter < 12) then {
                         private _id = format["%1-%2",_name,_hvtid];
                         private _inSpawnDistance = _loc call OT_fnc_inSpawnDistance;
                         if(([_inSpawnDistance,_base] call _condition) && !(_id in _completed) && !(_id in _activeJobs)) exitWith {
+				  	              _activeJobs pushback _id; //Thank you martial law;
                           spawner setVariable ["OT_activeJobIds",_activeJobs,false]; //new addition i assume to fix jobs
                           [_id,_jobdef,[_base,_hvtid]] call OT_fnc_assignJob;
                           _done = true;
@@ -103,12 +106,14 @@ if !(job_system_counter < 12) then {
                 private _town = "";
                 if(count _pos > 0) then {
                   private _standing = server getVariable [format["standing%1",_cls],0];
-                  private _inSpawnDistance = _pos call OT_fnc_inSpawnDistance;
+                  private _inSpawnDistance = _pos call OT_fnc_inSpawnDistance; //returns true?;
                   private _town = _pos call OT_fnc_nearestTown;
                   private _id = format["%1-%2",_name,_cls];
                   private _stability = server getVariable [format["stability%1",_town],100];
                   private _population = server getVariable [format["population%1",_town],50];
+                  //This puts variables of array into _condition;
                   if(([_inSpawnDistance, _standing, _town, _stability, _population] call _condition) && !(_id in _completed) && !(_id in _activeJobs)) then {
+                    _activeJobs pushback _id; //Thank you martial law;
                     spawner setVariable ["OT_activeJobIds",_activeJobs,false]; //new addition i assume to fix jobs                    
                     [_id,_jobdef,[_cls]] call OT_fnc_assignJob;
                     _done = true;
