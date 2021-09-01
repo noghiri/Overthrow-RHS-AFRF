@@ -218,7 +218,7 @@ if(_cost > 0) then {
 				ctrlSetText [1400,"Base"];
 			};
 			if!(_proceed) exitWith {};
-			[-modeCost] call OT_fnc_money;
+			[-250] call OT_fnc_money;
 			modeTarget setPosATL [getPosATL modeTarget select 0,getPosATL modeTarget select 1,getPosATL player select 2];
 			[modeTarget,getPlayerUID player] call OT_fnc_setOwner;
 			modeTarget remoteExec["OT_fnc_initObjectLocal",0,modeTarget];
