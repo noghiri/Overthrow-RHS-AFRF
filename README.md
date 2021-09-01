@@ -9,7 +9,8 @@ A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex b
 
 # Overthrow 2021 Priest-Dev 
 ## (Work in Progress 1wk-2wk expected merge to main branch)
-* ALl changes are subject to more changes and complaints
+* More bug fixes (job-factions, FOB placement, are done, and more fixes when it comes up)
+* ALL changes are subject to more changes and complaints
 * In development to revive priests into tech-priests (not the 40k kind)
 * Tech-priests are currently called "Arch-Crypto" _fullname. 
 * They will spawn near churches, work as a money sink to raise late/mid game resistance support in different cities.
