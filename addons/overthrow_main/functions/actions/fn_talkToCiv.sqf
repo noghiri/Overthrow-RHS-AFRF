@@ -271,23 +271,28 @@ if (_canBank) then {
 			private _code = {};
 			if(_support > -1) then { //Bug test at -1 but real at 20
 				private _money = player getVariable ["money", 0];
-				if (_money > 2000) then {
+				if (_money > 2000) then { //_baseCost effective here too;
 					_talk pushback "Nice, you can buy us some new GPUs.";
 					//[_town, _support, player getVariable ["money", 0]] call OT_fnc_donateDialog;
 					_code = {
+						/* KISS loop deletion;
+						private _abandonedTownArray = [];
 						private _abandoned = server getVariable ["NATOabandoned",[]];
 						{
 							if (_x in _abandoned) then {
-								_totalpop = _totalpop + (server getVariable [format["population%1",_x],0]);
+								_abandonedTownArray = pushBackUnique _x; //gets names;
 							};
 						}foreach(OT_allTowns);
-
-						_ferryoptions = [];
+ 						*/
+						_donateTownsList = [];
+						private _baseCost = 2000; //2000 for GPU base cost 2021;
+						private _abandoned = server getVariable ["NATOabandoned",[]];
 						{
-							private _p = markerPos(_x);
-							private _t = _p call OT_fnc_nearestTown; //town name
-							private _dist = (player distance _p);
-							private _cost = floor(_dist * 0.005);
+							private _townPos = markerPos(_x); //town position of all towns;
+							private _townName = _townPos call OT_fnc_nearestTown; //town name of all towns;
+							private _stability = server getVariable [format["stability%1",_townName], 100];
+							private _distance = (player distance _townPos); //_distance is in meters from town to church town;
+							private _cost = floor(_distance); //in meters;
 							private _go = {
 								_this spawn {
 									//spawn cannot call other local functions on the same scope as itself.
@@ -295,103 +300,77 @@ if (_canBank) then {
 									//If you want to call a local function which has NOT been created inside a spawned function, then do this:
 									//_fncOne = { systemChat"This is _fncOne" }; _fncTwo = { call (_this select 0) }; [_fncOne] spawn _fncTwo;
 
-									private _destpos = _this;
-									player setVariable ["OT_ferryDestination",_destpos,false];
-									private _desttown = _destpos call OT_fnc_nearestTown;
-									private _pos = (getpos player) findEmptyPosition [10,100,OT_vehType_ferry];
-									if (count _pos isEqualTo 0) exitWith {
-										"Not enough space, please clear an area nearby" call OT_fnc_notifyMinor;
+									private _townPos = _this;
+									private _townName = _townPos call OT_fnc_nearestTown;
+									private _stability = server getVariable [format["stability%1",_townName], 100];
+
+									private _baseCost = 2000;
+									private _distance = floor (player distance _townPos);
+									private _cost = floor(_distance); //in meters;
+									private _abandoned = server getVariable ["NATOabandoned",[]];
+
+									if (_stability < 0) then {
+										//shouldn't have shot so many civilians now the price is higher;
+										_cost = _cost + round(abs(1000 - _stability)*100); //100 multiplied by negative stability;
+									} else { //Stability between 0 and 999;
+										_cost = _cost + round((1000 - _stability)*100);
 									};
-									private _cost = floor((player distance _destpos) * 0.005);
-									player setVariable ["OT_ferryCost",_cost,false];
+									if (_townName in _abandoned) then {
+										_cost = round(_cost * 0.75); //25% off if abandoned
+									};
+									//_cost reflects perk player has due to trade;
+									_cost = round (_cost * (5/(player getVariable ["OT_arr_trade",[1,1]] select 1)));
+
+									if (_distance < 1500) then {
+										_cost = _baseCost;
+									};
+
 									_money = player getVariable ["money",0];
 									if(_money < _cost) then {
-										"You cannot afford that!" call OT_fnc_notifyMinor
+										"You cannot afford that!" call OT_fnc_notifyMinor;
 									}else{
 										[-_cost] call OT_fnc_money;
-										_veh = OT_vehType_ferry createVehicle _pos;
-
-										clearWeaponCargoGlobal _veh;
-										clearMagazineCargoGlobal _veh;
-										clearBackpackCargoGlobal _veh;
-										clearItemCargoGlobal _veh;
-
-										private _dir = 0;
-										while {!(surfaceIsWater ([_pos,800,_dir] call BIS_fnc_relPos)) && _dir < 360} do {
-											_dir = _dir + 45;
+										systemChat format["Donated to %1, For (-$%2)",_townName,_baseCost];
+										private _chance = 50;
+										if (player getVariable ["ot_isSmoking", false]) then {
+											_chance = 65;
 										};
-
-										_veh setDir _dir;
-										player reveal _veh;
-										createVehicleCrew _veh;
-										_veh lockDriver true;
-										private _driver = driver _veh;
-										player moveInCargo _veh;
-
-										_driver globalchat format["Departing for %1 in 10 seconds",_desttown];
-
-										sleep 5;
-										_driver globalchat format["Departing for %1 in 5 seconds",_desttown];
-										sleep 5;
-
-										private _g = group (driver _veh);
-										private _wp = _g addWaypoint [_destpos,50];
-										_wp setWaypointType "MOVE";
-										_wp setWaypointSpeed "NORMAL";
-
-										_veh addEventHandler ["GetOut", {
-											params ["_vehicle","_position","_unit"];
-											_unit setVariable ["OT_ferryDestination",[],false];
-										}];
-
-										systemChat format["Departing for %1, press Y to skip (-$%2)",_desttown,_cost];
-
-										waitUntil {
-											!alive player
-											|| !alive _veh
-											|| !alive _driver
-											|| (vehicle player isEqualTo player)
-											|| (player distance _destpos < 80)
+										if (random(100) < _chance) then {
+											[_town, +5] call OT_fnc_stability;
 										};
-
-										if(vehicle player isEqualTo _veh && alive _driver) then {
-											_driver globalchat format["We've arrived in %1, enjoy your stay",_desttown];
-										};
-										sleep 15;
-										if(vehicle player isEqualTo _veh && alive _driver) then {
-											moveOut player;
-											_driver globalchat "Alright, bye";
-										};
-										//Max 80% chance nato search is avoided when selling.
-										private _stealth = player getvariable ["OT_arr_stealth",[1,1]] select 1;
-										if(random 100 > round ((_stealth - 1) * 4)) then {
-											[player] spawn OT_fnc_NATOsearch;
-										};
-										if(!alive _driver) exitWith{};
-										_timeout = time + 800;
-
-										_wp = _g addWaypoint [_pos,0];
-										_wp setWaypointType "MOVE";
-										_wp setWaypointSpeed "NORMAL";
-
-										waitUntil {_veh distance _pos < 100 || time > _timeout};
-										if(!alive _driver) exitWith{};
-
-										deleteVehicle _driver;
-										deleteVehicle _veh;
 									};
 								};
 							};
-							if(_dist > 1000) then {
-								//_t is town name;
-								//_cost is cost calculated from distance (assumed);
-								//_go is a spawn;
-								//_p is marked position;
-								_ferryoptions pushback [format["%1 (-$%2)",_t,_cost],_go,_p];
+							//pushes into donation list if stability is below 1000;
+							if (_stability < 1000) then {
+								//will push results if stability cap is over 1000, cap for future towns;
+								if (_stability < 0) then {
+									//shouldn't have shot so many civilians now the price is higher;
+									_cost = _cost + round(abs(1000 - _stability)*100); //100 multiplied by negative stability;
+								} else { //Stability between 0 and 999;
+									_cost = _cost + round((1000 - _stability)*100);
+								};
+								if (_x in _abandoned) then {
+									_cost = round(_cost * 0.75); //25% off if abandoned
+								};
+								_cost = round (_cost * (5/(player getVariable ["OT_arr_trade",[1,1]] select 1)));
+
+								if(_distance < 1500) then {
+									//This is a dialog choice fed into fn_playerDecision.sqf,
+									//Then bound to OT_choices and used within main.hpp,
+									//Then called by OT_fnc_choiceMade in format of [name, code, args];
+									//_t is town name;
+									//_cost is cost calculated from distance (assumed);
+									//_go is a spawn;
+									//_p is marked position;
+									_donateTownsList pushback [format["Donate to %1 for (-$%2)",_townName,_baseCost],_go,_townPos];
+								} else {
+									_donateTownsList pushback [format["Donate to %1 for (-$%2)",_townName,_baseCost + _cost],_go,_townPos];
+								};
 							};
-						}foreach(OT_allTowns);
+						}foreach(OT_allTowns); //OT_allTowns is only names;
 						//Looks like _ferryoptions is an array of single elements.
-						_ferryoptions call OT_fnc_playerDecision;
+						_donateTownsList call OT_fnc_playerDecision;
 				
 					};
 				} else {
@@ -706,7 +685,7 @@ if (_canBuyBoats) then {
 			"Where do you want to go?" call OT_fnc_notifyMinor;
 			_ferryoptions = [];
 			{
-				private _p = markerPos(_x);
+				private _p = markerPos(_x); //returns an 3 item array;
 				private _t = _p call OT_fnc_nearestTown; //town name
 				private _dist = (player distance _p);
 				private _cost = floor(_dist * 0.005);
