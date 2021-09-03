@@ -21,10 +21,9 @@ if !(_church isEqualTo []) then {
 	//spawn the priest
 	_group = createGroup civilian;
 	_group setBehaviour "CARELESS";
-
-	
 	_groups pushback _group;
-	_pos = [[[_church,20]]] call BIS_fnc_randomPos;
+	//_pos = [[[_church,20]]] call BIS_fnc_randomPos;
+	_pos = [_church,[0,20]] call SHK_pos_fnc_pos;
 	_priest allowDamage false;
 
 	_priest = _group createUnit [OT_civType_priest, _pos, [],0, "NONE"];
