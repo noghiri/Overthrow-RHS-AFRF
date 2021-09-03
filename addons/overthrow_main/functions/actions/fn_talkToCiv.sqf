@@ -287,10 +287,16 @@ if (_canBank) then {
 						_donateTownsList = [];
 						private _baseCost = 2000; //2000 for GPU base cost 2021;
 						private _abandoned = server getVariable ["NATOabandoned",[]];
-						{
-							private _townPos = markerPos(_x); //town position of all towns;
+						//Sorted by distance;
+						private _sorted_OT_allTowns = [OT_allTowns, [], {markerPos(_x) distance player}, "ASCEND"] call BIS_fnc_sortBy; 
+							
+						//This is out of 5 because max list for UI;
+						for [{private _i = 0}, {(_i < count (_sorted_OT_allTowns)) && (count (_donateTownsList) < 5)}, {_i = _i+1}] do { 
+							//params _x gives town names by default;
+							private _townPos = markerPos(_sorted_OT_allTowns select _i); //town position of all towns;
 							private _townName = _townPos call OT_fnc_nearestTown; //town name of all towns;
 							private _stability = server getVariable [format["stability%1",_townName], 100];
+							private _support = [_townName] call OT_fnc_support;
 							private _distance = (player distance _townPos); //_distance is in meters from town to church town;
 							private _cost = floor(_distance); //in meters;
 							private _go = {
@@ -302,18 +308,18 @@ if (_canBank) then {
 
 									private _townPos = _this;
 									private _townName = _townPos call OT_fnc_nearestTown;
-									private _stability = server getVariable [format["stability%1",_townName], 100];
-
+									//private _stability = server getVariable [format["stability%1",_townName], 100];
+									private _support = [_townName] call OT_fnc_support;
 									private _baseCost = 2000;
 									private _distance = floor (player distance _townPos);
 									private _cost = floor(_distance); //in meters;
 									private _abandoned = server getVariable ["NATOabandoned",[]];
 
-									if (_stability < 0) then {
+									if (_support < 0) then {
 										//shouldn't have shot so many civilians now the price is higher;
-										_cost = _cost + round(abs(1000 - _stability)*100); //100 multiplied by negative stability;
+										_cost = _cost + round(abs(1000 - _support)*100); //100 multiplied by negative stability;
 									} else { //Stability between 0 and 999;
-										_cost = _cost + round((1000 - _stability)*100);
+										_cost = _cost + round((1000 - _support)*100);
 									};
 									if (_townName in _abandoned) then {
 										_cost = round(_cost * 0.75); //25% off if abandoned
@@ -330,31 +336,35 @@ if (_canBank) then {
 										"You cannot afford that!" call OT_fnc_notifyMinor;
 									}else{
 										[-_cost] call OT_fnc_money;
-										systemChat format["Donated to %1, For (-$%2)",_townName,_baseCost];
-										private _chance = 50;
+										systemChat format["Donated to %1, For (-$%2)",_townName,_cost];
+										private _chance = 60;
 										if (player getVariable ["ot_isSmoking", false]) then {
-											_chance = 65;
+											_chance = 80;
 										};
 										if (random(100) < _chance) then {
-											[_town, +5] call OT_fnc_stability;
+											private _add_support = +(round(random 50));
+											[_townName, _add_support] call OT_fnc_support;
+											format["%1 Gained %2 Resistance Support", _townName, _add_support] call OT_fnc_notifyMinor;
 										};
 									};
 								};
 							};
-							//pushes into donation list if stability is below 1000;
-							if (_stability < 1000) then {
+							//If support is under +100, and town is either bandoned or stability is less than 90;
+							//pushes into donation list if stability is below 100; should cap over 1000 globally per town one day;
+							if (_support < 100 && (_townName in _abandoned || _stability < 90)) then {
 								//will push results if stability cap is over 1000, cap for future towns;
-								if (_stability < 0) then {
+								if (_support < 0) then {
 									//shouldn't have shot so many civilians now the price is higher;
-									_cost = _cost + round(abs(1000 - _stability)*100); //100 multiplied by negative stability;
+									_cost = _cost + round(abs(100 - _support)*100); //100 multiplied by negative stability;
 								} else { //Stability between 0 and 999;
-									_cost = _cost + round((1000 - _stability)*100);
+									_cost = _cost + round((100 - _support)*100);
 								};
-								if (_x in _abandoned) then {
+								if (_townName in _abandoned) then { //_x is a name;
 									_cost = round(_cost * 0.75); //25% off if abandoned
 								};
 								_cost = round (_cost * (5/(player getVariable ["OT_arr_trade",[1,1]] select 1)));
-
+								//If _distance is less than 1.5km from player, then the town is cheaper, else expensive;
+								//This makes people go to closer churches for a better price.
 								if(_distance < 1500) then {
 									//This is a dialog choice fed into fn_playerDecision.sqf,
 									//Then bound to OT_choices and used within main.hpp,
@@ -368,8 +378,9 @@ if (_canBank) then {
 									_donateTownsList pushback [format["Donate to %1 for (-$%2)",_townName,_baseCost + _cost],_go,_townPos];
 								};
 							};
-						}foreach(OT_allTowns); //OT_allTowns is only names;
-						//Looks like _ferryoptions is an array of single elements.
+						};	
+						//}foreach(OT_allTowns); //OT_allTowns is only names;
+						//Looks like _donateTownsList is an array of single elements.
 						_donateTownsList call OT_fnc_playerDecision;
 				
 					};
