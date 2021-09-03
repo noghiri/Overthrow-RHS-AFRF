@@ -261,12 +261,12 @@ if (_canBank) then {
 	}];
 
 	_options pushBack [
-		format["I want to help."], {
+		format["I want to Donate."], {
 			private _civ = OT_interactingWith;
 			private _town = (getpos player) call OT_fnc_nearestTown;
 			private _name = _civ getvariable ["name","Archcrypto"];
 			private _support = [_town] call OT_fnc_support;
-			private _talk = ["I want to help."];
+			private _talk = ["I want to Donate."];
 
 			private _code = {};
 			if(_support > -1) then { //Bug test at -1 but real at 20
