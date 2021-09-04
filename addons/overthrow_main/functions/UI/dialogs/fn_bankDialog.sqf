@@ -6,8 +6,6 @@ openMap false;
 
 disableSerialization;
 
-params ["_support", "_money"];
-
 handleMoney = {
 	params = ["_term", "_amount"];
 
@@ -21,51 +19,44 @@ handleMoney = {
 	};
 
 };
+
+handleCrypto = {
+	params = ["_term", "_amount"];
+
+};
+
+//This filters factions and gives a text list for display;
+//NAME1, 'Reputation': INTEGER1 <linebreak> 
+//NAME2, 'Reputation': INTEGER2 <linebreak>
+//Etc etc.,
+factionsToText = {
+	params ["_factions_text", "_rep"];
+	_factions_text = [];
+	{ 
+		_x params ["_cls","_name","_side"]; 
+		//Filters out the factions that does not have _cls, aka locational spawn coordinates, not on map or not helping resistance (BLUFOR);
+		if !(server getVariable [format["factionrep%1",_cls],[]] isEqualTo []) then {
+			_rep = server getVariable [format["standing%1",_name],0];
+			_factions_text pushback _name + ", Reputation:" + str _rep; 
+		};
+	}foreach(OT_allFactions); 
+	_factions_text = _factions_text joinString "<br/>";
+	_factions_text;
+};
+
+private _bankCrypto = player getVariable [format["OT_arr_BankVault"],[0, 0]] select 1;
+private _ctrl = (findDisplay 8005) displayCtrl 1100;
+_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Crypto Exchange</t><br/><t size=""1.1"">Apexium (APX)</t><br/><t size=""0.7"">Approximately 0.0001 APX to $100,000 %1 Dollars</t>", OT_Nation];
+
+private _bankMoney = player getVariable [format["OT_arr_BankVault"],[0, 0]] select 0;
+_ctrl = (findDisplay 8005) displayCtrl 1101;
+_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Bank of %1</t><br/><t size=""1.1"">%1 Dollar (%2D)</t><br/><t size=""0.7"">We don't offer an interest rate. And their bank doesn't trade APX.</t>", OT_Nation, toUpper OT_Nation select [0,2]];
+
+//Factions statistics;
+_ctrl = (findDisplay 8005) displayCtrl 1102;
+_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Factions of %1</t><br/><t size=""1.1"">Donate a little money to keep them happy.</t><br/><t size=""0.7"">%2</t>",OT_Nation, call factionsToText];
+
 /*
-private _fitness = player getVariable ["OT_arr_fitness",[1, 1]];
-private _ctrl = (findDisplay 8003) displayCtrl 1100;
-_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Fitness</t><br/><t size=""1.1"">Level %1</t><br/><t size=""0.7"">Increases the distance you can sprint</t>",_fitness select 1];
-
-private _trade = player getVariable ["OT_arr_trade",[1, 1]];
-_ctrl = (findDisplay 8003) displayCtrl 1101;
-_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Trade</t><br/><t size=""1.1"">Level %1</t><br/><t size=""0.7"">Ability to negotiate better purchasing prices</t>",_trade select 1];
-
-private _stealth = player getVariable ["OT_arr_stealth",[1, 1]];
-_ctrl = (findDisplay 8003) displayCtrl 1102;
-_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Stealth</t><br/><t size=""1.1"">Level %1</t><br/><t size=""0.7"">Less chance of NATO finding illegal items</t>",_stealth select 1];
-
-getPerkLevel = {
-	params ["_perk", "_perk_level"];
-	_perk_level = player getVariable [format["OT_arr_%1",_perk],[1,1]];
-	_perk_level = _perk_level select 0;
-	_perk_level;
-};
-
-getPerkPrice = {
-	private _perk = _this select 0;
-	private _selected_perk = player getVariable [format["OT_arr_%1",_perk],[1,1]];
-	private _price = 10;
-	_selected_perk = _selected_perk select 0;
-	if(_selected_perk isEqualTo 2) then {
-		_price = 100;
-	};
-	if(_selected_perk isEqualTo 3) then {
-		_price = 500;
-	};
-	if(_selected_perk isEqualTo 4) then {
-		_price = 1000;
-	};
-	_price;
-};
-
-getResetPrice = {
-	params ["_perk", "_influence", "_price"];
-	_perk = _this select 0; //gets perk name not sure what do with this tbh fam.
-	_influence = player getVariable ["influence", 0];	
-	_price = round (_influence * 0.25) + 1000; //Quarter of a player's entire influence plus 1k
-	_price;
-};
-
 private _price = ["fitness"] call getPerkPrice;
 ctrlSetText [1600,format["Roll for Level Increase (-%1 Influence) %2/5",_price, ["fitness"] call getPerkLevel]];
 _price = ["fitness"] call getResetPrice;
@@ -81,6 +72,9 @@ ctrlSetText [1602,format["Roll for Level Increase (-%1 Influence) %2/5",_price, 
 _price = ["stealth"] call getResetPrice;
 ctrlSetText [1605,format["Reset Level (-%1 Influence)", _price]];
 
+*/
+
+/*
 //Display of increase is disabled when it reaches 5.
 if(_fitness select 0 isEqualTo 5) then {
 	ctrlShow [1600,false];
@@ -106,19 +100,25 @@ if(_stealth select 0 isEqualTo 1) then {
 if(_stealth select 0 isEqualTo 1) then {
 	ctrlShow [1605,false];
 };
-
-buyPerk = {
+*/
+bankTransaction = {
 	//Dorf: I rewrote this to sort of loop the function into accepting the reset button while displaying its costs;
 	//Reset costs Constant + 1/4 of the influence of a Player to let them dump unspent resources;
 	//In the future these perks should be balanced where there is still 5 level ups but, the levels can increase to 21 due to RNG.
 	//RNG included will incentivise spending influence to reset your skills.
-	params ["_perk", "_reset_perk", "_price", "_reset_price", "_selected_perk_arr", "_selected_perk", "_selected_perk_rng"];
+	params ["_transaction", "_currency", "_percentage", "_faction", "_faction_arr", "_wallet", "_total_bankvault_arr", "_total_crypto", "_total_money"];
 	disableSerialization;
 
 	//We set perk variables here if they don't exist.
-	_selected_perk_arr = player getVariable [format["OT_arr_%1",_perk],[1, 1]];
-	_selected_perk = _selected_perk_arr select 0;
-	_selected_perk_rng = _selected_perk_arr select 1;
+	_wallet = player getVariable ["money", 0]; //wallet is hand held "money";
+	_total_bankvault_arr = player getVariable [format["OT_arr_BankVault"],[0, 0]]; //["money", "crypto"];
+	_total_crypto = _total_bankvault_arr select 1;
+	_total_money = _total_bankvault_arr select 0;
+	
+	if (_faction) then { //declare faction RNG here from list in game.
+		_faction_arr = selectRandom OT_allFactions; //Remember this is [_name,_title,_side,_flag];
+	};
+
 	_price = [_perk] call getPerkPrice;
 	_reset_price = [_perk] call getResetPrice;
 	private _inf = player getVariable ["influence",0];
@@ -204,4 +204,3 @@ buyPerk = {
 	};
 
 };
-*/

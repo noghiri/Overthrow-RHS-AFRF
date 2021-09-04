@@ -1360,84 +1360,141 @@ class OT_dialog_bank
 	class controls
 	{
 		////////////////////////////////////////////////////////
-		// GUI EDITOR OUTPUT START (by ARMAzac, v1.063, #Humesu)
+		// GUI EDITOR OUTPUT START (by ARMAzac, v1.063, #Pejity)
 		////////////////////////////////////////////////////////
 
 		class RscStructuredText_1100: RscOverthrowStructuredText
 		{
 			idc = 1100;
-			x = 0.29375 * safezoneW + safezoneX;
+			text = ""; //--- ToDo: Localize;
+			x = 0.273125 * safezoneW + safezoneX;
 			y = 0.269 * safezoneH + safezoneY;
-			w = 0.4125 * safezoneW;
-			h = 0.184 * safezoneH;
-			colorBackground[] = {0.2,0.2,0.2,1};
+			w = 0.149531 * safezoneW;
+			h = 0.143 * safezoneH;
+			colorBackground[] = {0,0,0,0.5};
+			colorActive[] = {0,0,0,0.5};
 		};
-
 		class RscButton_1600: RscOverthrowButton
 		{
 			idc = 1600;
-			text = "Deposit 100% of your Cash Money into Crypto"; //--- ToDo: Localize;
-			action = "closeDialog 0;[""deposit"", 100] call handleMoney;";
-			x = 0.298906 * safezoneW + safezoneX;
-			y = 0.478 * safezoneH + safezoneY;
-			w = 0.402187 * safezoneW;
-			h = 0.055 * safezoneH;
-			sizeEx = 0.017 * safezoneH;
+			text = "Trade $100K TAD for APX"; //--- ToDo: Localize;
+			x = 0.273125 * safezoneW + safezoneX;
+			y = 0.423 * safezoneH + safezoneY;
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="closeDialog 0;[""withdrawal"", ""money"", 25] call bankTransaction;";
 		};
 		class RscButton_1601: RscOverthrowButton
 		{
 			idc = 1601;
-			text = "Deposit 50% of your Cash Money into Crypto"; //--- ToDo: Localize;
-			action = "closeDialog 0;[""deposit"", 50] call handleMoney;";
-			x = 0.298906 * safezoneW + safezoneX;
-			y = 0.544 * safezoneH + safezoneY;
-			w = 0.402187 * safezoneW;
-			h = 0.055 * safezoneH;
-			sizeEx = 0.017 * safezoneH;
+			text = "Trade 100% of your TAD for APX"; //--- ToDo: Localize;
+			x = 0.273125 * safezoneW + safezoneX;
+			y = 0.467 * safezoneH + safezoneY; //423 + 44
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="[""fitness"", false] call buyPerk;";
 		};
 		class RscButton_1602: RscOverthrowButton
 		{
 			idc = 1602;
-			text = "Deposit 25% of your Cash Money into Crypto"; //--- ToDo: Localize;
-			action = "closeDialog 0;[""deposit"", 25] call handleMoney;";
-			x = 0.298906 * safezoneW + safezoneX;
-			y = 0.61 * safezoneH + safezoneY;
-			w = 0.402187 * safezoneW;
-			h = 0.055 * safezoneH;
-			sizeEx = 0.017 * safezoneH;
+			text = "Trade APX for $100K TAD"; //--- ToDo: Localize;
+			x = 0.273125 * safezoneW + safezoneX;
+			y = 0.511 * safezoneH + safezoneY; //467 + 44
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="[""fitness"", false] call buyPerk;";
 		};
-		class RscButton_1603: RscOverthrowButton
+		class RscButton_1603: RscOverthrowButton //RscButton_X+3
 		{
 			idc = 1603;
-			text = "Withdrawal 100% of your Crypto into Cash Money"; //--- ToDo: Localize;
-			action = "closeDialog 0;[""withdrawal"", 100] call handleMoney;";
-			x = 0.298906 * safezoneW + safezoneX;
-			y = 0.676 * safezoneH + safezoneY;
-			w = 0.402187 * safezoneW;
-			h = 0.055 * safezoneH;
-			sizeEx = 0.017 * safezoneH;
+			text = "Trade 100% of your TAD for APX"; //--- ToDo: Localize;
+			x = 0.273125 * safezoneW + safezoneX;
+			y = 0.555 * safezoneH + safezoneY; //511 + 44
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="[""fitness"", true] call buyPerk;";
+		};
+		class RscStructuredText_1101: RscOverthrowStructuredText
+		{
+			idc = 1101;
+			text = ""; //--- ToDo: Localize;
+			x = 0.427812 * safezoneW + safezoneX;
+			y = 0.269 * safezoneH + safezoneY;
+			w = 0.149531 * safezoneW;
+			h = 0.143 * safezoneH;
+			colorBackground[] = {0,0,0,0.3};
+			colorActive[] = {0,0,0,0.3};
 		};
 		class RscButton_1604: RscOverthrowButton
 		{
-			idc = 1604;
-			text = "Withdrawal 50% of your Crypto into Cash Money"; //--- ToDo: Localize;
-			action = "closeDialog 0;[""withdrawal"", 50] call handleMoney;";
-			x = 0.298906 * safezoneW + safezoneX;
-			y = 0.742 * safezoneH + safezoneY;
-			w = 0.402187 * safezoneW;
-			h = 0.055 * safezoneH;
-			sizeEx = 0.017 * safezoneH;
+			idc = 1601;
+			text = "Withdrawal $100K TAD"; //--- ToDo: Localize;
+			x = 0.427812 * safezoneW + safezoneX;
+			y = 0.423 * safezoneH + safezoneY;
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="[""trade"", false] call buyPerk;";
 		};
-		class RscButton_1605: RscOverthrowButton
+		class RscButton_1605: RscOverthrowButton //RscButton_X+3
+		{
+			idc = 1604;
+			text = "Withdrawal All TAD"; //--- ToDo: Localize;
+			x = 0.427812 * safezoneW + safezoneX;
+			y = 0.467 * safezoneH + safezoneY; //423 + 44
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="[""trade"", true] call buyPerk;";
+		};
+		class RscButton_1606: RscOverthrowButton
+		{
+			idc = 1602;
+			text = "Deposit $100K TAD"; //--- ToDo: Localize;
+			x = 0.427812 * safezoneW + safezoneX;
+			y = 0.511 * safezoneH + safezoneY; //467 + 44
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="[""fitness"", false] call buyPerk;";
+		};
+		class RscButton_1607: RscOverthrowButton //RscButton_X+3
+		{
+			idc = 1603;
+			text = "Withdrawal All TAD"; //--- ToDo: Localize;
+			x = 0.427812 * safezoneW + safezoneX;
+			y = 0.555 * safezoneH + safezoneY; //511 + 44
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="[""fitness"", true] call buyPerk;";
+		};
+		class RscStructuredText_1102: RscOverthrowStructuredText
+		{
+			idc = 1102;
+			text = ""; //--- ToDo: Localize;
+			x = 0.5825 * safezoneW + safezoneX;
+			y = 0.269 * safezoneH + safezoneY;
+			w = 0.149531 * safezoneW;
+			h = 0.143 * safezoneH;
+			colorBackground[] = {0,0,0,0.3};
+			colorActive[] = {0,0,0,0.3};
+		};
+		class RscButton_1608: RscOverthrowButton
+		{
+			idc = 1602;
+			text = "Donate 0.0001 APX"; //--- ToDo: Localize;
+			x = 0.5825 * safezoneW + safezoneX;
+			y = 0.423 * safezoneH + safezoneY;
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="[""stealth"", false] call buyPerk;";
+		};
+		class RscButton_1609: RscOverthrowButton //RscButton_1602+3
 		{
 			idc = 1605;
-			text = "Withdrawal 25% of your Crypto into Cash Money"; //--- ToDo: Localize;
-			action = "closeDialog 0;[""withdrawal"", 25] call handleMoney;";
-			x = 0.298906 * safezoneW + safezoneX;
-			y = 0.808 * safezoneH + safezoneY;
-			w = 0.402187 * safezoneW;
-			h = 0.055 * safezoneH;
-			sizeEx = 0.017 * safezoneH;
+			text = "Donate $100K TAD"; //--- ToDo: Localize;
+			x = 0.5825 * safezoneW + safezoneX;
+			y = 0.467 * safezoneH + safezoneY; //423 + 44
+			w = 0.149531 * safezoneW;
+			h = 0.044 * safezoneH;
+			action="closeDialog 0;[""withdrawal"", 25] call handleMoney;";
 		};
 		////////////////////////////////////////////////////////
 		// GUI EDITOR OUTPUT END

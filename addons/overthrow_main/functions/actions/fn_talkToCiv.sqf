@@ -250,7 +250,8 @@ if (_canBank) then {
 	private _support = [_town] call OT_fnc_support;
 	_options pushback format["<t align='center' size='2'>%1</t><br/><br/><t align='center' size='0.8'>Current Town Standing: %2<br/><br/>""What do you want?""</t>",_name,_support];
 	
-	_options pushBack [format["Where is my Money?"], {
+	_options pushBack [format["Where is my Money?"], { //Put every variable you need in this bish or expect the options to not work;
+		private _town = (getpos player) call OT_fnc_nearestTown;
 		private _support = [_town] call OT_fnc_support;
 
 		if(_support < 50) then { //Bug test at 50, but real at 20;

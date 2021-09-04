@@ -25,7 +25,7 @@ private _expiry = 0;
     call {
         if((toLower _target) isEqualTo "faction") exitWith {
             private _faction = OT_interactingWith getvariable ["faction",""];
-            _id = format["%1-%2",_name,_faction]; //changed from _gangid;
+            _id = format["%1-%2",_name,_faction]; //changed _faction from _gangid;
             //Faction jobs does not have _base;
             //needs this declared _inSpawnDistance, _standing, _town, _stability, _population
             private _pos_inSpawnDistance = server getVariable [format["factionrep%1",_faction],[]]; //gets position of faction rep (array of 3, coordinates);

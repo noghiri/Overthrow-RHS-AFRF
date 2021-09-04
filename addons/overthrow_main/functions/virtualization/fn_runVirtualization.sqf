@@ -12,7 +12,7 @@ diag_log format["Overthrow: %1 businesses virtualized",count OT_economicData];
 waitUntil {!isNil "OT_economyLoadDone"};
 
 _count = 0;
-{
+{	//_cls is locations 3 digit coordinate array;
     _x params ["_cls","_name","_side"];
 	_pos = server getVariable [format["factionrep%1",_cls],[]];
     if(count _pos > 0) then {
