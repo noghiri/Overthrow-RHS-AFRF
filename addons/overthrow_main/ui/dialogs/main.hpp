@@ -1481,9 +1481,9 @@ class OT_dialog_bank
 			idc = 1103;
 			//text = ""; //--- ToDo: Localize;
 			x = 0.5825 * safezoneW + safezoneX;
-			y = 0.289 * safezoneH + safezoneY; //0.269 + 0.2
+			y = 0.357 * safezoneH + safezoneY; //0.269 + 0.088
 			w = 0.149531 * safezoneW;
-			h = 0.123 * safezoneH; //0.143-0.02
+			h = 0.055 * safezoneH; //0.143-0.088
 			//onLBSelChanged = "_this call OT_fnc_showMemberInfo";
 			colorBackground[] = {0,0,0,0.3};
 			colorActive[] = {0,0,0,0.3};

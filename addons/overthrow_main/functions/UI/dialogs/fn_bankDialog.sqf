@@ -60,8 +60,9 @@ _ctrl ctrlSetStructuredText parseText format["<t size=""2"">Bank of %1</t><br/><
 
 factionDisplayAll = {
 	lbClear 1103;
-	//_ctrl = (findDisplay 8005) displayCtrl 1103;
-	 //listbox initiates here;
+	_ctrl = (findDisplay 8005) displayCtrl 1102;
+	_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Factions of %1</t><br/><t size=""1.1"">Donate a little money to keep them happy.</t>",OT_Nation];
+	//listbox initiates here;
 	private _dupeArray = []; //for using near _dupeCheck;
 	{
 		_x params ["_cls","_name", "_side"]; //_cls is i think 3 item array coordinates of faction spawned NPCs;
