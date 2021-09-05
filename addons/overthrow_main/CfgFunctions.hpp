@@ -193,7 +193,6 @@ class CfgFunctions
 			class logisticsDialog {};
 			class bankDialog {};
 			class donateDialog {};
-			class donateFactionDialog {};
 		};
 
 		class Display

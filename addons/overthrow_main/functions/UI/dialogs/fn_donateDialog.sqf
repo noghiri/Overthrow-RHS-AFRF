@@ -24,7 +24,7 @@ getResetPrice = {
 
 
 donateMoney = {
-	//Dorf: aaaaaa
+	//Dorf: aaaaaa this is for reference;
 	params ["_perk", "_reset_perk", "_price", "_reset_price", "_selected_perk_arr", "_selected_perk", "_selected_perk_rng"];
 	disableSerialization;
 
