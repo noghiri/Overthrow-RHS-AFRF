@@ -6,7 +6,49 @@ openMap false;
 
 disableSerialization;
 
-handleMoney = {
+handleWallet = {
+	params = ["_amount"];
+	//Intakes [-integer] or [integer] for subtracting or addition;
+	//Basically checks if player can be given money to wallet;
+	//Will notify players if they don't have enough money;
+	//@TODO FINISH THIS Sept 05;
+	private _plusmin = "-";
+	private _playerBank_arr = player getVariable ["OT_arr_BankVault",[0, 0]];
+	private _playerWallet = player getVariable ["money",0];
+	_amount = _amount select 0;
+	private _totalMoney = 0;
+	if (_amount > 0) then {
+		_plusmin = "+"
+		private _money_cap = 2000000; // 2 million cap
+		private _wallet_amount = 0; // for reporting notification in end;
+		private _bank_amount = 0;// for reporting notif in end;
+		if (_money_cap >= (_playerWallet + _amount)) then {
+			//if player's withdrawn money exceeds the money cap of 2 million;
+			//2 million goes in player's wallet, excess goes in bank automatically;
+			//players will be notified;
+			player setVariable ["money", _money_cap, true];
+			private _playerBank_money = _playerBank_arr select 0;
+			_wallet_amount = _money_cap - _playerWallet;
+			_bank_amount = 
+			_playerBank_money = _playerBank_money + ((_playerWallet + _amount) - _money_cap);
+			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];
+			_playerWallet = _money_cap; //This gets used in notification formatting below;
+			format []
+		} else {
+			_playerWallet = _playerWallet + _amount;
+			player setVariable ["money", _playerWallet, true];
+		
+		};
+
+		//Deliver player notification to money
+		
+		format ["%1%2",_plusmin, _playerWallet]call OT_fnc_notifyMinor;
+	} else {
+
+	};
+};
+
+handleBank = {
 	params = ["_term", "_amount"];
 
 	if (_term == "withdrawal") then {
@@ -22,7 +64,14 @@ handleMoney = {
 
 handleCrypto = {
 	params = ["_term", "_amount"];
+	//_term can be buy/sell;
+	//_amount can be 0.0001~1 for sell orders or 100,000 to 2,000,000 on buy orders;
 
+	if (_term isEqualTo "buy") {
+
+	} else {
+
+	};
 };
 
 factionsToText = {
@@ -50,7 +99,7 @@ cryptoDisplayAll = {
 	private _ctrl = (findDisplay 8005) displayCtrl 1100;
 	private _playerMoneyStr = "Wallet: $"; //String;
 	_playerMoneyStr = _playerMoneyStr + ([player getVariable ["money", 0], 1, 0, true] call CBA_fnc_formatNumber);
-	_playerMoneyStr = _playerMoneyStr + "<br/>Exchange APX Storage: " + ([_bankCrypto, 1, 4, true] call CBA_fnc_formatNumber);
+	_playerMoneyStr = _playerMoneyStr + "<br/>Your APX Storage: " + ([_bankCrypto, 1, 4, true] call CBA_fnc_formatNumber);
 	//GLOBAL APX Capacity is dictated by an algorithm and need to be re-evaluated and called upon else where;
 	private _cryptoCap = [0.1]; //Array format hopefully can expand upon in the future;
 	_playerMoneyStr = _playerMoneyStr + "<br/>Global APX Market Cap: " + ([_cryptoCap select 0, 1, 4, true] call CBA_fnc_formatNumber);
@@ -195,19 +244,46 @@ bankTransaction = {
 	//PARAMETERS: fed _transaction type (withdrawal/deposit/buy/sell) and _currency (float/integer) and amount in percentages (integer)
 	//HANDLING Money: Sent/given from/to the player to themselves;
 	//HANDLING Crypto: Sent/Given from player to server as well as other players (ON/OFFline);
-	params ["_transaction", "_currency", "_percentage", "_faction", "_faction_arr", "_wallet", "_total_bankvault_arr", "_total_crypto", "_total_money"];
+	params ["_transaction", "_currency", "_amount", "_faction", "_faction_arr", "_wallet", "_total_bankvault_arr", "_total_crypto", "_total_money"];
 	disableSerialization;
 
-	//We set perk variables here if they don't exist.
+	//_currency dictates handling calls of bank/exchange;
+	//_transaction is fed into the calls for bank/exchange;
+	//_amount are variably amount, or actual percentages;
+	//if _currency == "money" then if deposit/withdrawal
+	//if _currency == "crypto" then if buy/sell
+
+	//Params set variables that does not exist yet;
 	_wallet = player getVariable ["money", 0]; //wallet is hand held "money";
 	_total_bankvault_arr = player getVariable [format["OT_arr_BankVault"],[0, 0]]; //["money", "crypto"];
 	_total_crypto = _total_bankvault_arr select 1;
 	_total_money = _total_bankvault_arr select 0;
-	
+	private isDone = false; //handles refresh probably;
+
 	if (_faction) then { //declare faction RNG here from list in game.
-		_faction_arr = selectRandom OT_allFactions; //Remember this is [_name,_title,_side,_flag];
+		_faction_arr = selectRandom OT_allFactions; //Remember this is [_clsName,_name,_side,_flag]; also _name has dupes so use _cls;
 	};
 
+	if (_currency isEqualTo "crypto") then {
+		//This block handles exchange;
+		[_transaction, _amount] call handleCrypto;
+	};
+
+	if (_currency isEqualTo "money") then {
+		//This block handles banking money;
+		if (_transaction isEqualTo "withdrawal") then {
+			//withdrawal of money;
+		} else {
+			//Deposit of money;
+		};
+	};
+
+	if (_isDone) {
+		call cryptoDisplayAll;
+		call bankDisplayAll;
+		call factionDisplayAll;
+	};
+	//Bottom are references;
 	_price = [_perk] call getPerkPrice;
 	_reset_price = [_perk] call getResetPrice;
 	private _inf = player getVariable ["influence",0];

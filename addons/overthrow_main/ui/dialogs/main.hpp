@@ -1365,7 +1365,7 @@ class OT_dialog_bank
 
 		class RscStructuredText_1100: RscOverthrowStructuredText
 		{
-			idc = 1100;
+			idc = 1100; //Exchange block begins here;
 			text = ""; //--- ToDo: Localize;
 			x = 0.273125 * safezoneW + safezoneX;
 			y = 0.269 * safezoneH + safezoneY;
@@ -1377,46 +1377,46 @@ class OT_dialog_bank
 		class RscButton_1600: RscOverthrowButton
 		{
 			idc = 1600;
-			text = "Trade $100K TAD for APX"; //--- ToDo: Localize;
+			text = "Buy APX for $(100,000) TAD"; //--- ToDo: Localize;
 			x = 0.273125 * safezoneW + safezoneX;
 			y = 0.423 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[""withdrawal"", ""money"", 25] call bankTransaction;";
+			action="[""buy"", ""crypto"", 100000] call bankTransaction;";
 		};
 		class RscButton_1601: RscOverthrowButton
 		{
 			idc = 1601;
-			text = "Trade 100% of your TAD for APX"; //--- ToDo: Localize;
+			text = "Buy APX for all $(100,000) TAD"; //--- ToDo: Localize;
 			x = 0.273125 * safezoneW + safezoneX;
 			y = 0.467 * safezoneH + safezoneY; //423 + 44
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[""fitness"", false] call buyPerk;";
+			action="[""buy"", ""crypto"", 2000000] call bankTransaction;";
 		};
 		class RscButton_1602: RscOverthrowButton
 		{
-			idc = 1602;
-			text = "Trade APX for $100K TAD"; //--- ToDo: Localize;
+			idc = 1602; //Make money button;
+			text = "Sell (0.0001) APX for TAD"; //--- ToDo: Localize;
 			x = 0.273125 * safezoneW + safezoneX;
 			y = 0.511 * safezoneH + safezoneY; //467 + 44
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[""fitness"", false] call buyPerk;";
+			action="[""sell"", ""crypto"", 0.0001] call bankTransaction;";
 		};
 		class RscButton_1603: RscOverthrowButton //RscButton_X+3
 		{
-			idc = 1603;
-			text = "Trade 100% of your TAD for APX"; //--- ToDo: Localize;
+			idc = 1603; //THis is the make money button;
+			text = "Sell (0.0001) APX for $(100,000) TAD"; //--- ToDo: Localize;
 			x = 0.273125 * safezoneW + safezoneX;
 			y = 0.555 * safezoneH + safezoneY; //511 + 44
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[""fitness"", true] call buyPerk;";
+			action="[""sell"", ""crypto"", 1] call bankTransaction;";
 		};
 		class RscStructuredText_1101: RscOverthrowStructuredText
 		{
-			idc = 1101;
+			idc = 1101; //Begin of Bank of OT_Nation;
 			text = ""; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.269 * safezoneH + safezoneY;
@@ -1428,12 +1428,12 @@ class OT_dialog_bank
 		class RscButton_1604: RscOverthrowButton
 		{
 			idc = 1604;
-			text = "Withdrawal $100K TAD"; //--- ToDo: Localize;
+			text = "Withdrawal $(100,000) TAD"; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.423 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[""trade"", false] call buyPerk;";
+			action="[""withdrawal"", ""money"", 100000] call bankTransaction;";
 		};
 		class RscButton_1605: RscOverthrowButton //RscButton_X+3
 		{
@@ -1443,31 +1443,31 @@ class OT_dialog_bank
 			y = 0.467 * safezoneH + safezoneY; //423 + 44
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[""trade"", true] call buyPerk;";
+			action="[""withdrawal"", ""money"", 2000000] call bankTransaction;";
 		};
 		class RscButton_1606: RscOverthrowButton
 		{
 			idc = 1606;
-			text = "Deposit $100K TAD"; //--- ToDo: Localize;
+			text = "Deposit $(100,000) TAD"; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.511 * safezoneH + safezoneY; //467 + 44
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[""fitness"", false] call buyPerk;";
+			action="[""deposit"", ""money"", 100000] call bankTransaction;";
 		};
 		class RscButton_1607: RscOverthrowButton //RscButton_X+3
 		{
 			idc = 1607;
-			text = "Withdrawal All TAD"; //--- ToDo: Localize;
+			text = "Deposit All TAD"; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.555 * safezoneH + safezoneY; //511 + 44
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[""fitness"", true] call buyPerk;";
+			action="[""deposit"", ""money"", 2000000] call bankTransaction;";
 		};
 		class RscStructuredText_1102: RscOverthrowStructuredText
 		{
-			idc = 1102;
+			idc = 1102; //display for Faction donation;
 			text = ""; //--- ToDo: Localize;
 			x = 0.5825 * safezoneW + safezoneX;
 			y = 0.269 * safezoneH + safezoneY;
