@@ -54,10 +54,8 @@ _ctrl = (findDisplay 8005) displayCtrl 1101;
 _ctrl ctrlSetStructuredText parseText format["<t size=""2"">Bank of %1</t><br/><t size=""1.1"">%1 Dollar (%2D)</t><br/><t size=""0.7"">We don't offer an interest rate. And their bank doesn't trade APX.</t>", OT_Nation, toUpper OT_Nation select [0,2]];
 
 //Factions statistics;
-//_ctrl = (findDisplay 8005) displayCtrl 1102;
-//_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Factions of %1</t><br/><t size=""1.1"">Donate a little money to keep them happy.</t><br/><t size=""0.7"">%2</t>",OT_Nation, call factionsToText];
-//_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Factions of %1</t><br/><t size=""1.1"">Donate a little money to keep them happy.</t>",OT_Nation];
-
+//Faction display All is displaying the donation scroll down box on the right when initiating "where is my money?" dialogue to the priest;
+//It is recalled to refresh the screen to update the list upon player input;
 factionDisplayAll = {
 	lbClear 1103;
 	_ctrl = (findDisplay 8005) displayCtrl 1102;
@@ -80,17 +78,20 @@ factionDisplayAll = {
 	}foreach(OT_allFactions);
 };
 
+//Initial display to show Faction and reputation list;
 call factionDisplayAll;
 
+//Called from main.hpp for 
+//[Amount, TypeOfMoney] for structure, select 0 is integer/float, while select 1 is string;
+//[100000, "money"] or [0.0001, "crypto"]; 
 factionDonation = {
 	params ["_amount", "_typeOfMoney"];
 	private _idx = lbCurSel 1103;
 	private _inputData = lbData [1103, _idx];
+	if (_inputData isEqualTo "") exitWith {}; //nothing selected, therefore exits;
 	//_playerInput = parseNumber(ctrltext 1400); //pop up dialog for players to enter values;
-	private _name = "";
-	_name = _inputData splitString ":" select 0;
+	private _name = _inputData splitString ":" select 0;
 	private _cls = _inputData splitString ":" select 1;
-	if (_name isEqualTo "") exitWith {};
 	private _playerVault = player getVariable ["OT_arr_BankVault",[0, 0]];
 	private _playerFiat = _playerVault select 0;
 	private _playerCrypto = _playerVault select 1;
@@ -98,7 +99,7 @@ factionDonation = {
 	private _val = _amountMultiplier * _amount;
 	private _standing = server getVariable [format["standing%1",_cls],0]; //gets the faction standing from inputData from array elements in OT_allFactions;
 	private _isDone = false;
-	private _chance = 5; //This is the random value between 0 to X added to faction standings;
+	private _chance = 5; //This is the random value between 0 to X added to faction standings; considering 95 is cap for blueprints, 5 is generous;
 	if (_typeOfMoney isEqualTo "money") then {
 		if ((_val) > _playerFiat) then {
 			//Notify players they are poor and no money in bank to do this;
@@ -121,7 +122,8 @@ factionDonation = {
 
 	if (_isDone) then {
 		server setVariable [format["standing%1", _cls], _standing + round (random(_chance)), true];
-		//private _rep = server getVariable [format["factionrep%1",_name], 0];
+		//private _rep = server getVariable [format["factionrep%1",_cls], 0]; this seems like to be position based? i forgot
+		//One of the faction variables was a coordinate [x,y,z] for the spawned NPC i think, i did not use that feature here;
 		call factionDisplayAll
 	};
 };
