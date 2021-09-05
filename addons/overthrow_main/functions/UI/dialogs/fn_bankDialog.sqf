@@ -25,11 +25,12 @@ handleCrypto = {
 
 };
 
-//This filters factions and gives a text list for display;
-//NAME1, 'Reputation': INTEGER1 <linebreak> 
-//NAME2, 'Reputation': INTEGER2 <linebreak>
-//Etc etc.,
 factionsToText = {
+	//This filters factions and gives a text list for display;
+	//NAME1, 'Reputation': INTEGER1 <linebreak> 
+	//NAME2, 'Reputation': INTEGER2 <linebreak>
+	//Etc etc., currently not used
+
 	params ["_factions_text", "_rep"];
 	_factions_text = [];
 	{ 
@@ -44,19 +45,32 @@ factionsToText = {
 	_factions_text;
 };
 
+cryptoDisplayAll = {
+	private _bankCrypto = player getVariable ["OT_arr_BankVault",[0, 0]] select 1;
+	private _ctrl = (findDisplay 8005) displayCtrl 1100;
+	private _playerMoneyStr = "Wallet: $"; //String;
+	_playerMoneyStr = _playerMoneyStr + ([player getVariable ["money", 0], 1, 0, true] call CBA_fnc_formatNumber);
+	_playerMoneyStr = _playerMoneyStr + "<br/>Exchange APX Storage: " + ([_bankCrypto, 1, 4, true] call CBA_fnc_formatNumber);
+	//GLOBAL APX Capacity is dictated by an algorithm and need to be re-evaluated and called upon else where;
+	private _cryptoCap = [0.1]; //Array format hopefully can expand upon in the future;
+	_playerMoneyStr = _playerMoneyStr + "<br/>Global APX Market Cap: " + ([_cryptoCap select 0, 1, 4, true] call CBA_fnc_formatNumber);
+	_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Crypto Exchange</t><br/><t size=""1.1"">Apexium (APX)</t><br/><t size=""0.7"">Approximately 0.0001 APX to $100,000 %1 Dollars<br/>%2</t>", OT_Nation, _playerMoneyStr];
+};
 
-private _bankCrypto = player getVariable ["OT_arr_BankVault",[0, 0]] select 1;
-private _ctrl = (findDisplay 8005) displayCtrl 1100;
-_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Crypto Exchange</t><br/><t size=""1.1"">Apexium (APX)</t><br/><t size=""0.7"">Approximately 0.0001 APX to $100,000 %1 Dollars</t>", OT_Nation];
+bankDisplayAll = {
+	private _bankMoney = player getVariable ["OT_arr_BankVault",[0, 0]] select 0;
+	private _ctrl = (findDisplay 8005) displayCtrl 1101;
+	private _playerMoneyStr = "Wallet: $"; //String;
+	_playerMoneyStr = _playerMoneyStr + ([player getVariable ["money", 0], 1, 0, true] call CBA_fnc_formatNumber);
+	_playerMoneyStr = _playerMoneyStr + "<br/>Bank: $" + ([_bankMoney, 1, 0, true] call CBA_fnc_formatNumber);
+	_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Bank of %1</t><br/><t size=""1.1"">%1 Dollar (%2D)</t><br/><t size=""0.7"">We don't offer an interest rate. And their bank doesn't trade APX.<br/>%3</t>", OT_Nation, toUpper OT_Nation select [0,2], _playerMoneyStr];
+};
 
-private _bankMoney = player getVariable ["OT_arr_BankVault",[0, 0]] select 0;
-_ctrl = (findDisplay 8005) displayCtrl 1101;
-_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Bank of %1</t><br/><t size=""1.1"">%1 Dollar (%2D)</t><br/><t size=""0.7"">We don't offer an interest rate. And their bank doesn't trade APX.</t>", OT_Nation, toUpper OT_Nation select [0,2]];
-
-//Factions statistics;
-//Faction display All is displaying the donation scroll down box on the right when initiating "where is my money?" dialogue to the priest;
-//It is recalled to refresh the screen to update the list upon player input;
 factionDisplayAll = {
+	//Factions statistics;
+	//Faction display All is displaying the donation scroll down box on the right when initiating "where is my money?" dialogue to the priest;
+	//It is recalled to refresh the screen to update the list upon player input;
+
 	lbClear 1103;
 	_ctrl = (findDisplay 8005) displayCtrl 1102;
 	_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Factions of %1</t><br/><t size=""1.1"">Donate a little money to keep them happy.</t>",OT_Nation];
@@ -80,11 +94,14 @@ factionDisplayAll = {
 
 //Initial display to show Faction and reputation list;
 call factionDisplayAll;
+call cryptoDisplayAll;
+call bankDisplayAll;
 
-//Called from main.hpp for 
-//[Amount, TypeOfMoney] for structure, select 0 is integer/float, while select 1 is string;
-//[100000, "money"] or [0.0001, "crypto"]; 
 factionDonation = {
+	//Called from main.hpp for 
+	//[Amount, TypeOfMoney] for structure, select 0 is integer/float, while select 1 is string;
+	//[100000, "money"] or [0.0001, "crypto"]; 
+
 	params ["_amount", "_typeOfMoney"];
 	private _idx = lbCurSel 1103;
 	private _inputData = lbData [1103, _idx];
@@ -174,10 +191,10 @@ if(_stealth select 0 isEqualTo 1) then {
 };
 */
 bankTransaction = {
-	//Dorf: I rewrote this to sort of loop the function into accepting the reset button while displaying its costs;
-	//Reset costs Constant + 1/4 of the influence of a Player to let them dump unspent resources;
-	//In the future these perks should be balanced where there is still 5 level ups but, the levels can increase to 21 due to RNG.
-	//RNG included will incentivise spending influence to reset your skills.
+	//Dorf: This was converted from characterPerks but hope to function better;
+	//PARAMETERS: fed _transaction type (withdrawal/deposit/buy/sell) and _currency (float/integer) and amount in percentages (integer)
+	//HANDLING Money: Sent/given from/to the player to themselves;
+	//HANDLING Crypto: Sent/Given from player to server as well as other players (ON/OFFline);
 	params ["_transaction", "_currency", "_percentage", "_faction", "_faction_arr", "_wallet", "_total_bankvault_arr", "_total_crypto", "_total_money"];
 	disableSerialization;
 

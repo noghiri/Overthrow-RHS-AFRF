@@ -1382,7 +1382,7 @@ class OT_dialog_bank
 			y = 0.423 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="closeDialog 0;[""withdrawal"", ""money"", 25] call bankTransaction;";
+			action="[""withdrawal"", ""money"", 25] call bankTransaction;";
 		};
 		class RscButton_1601: RscOverthrowButton
 		{
@@ -1523,6 +1523,7 @@ class OT_dialog_donate
 	{
 		////////////////////////////////////////////////////////
 		// GUI EDITOR OUTPUT START (by ARMAzac, v1.063, #Humesu)
+		//Hope to god you don't use this lmao it is not ready - dorf
 		////////////////////////////////////////////////////////
 
 		class RscStructuredText_1100: RscOverthrowStructuredText
