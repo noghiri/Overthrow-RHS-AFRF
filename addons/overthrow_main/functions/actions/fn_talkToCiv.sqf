@@ -185,7 +185,7 @@ if (_canGangJob) then {
 if (_canMission) then {
 	_factionName = _civ getvariable ["factionrepname",""];
 	_faction = _civ getvariable ["faction",""];
-	private _standing = server getVariable [format["standing%1",_faction],0];
+	private _standing = server getVariable [format["standing%1",_faction],0]; //_faction is the cls class name;
 	_options pushback format["<t align='center' size='2'>%1</t><br/><br/><t align='center' size='0.8'>Current Standing: +%2",_factionName,_standing];
 
 	_options pushBack [format["Do you have any jobs for me?"], {

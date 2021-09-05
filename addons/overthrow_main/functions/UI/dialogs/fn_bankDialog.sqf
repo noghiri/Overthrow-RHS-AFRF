@@ -65,16 +65,16 @@ factionDisplayAll = {
 	//listbox initiates here;
 	private _dupeArray = []; //for using near _dupeCheck;
 	{
-		_x params ["_cls","_name", "_side"]; //_cls is i think 3 item array coordinates of faction spawned NPCs;
+		_x params ["_cls","_name", "_side"]; //_cls is the class name for the faction;;
 		if !(server getVariable [format["factionrep%1",_cls],[]] isEqualTo []) then {
-			//Disclaimer: FIA (IND) and FIA (OPFOR) are using the same rep;
+			//Disclaimer: FIA (IND) and FIA (OPFOR) are using the same name for rep, so use class name is advised;
 			//THerefore its merged with pushback check -1 for non unique;
 			private _dupeCheck = -1;
-			_dupeCheck = _dupeArray pushbackUnique _name; //returned index will not be -1 when pushed uniquely;
+			_dupeCheck = _dupeArray pushbackUnique _cls; //returned index will not be -1 when pushed uniquely;
 			if (_dupeCheck > -1) then {
-				private _rep = server getVariable [format["standing%1",_name],0];
+				private _rep = server getVariable [format["standing%1",_cls],0];
 				_idx = lbAdd [1103,format["%1 (%3), Reputation: %2",_name,_rep,_cls select [0,3]]];
-				lbSetData [1103,_idx,_name]; //params to feed in i assuem;
+				lbSetData [1103,_idx,_name + ":" + _cls]; //params to feed in i assuem;
 			};
 		};
 	}foreach(OT_allFactions);
@@ -88,14 +88,15 @@ factionDonation = {
 	private _inputData = lbData [1103, _idx];
 	//_playerInput = parseNumber(ctrltext 1400); //pop up dialog for players to enter values;
 	private _name = "";
-	_name = _inputData;
+	_name = _inputData splitString ":" select 0;
+	private _cls = _inputData splitString ":" select 1;
 	if (_name isEqualTo "") exitWith {};
 	private _playerVault = player getVariable ["OT_arr_BankVault",[0, 0]];
 	private _playerFiat = _playerVault select 0;
 	private _playerCrypto = _playerVault select 1;
 	private _amountMultiplier = 1;
 	private _val = _amountMultiplier * _amount;
-	private _standing = server getVariable [format["standing%1",_name],0]; //gets the faction standing from inputData from array elements in OT_allFactions;
+	private _standing = server getVariable [format["standing%1",_cls],0]; //gets the faction standing from inputData from array elements in OT_allFactions;
 	private _isDone = false;
 	private _chance = 5; //This is the random value between 0 to X added to faction standings;
 	if (_typeOfMoney isEqualTo "money") then {
@@ -104,7 +105,7 @@ factionDonation = {
 			"You don't have enough Money in the Bank" call OT_fnc_notifyMinor;
 		} else {
 			//Adds rep to the faction and deducts players their fiat money in bank;
-			format["Transferred $%1 (%2D) from Bank of %3 to fund %4",[_val, 1, 0, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2], OT_Nation, _name] call OT_fnc_notifyMinor;
+			format["Transferred $%1 (%2D) from Bank of %3 to fund %4 (%5)",[_val, 1, 0, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2], OT_Nation, _name, _cls] call OT_fnc_notifyMinor;
 			_isDone = true;
 		};
 	} else {
@@ -113,13 +114,13 @@ factionDonation = {
 			"You don't have enough Crypto in the Exchange" call OT_fnc_notifyMinor;
 		} else {
 			//Adds rep to the faction and deducts players their fiat money in bank;
-			format["Transferred $%1 (APX) from Crypto Exchange to fund %2",[_val, 1, 4, true] call CBA_fnc_formatNumber, _name] call OT_fnc_notifyMinor;
+			format["Transferred $%1 (APX) from Crypto Exchange to fund %2 (%3)",[_val, 1, 4, true] call CBA_fnc_formatNumber, _name, _cls] call OT_fnc_notifyMinor;
 			_isDone = true;
 		};
 	};
 
 	if (_isDone) then {
-		server setVariable [format["standing%1", _name], _standing + round (random(_chance)), true];
+		server setVariable [format["standing%1", _cls], _standing + round (random(_chance)), true];
 		//private _rep = server getVariable [format["factionrep%1",_name], 0];
 		call factionDisplayAll
 	};

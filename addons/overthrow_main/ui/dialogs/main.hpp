@@ -1483,7 +1483,7 @@ class OT_dialog_bank
 			x = 0.5825 * safezoneW + safezoneX;
 			y = 0.357 * safezoneH + safezoneY; //0.269 + 0.088
 			w = 0.149531 * safezoneW;
-			h = 0.055 * safezoneH; //0.143-0.088
+			h = 0.143 * safezoneH; //0.143-0.088+0.088
 			//onLBSelChanged = "_this call OT_fnc_showMemberInfo";
 			colorBackground[] = {0,0,0,0.3};
 			colorActive[] = {0,0,0,0.3};
@@ -1493,7 +1493,7 @@ class OT_dialog_bank
 			idc = 1608;
 			text = "Donate 0.0001 APX"; //--- ToDo: Localize;
 			x = 0.5825 * safezoneW + safezoneX;
-			y = 0.423 * safezoneH + safezoneY;
+			y = 0.511 * safezoneH + safezoneY; //was 0.423
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
 			action="[0.0001,""crypto""] call factionDonation;";
@@ -1503,7 +1503,7 @@ class OT_dialog_bank
 			idc = 1609;
 			text = "Donate $100K TAD"; //--- ToDo: Localize;
 			x = 0.5825 * safezoneW + safezoneX;
-			y = 0.467 * safezoneH + safezoneY; //423 + 44
+			y = 0.555 * safezoneH + safezoneY; //423 + 44
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
 			action="[100000,""money""] call factionDonation;";
