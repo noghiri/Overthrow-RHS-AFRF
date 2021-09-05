@@ -44,17 +44,85 @@ factionsToText = {
 	_factions_text;
 };
 
-private _bankCrypto = player getVariable [format["OT_arr_BankVault"],[0, 0]] select 1;
+
+private _bankCrypto = player getVariable ["OT_arr_BankVault",[0, 0]] select 1;
 private _ctrl = (findDisplay 8005) displayCtrl 1100;
 _ctrl ctrlSetStructuredText parseText format["<t size=""2"">Crypto Exchange</t><br/><t size=""1.1"">Apexium (APX)</t><br/><t size=""0.7"">Approximately 0.0001 APX to $100,000 %1 Dollars</t>", OT_Nation];
 
-private _bankMoney = player getVariable [format["OT_arr_BankVault"],[0, 0]] select 0;
+private _bankMoney = player getVariable ["OT_arr_BankVault",[0, 0]] select 0;
 _ctrl = (findDisplay 8005) displayCtrl 1101;
 _ctrl ctrlSetStructuredText parseText format["<t size=""2"">Bank of %1</t><br/><t size=""1.1"">%1 Dollar (%2D)</t><br/><t size=""0.7"">We don't offer an interest rate. And their bank doesn't trade APX.</t>", OT_Nation, toUpper OT_Nation select [0,2]];
 
 //Factions statistics;
-_ctrl = (findDisplay 8005) displayCtrl 1102;
-_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Factions of %1</t><br/><t size=""1.1"">Donate a little money to keep them happy.</t><br/><t size=""0.7"">%2</t>",OT_Nation, call factionsToText];
+//_ctrl = (findDisplay 8005) displayCtrl 1102;
+//_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Factions of %1</t><br/><t size=""1.1"">Donate a little money to keep them happy.</t><br/><t size=""0.7"">%2</t>",OT_Nation, call factionsToText];
+//_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Factions of %1</t><br/><t size=""1.1"">Donate a little money to keep them happy.</t>",OT_Nation];
+
+factionDisplayAll = {
+	lbClear 1103;
+	//_ctrl = (findDisplay 8005) displayCtrl 1103;
+	 //listbox initiates here;
+	private _dupeArray = []; //for using near _dupeCheck;
+	{
+		_x params ["_cls","_name", "_side"]; //_cls is i think 3 item array coordinates of faction spawned NPCs;
+		if !(server getVariable [format["factionrep%1",_cls],[]] isEqualTo []) then {
+			//Disclaimer: FIA (IND) and FIA (OPFOR) are using the same rep;
+			//THerefore its merged with pushback check -1 for non unique;
+			private _dupeCheck = -1;
+			_dupeCheck = _dupeArray pushbackUnique _name; //returned index will not be -1 when pushed uniquely;
+			if (_dupeCheck > -1) then {
+				private _rep = server getVariable [format["standing%1",_name],0];
+				_idx = lbAdd [1103,format["%1 (%3), Reputation: %2",_name,_rep,_cls select [0,3]]];
+				lbSetData [1103,_idx,_name]; //params to feed in i assuem;
+			};
+		};
+	}foreach(OT_allFactions);
+};
+
+call factionDisplayAll;
+
+factionDonation = {
+	params ["_amount", "_typeOfMoney"];
+	private _idx = lbCurSel 1103;
+	private _inputData = lbData [1103, _idx];
+	//_playerInput = parseNumber(ctrltext 1400); //pop up dialog for players to enter values;
+	private _name = "";
+	_name = _inputData;
+	if (_name isEqualTo "") exitWith {};
+	private _playerVault = player getVariable ["OT_arr_BankVault",[0, 0]];
+	private _playerFiat = _playerVault select 0;
+	private _playerCrypto = _playerVault select 1;
+	private _amountMultiplier = 1;
+	private _val = _amountMultiplier * _amount;
+	private _standing = server getVariable [format["standing%1",_name],0]; //gets the faction standing from inputData from array elements in OT_allFactions;
+	private _isDone = false;
+	private _chance = 5; //This is the random value between 0 to X added to faction standings;
+	if (_typeOfMoney isEqualTo "money") then {
+		if ((_val) > _playerFiat) then {
+			//Notify players they are poor and no money in bank to do this;
+			"You don't have enough Money in the Bank" call OT_fnc_notifyMinor;
+		} else {
+			//Adds rep to the faction and deducts players their fiat money in bank;
+			format["Transferred $%1 (%2D) from Bank of %3 to fund %4",[_val, 1, 0, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2], OT_Nation, _name] call OT_fnc_notifyMinor;
+			_isDone = true;
+		};
+	} else {
+		if ((_val) > _playerCrypto) then {
+			//Notify players they are poor and no money in bank to do this;
+			"You don't have enough Crypto in the Exchange" call OT_fnc_notifyMinor;
+		} else {
+			//Adds rep to the faction and deducts players their fiat money in bank;
+			format["Transferred $%1 (APX) from Crypto Exchange to fund %2",[_val, 1, 4, true] call CBA_fnc_formatNumber, _name] call OT_fnc_notifyMinor;
+			_isDone = true;
+		};
+	};
+
+	if (_isDone) then {
+		server setVariable [format["standing%1", _name], _standing + round (random(_chance)), true];
+		//private _rep = server getVariable [format["factionrep%1",_name], 0];
+		call factionDisplayAll
+	};
+};
 
 /*
 private _price = ["fitness"] call getPerkPrice;

@@ -2,7 +2,7 @@ closeDialog 0;
 private _idx = lbCurSel 1500;
 inputData = lbData [1500,_idx];
 OT_inputHandler = {
-	_val = parseNumber(ctrltext 1400);
+	_val = parseNumber(ctrltext 1400); //commonly used input dialog idc.
 	_cash = server getVariable ["money",0];
 	if(_val > _cash) then {_val = _cash};
 	if(_val > 0) then {

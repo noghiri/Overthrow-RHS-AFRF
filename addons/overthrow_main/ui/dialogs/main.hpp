@@ -1427,7 +1427,7 @@ class OT_dialog_bank
 		};
 		class RscButton_1604: RscOverthrowButton
 		{
-			idc = 1601;
+			idc = 1604;
 			text = "Withdrawal $100K TAD"; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.423 * safezoneH + safezoneY;
@@ -1437,7 +1437,7 @@ class OT_dialog_bank
 		};
 		class RscButton_1605: RscOverthrowButton //RscButton_X+3
 		{
-			idc = 1604;
+			idc = 1605;
 			text = "Withdrawal All TAD"; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.467 * safezoneH + safezoneY; //423 + 44
@@ -1447,7 +1447,7 @@ class OT_dialog_bank
 		};
 		class RscButton_1606: RscOverthrowButton
 		{
-			idc = 1602;
+			idc = 1606;
 			text = "Deposit $100K TAD"; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.511 * safezoneH + safezoneY; //467 + 44
@@ -1457,7 +1457,7 @@ class OT_dialog_bank
 		};
 		class RscButton_1607: RscOverthrowButton //RscButton_X+3
 		{
-			idc = 1603;
+			idc = 1607;
 			text = "Withdrawal All TAD"; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.555 * safezoneH + safezoneY; //511 + 44
@@ -1476,25 +1476,37 @@ class OT_dialog_bank
 			colorBackground[] = {0,0,0,0.3};
 			colorActive[] = {0,0,0,0.3};
 		};
+		class RscListbox_1103: RscOverthrowListbox
+		{
+			idc = 1103;
+			//text = ""; //--- ToDo: Localize;
+			x = 0.5825 * safezoneW + safezoneX;
+			y = 0.289 * safezoneH + safezoneY; //0.269 + 0.2
+			w = 0.149531 * safezoneW;
+			h = 0.123 * safezoneH; //0.143-0.02
+			//onLBSelChanged = "_this call OT_fnc_showMemberInfo";
+			colorBackground[] = {0,0,0,0.3};
+			colorActive[] = {0,0,0,0.3};
+		};
 		class RscButton_1608: RscOverthrowButton
 		{
-			idc = 1602;
+			idc = 1608;
 			text = "Donate 0.0001 APX"; //--- ToDo: Localize;
 			x = 0.5825 * safezoneW + safezoneX;
 			y = 0.423 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[""stealth"", false] call buyPerk;";
+			action="[0.0001,""crypto""] call factionDonation;";
 		};
 		class RscButton_1609: RscOverthrowButton //RscButton_1602+3
 		{
-			idc = 1605;
+			idc = 1609;
 			text = "Donate $100K TAD"; //--- ToDo: Localize;
 			x = 0.5825 * safezoneW + safezoneX;
 			y = 0.467 * safezoneH + safezoneY; //423 + 44
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="closeDialog 0;[""withdrawal"", 25] call handleMoney;";
+			action="[100000,""money""] call factionDonation;";
 		};
 		////////////////////////////////////////////////////////
 		// GUI EDITOR OUTPUT END

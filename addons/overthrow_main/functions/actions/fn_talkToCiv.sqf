@@ -254,7 +254,7 @@ if (_canBank) then {
 		private _town = (getpos player) call OT_fnc_nearestTown;
 		private _support = [_town] call OT_fnc_support;
 
-		if(_support < 50) then { //Bug test at 50, but real at 20;
+		if(_support < -1 then { //Bug test at -1, but real at 50;
 			format["Resistance Support in this town is too low (%1) < 50",_support] call OT_fnc_notifyMinor;
 		}else{
 			[_support, player getVariable ["money", 0]] call OT_fnc_bankDialog;
@@ -386,7 +386,7 @@ if (_canBank) then {
 				
 					};
 				} else {
-					_talk pushback format ["$%1?!?, go hustle Drugs. You can't afford a single GPU here.", _money];
+					_talk pushback format ["$%1?!?, go hustle some medicine. You can't afford a single GPU here.", _money];
 					"You need more than $2000 to help an Archcrypto" call OT_fnc_notifyMinor;
 					_code = {};
 				};
