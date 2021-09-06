@@ -97,7 +97,7 @@ call bankDisplayAll;
 handleWallet = { 
 	//Handles all Fiat Dollars transactions through this;
 
-	params = ["_amount", "_terminology"]; 	//_amount is the change in money, negative/positive integers;
+	params ["_amount", "_terminology"]; 	//_amount is the change in money, negative/positive integers;
 	//Basically checks if player can be given money to wallet;
 	private _plusmin = ["","-", "+"]; //#0 is wallet amount indicator, #1 is bank amount indicator for notification string;
 	private _playerBank_arr = player getVariable ["OT_arr_BankVault",[0, 0]];
@@ -209,7 +209,7 @@ factionDonation = {
 };
 
 handleBank = {
-	params = ["_terminology", "_amount"];
+	params ["_terminology", "_amount"];
 	private _isDone = false; //false carries this successfully into handling money;
 	private _replyString = "";
 
