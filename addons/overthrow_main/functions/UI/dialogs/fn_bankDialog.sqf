@@ -15,27 +15,47 @@ handleWallet = {
 	private _plusmin = "-";
 	private _playerBank_arr = player getVariable ["OT_arr_BankVault",[0, 0]];
 	private _playerWallet = player getVariable ["money",0];
-	_amount = _amount select 0;
+	_amount = _amount select 0; //This is the change in money, negative/positive integers;
 	private _totalMoney = 0;
+	private _money_cap = 2000000; // 2 million cap CONSTANT;
+	private _playerBank_money = _playerBank_arr select 0;
+
+	//Legacy "money" check to see if wallet is greater than 2 million TAD;
+	if (_playerWallet > _money_cap) then {
+		//Skim player wallet til 2 million 
+		//Should not take in consideration of the _amount parameter of handleWallet;
+		//Then notify players of money moving into the bank
+		player setVariable ["money",_money_cap, true];
+		private _changed_amount = _playerWallet - _money_cap;
+		_playerBank_money = _playerBank_money + _changed_amount;
+
+		player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];
+		format["Wallet %1$(%2), Bank +$(%2)",_plusmin,[_changed_amount, 1, 0, true] call CBA_fnc_formatNumber] call OT_fnc_notifyMinor;
+	};
+
 	if (_amount > 0) then {
+		//_amount is the input change for player money/bank;
 		_plusmin = "+"
-		private _money_cap = 2000000; // 2 million cap
 		private _wallet_amount = 0; // for reporting notification in end;
 		private _bank_amount = 0;// for reporting notif in end;
 		if (_money_cap >= (_playerWallet + _amount)) then {
-			//if player's withdrawn money exceeds the money cap of 2 million;
-			//2 million goes in player's wallet, excess goes in bank automatically;
-			//players will be notified;
-			player setVariable ["money", _money_cap, true];
-			private _playerBank_money = _playerBank_arr select 0;
-			_wallet_amount = _money_cap - _playerWallet;
-			_bank_amount = 
-			_playerBank_money = _playerBank_money + ((_playerWallet + _amount) - _money_cap);
-			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];
-			_playerWallet = _money_cap; //This gets used in notification formatting below;
-			format []
+			//if player's changed _amount of money does not exceed the _money_cap of 2 million;
+
+			[_amount] call OT_fnc_money;
+			//player setVariable ["money", _money_cap, true]; //First we set money to 2 million on _money_cap;
+			//_wallet_amount = _amount;
+			//_playerBank_money = _playerBank_money + ((_playerWallet + _amount) - _money_cap);
+			//player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];
+			//_playerWallet = _money_cap; //This gets used in notification formatting below;
+			//format []
 		} else {
-			_playerWallet = _playerWallet + _amount;
+			//if player's changed _amount of money and wwallet exceeds _money_cap of 2 million constant;
+			//2 million goes in _playerWallet, excess goes in bank automatically;
+			//players will be notified through _wallet_amount and _bank_amount;
+			_bank_amount = _playerWallet + _amount - _money_cap ;
+			_wallet_amount = _bank_amount + 
+			_playerWallet = _money_cap;
+
 			player setVariable ["money", _playerWallet, true];
 		
 		};
