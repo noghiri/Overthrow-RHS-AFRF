@@ -267,7 +267,7 @@ bankTransaction = {
 	params ["_transaction", "_currency", "_amount", "_faction", "_faction_arr", "_wallet", "_total_bankvault_arr", "_total_crypto", "_total_money"];
 	disableSerialization;
 
-	call factionDisplayAll;
+	//call factionDisplayAll;
 	call cryptoDisplayAll;
 	call bankDisplayAll;
 
@@ -309,7 +309,7 @@ bankTransaction = {
 	if (_isDone) then {
 		call cryptoDisplayAll;
 		call bankDisplayAll;
-		call factionDisplayAll;
+		//call factionDisplayAll;
 	};
 	true;
 };
