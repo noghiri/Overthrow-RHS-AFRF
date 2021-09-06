@@ -97,7 +97,7 @@ call bankDisplayAll;
 handleWallet = { 
 	//Handles all Fiat Dollars transactions through this;
 
-	params = ["_amount", "_term"]; 	//_amount is the change in money, negative/positive integers;
+	params = ["_amount", "_terminology"]; 	//_amount is the change in money, negative/positive integers;
 	//Basically checks if player can be given money to wallet;
 	private _plusmin = ["","-", "+"]; //#0 is wallet amount indicator, #1 is bank amount indicator for notification string;
 	private _playerBank_arr = player getVariable ["OT_arr_BankVault",[0, 0]];
@@ -120,7 +120,7 @@ handleWallet = {
 	private _wallet_amount = 0; // for reporting notification in end;
 	private _bank_amount = 0;// for reporting notif in end;
 
-	if (_term isEqualTo "withdrawal") then {
+	if (_terminology isEqualTo "withdrawal") then {
 		//Withdrawals money from bank;
 		if ((_playerWallet + _amount) > _money_cap) then {
 				//if withdrawn money is exceeding the cap;
@@ -144,16 +144,16 @@ handleWallet = {
 
 	};
 
-	if (_term isEqualTo "deposit") then {
+	if (_terminology isEqualTo "deposit") then {
 		//Deposits money into bank;
 
 	};
 
-	if (_term isEqualTo "sell") then {
+	if (_terminology isEqualTo "sell") then {
 		//Sells crypto;
 	};
 
-	if (_term isEqualTo "buy") then {
+	if (_terminology isEqualTo "buy") then {
 		//Buys crypto'
 	};
 	true;
@@ -209,7 +209,7 @@ factionDonation = {
 };
 
 handleBank = {
-	params = ["_term", "_amount"];
+	params = ["_terminology", "_amount"];
 	private _isDone = false; //false carries this successfully into handling money;
 	private _replyString = "";
 
@@ -218,7 +218,7 @@ handleBank = {
 	private _money_cap = 2000000; // 2 million cap CONSTANT;
 	private _playerBank_money = _playerBank_arr select 0;
 
-	if (_term isEqualTo "withdrawal") then {
+	if (_terminology isEqualTo "withdrawal") then {
 		//withdrawal up to the _amount of the player's wallet.
 		if (_playerBank_money > 0) then {
 			if (_playerBank_money < _amount) then {
@@ -232,7 +232,7 @@ handleBank = {
 		};
 
 	};
-	if (_term isEqualTo "deposit") then { 
+	if (_terminology isEqualTo "deposit") then { 
 		//deposit an _amount of the player's cash money into the bank.
 		//Amount needs to be negative in the end to be fed into handleWallet;
 		if (_playerWallet > 0) then {
@@ -252,7 +252,7 @@ handleBank = {
 		//reply normally
 		_replyString call OT_fnc_notifyMinor;
 	} else {
-		[_amount, _term] call handleWallet;
+		[_amount, _terminology] call handleWallet;
 		call cryptoDisplayAll;
 		call bankDisplayAll;
 	};
