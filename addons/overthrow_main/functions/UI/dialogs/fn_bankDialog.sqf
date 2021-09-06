@@ -36,6 +36,14 @@ cryptoDisplayAll = {
 	private _cryptoCap = [0.1]; //Array format hopefully can expand upon in the future;
 	_playerMoneyStr = _playerMoneyStr + "<br/>Global APX Market Cap: " + ([_cryptoCap select 0, 1, 4, true] call CBA_fnc_formatNumber);
 	_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Crypto Exchange</t><br/><t size=""1.1"">Apexium (APX)</t><br/><t size=""0.7"">Approximately 0.0001 APX to $100,000 %1 Dollars<br/>%2</t>", OT_Nation, _playerMoneyStr];
+
+	private _idcc = 1600;
+	private _idc = 0;
+	for [{private _i = 0}, {_i < 4}, {_i = _i + 1}] do {
+		_idc = _idcc + _i;
+		ctrlEnable [_idc, true];
+		ctrlShow [_idc, true];
+	};
 };
 
 bankDisplayAll = {
@@ -45,6 +53,14 @@ bankDisplayAll = {
 	_playerMoneyStr = _playerMoneyStr + ([player getVariable ["money", 0], 1, 0, true] call CBA_fnc_formatNumber);
 	_playerMoneyStr = _playerMoneyStr + "<br/>Bank: $" + ([_bankMoney, 1, 0, true] call CBA_fnc_formatNumber);
 	_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Bank of %1</t><br/><t size=""1.1"">%1 Dollar (%2D)</t><br/><t size=""0.7"">We don't offer an interest rate. And their bank doesn't trade APX.<br/>%3</t>", OT_Nation, toUpper OT_Nation select [0,2], _playerMoneyStr];
+
+	private _idcc = 1604;
+	private _idc = 0;
+	for [{private _i = 0}, {_i < 4}, {_i = _i + 1}] do {
+		_idc = _idcc + _i;
+		ctrlEnable [_idc, true];
+		ctrlShow [_idc, true];
+	};
 };
 
 factionDisplayAll = {
@@ -77,19 +93,6 @@ factionDisplayAll = {
 call factionDisplayAll;
 call cryptoDisplayAll;
 call bankDisplayAll;
-
-//Remember buying crypto cannot access from bank accounts;
-handleCrypto = {
-	params = ["_term", "_amount"];
-	//_term can be buy/sell;
-	//_amount can be 0.0001~1 for sell orders or 100,000 to 2,000,000 on buy orders;
-
-	if (_term isEqualTo "buy") then {
-
-	} else {
-
-	};
-};
 
 handleWallet = { 
 	//Handles all Fiat Dollars transactions through this;
@@ -135,14 +138,7 @@ handleWallet = {
 			[_amount] call OT_fnc_money;
 			_bank_amount = _amount;
 			_playerBank_money = _playerBank_money - _bank_amount;
-			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];
-			if (_money_cap >= (_playerWallet + _amount)) then {
-				//if player's withdrawn _amount of money does not exceed the _money_cap of 2 million;
-				_wallet_amount = _amount;
-				[_amount] call OT_fnc_money;
-				_playerBank_money = _playerBank_money 
-				player setVariable ["OT_arr_bankVault",]
-			
+			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];			
 		};
 		format["%1 %2$(%4) to Wallet, from Bank %3$(%5)",_plusmin#0,_plusmin#1,_plusmin#2,[_wallet_amount, 1, 0, true] call CBA_fnc_formatNumber, [_bank_amount, 1, 0, true] call CBA_fnc_formatNumber] call OT_fnc_notifyMinor;
 
@@ -150,31 +146,7 @@ handleWallet = {
 
 	if (_term isEqualTo "deposit") then {
 		//Deposits money into bank;
-		else {
-			//_amount < 0 or _amount == 0, taking out of wallet into bank;
 
-			//_amount is negative or 0? 
-			if (_amount isEqualTo 0) exitWith {
-				//should notify player really that they tried to do with 0 money here.
-				"You deposited $(0)" call OT_fnc_notifyMinor;
-			};
-
-			_plusmin = "-"; // should already be minus;
-			
-			if (_playerBank_money < abs(_amount)) then {
-				//if player bank is less than _amount then we set the _amount to the whole amount;
-				_amount = _playerBank_money; //now its positive;
-
-			} else {
-				//if players bank money is more or equal to the amount wanted to withdrawal;
-				_amount = abs(_amount); //should be positive;
-				
-
-				player setVariable ["money"]
-			};
-			format["Wallet %1$(%2), Bank %1$(%3)",_plusmin,[_wallet_amount, 1, 0, true] call CBA_fnc_formatNumber, [_bank_amount, 1, 0, true] call CBA_fnc_formatNumber] call OT_fnc_notifyMinor;
-
-		};
 	};
 
 	if (_term isEqualTo "sell") then {
@@ -184,6 +156,56 @@ handleWallet = {
 	if (_term isEqualTo "buy") then {
 		//Buys crypto'
 	};
+	true;
+};
+
+factionDonation = {
+	//Called from main.hpp for 
+	//[Amount, TypeOfMoney] for structure, select 0 is integer/float, while select 1 is string;
+	//[100000, "money"] or [0.0001, "crypto"]; 
+
+	params ["_amount", "_typeOfMoney"];
+	private _idx = lbCurSel 1103;
+	private _inputData = lbData [1103, _idx];
+	if (_inputData isEqualTo "") exitWith {}; //nothing selected, therefore exits;
+	//_playerInput = parseNumber(ctrltext 1400); //pop up dialog for players to enter values;
+	private _name = _inputData splitString ":" select 0;
+	private _cls = _inputData splitString ":" select 1;
+	private _playerVault = player getVariable ["OT_arr_BankVault",[0, 0]];
+	private _playerFiat = _playerVault select 0;
+	private _playerCrypto = _playerVault select 1;
+	private _amountMultiplier = 1;
+	private _val = _amountMultiplier * _amount;
+	private _standing = server getVariable [format["standing%1",_cls],0]; //gets the faction standing from inputData from array elements in OT_allFactions;
+	private _isDone = false;
+	private _chance = 5; //This is the random value between 0 to X added to faction standings; considering 95 is cap for blueprints, 5 is generous;
+	if (_typeOfMoney isEqualTo "money") then {
+		if ((_val) > _playerFiat) then {
+			//Notify players they are poor and no money in bank to do this;
+			"You do not have enough Money in the Bank" call OT_fnc_notifyMinor;
+		} else {
+			//Adds rep to the faction and deducts players their fiat money in bank;
+			format["Transferred $%1 (%2D) from Bank of %3 to fund %4 (%5)",[_val, 1, 0, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2], OT_Nation, _name, _cls] call OT_fnc_notifyMinor;
+			_isDone = true;
+		};
+	} else {
+		if ((_val) > _playerCrypto) then {
+			//Notify players they are poor and no money in bank to do this;
+			"You do not have enough Crypto in the Exchange" call OT_fnc_notifyMinor;
+		} else {
+			//Adds rep to the faction and deducts players their fiat money in bank;
+			format["Transferred $%1 (APX) from Crypto Exchange to fund %2 (%3)",[_val, 1, 4, true] call CBA_fnc_formatNumber, _name, _cls] call OT_fnc_notifyMinor;
+			_isDone = true;
+		};
+	};
+
+	if (_isDone) then {
+		server setVariable [format["standing%1", _cls], _standing + round (random(_chance)), true];
+		//private _rep = server getVariable [format["factionrep%1",_cls], 0]; this seems like to be position based? i forgot
+		//One of the faction variables was a coordinate [x,y,z] for the spawned NPC i think, i did not use that feature here;
+		call factionDisplayAll;
+	};
+	true;
 };
 
 handleBank = {
@@ -234,54 +256,7 @@ handleBank = {
 		call cryptoDisplayAll;
 		call bankDisplayAll;
 	};
-};
-
-factionDonation = {
-	//Called from main.hpp for 
-	//[Amount, TypeOfMoney] for structure, select 0 is integer/float, while select 1 is string;
-	//[100000, "money"] or [0.0001, "crypto"]; 
-
-	params ["_amount", "_typeOfMoney"];
-	private _idx = lbCurSel 1103;
-	private _inputData = lbData [1103, _idx];
-	if (_inputData isEqualTo "") exitWith {}; //nothing selected, therefore exits;
-	//_playerInput = parseNumber(ctrltext 1400); //pop up dialog for players to enter values;
-	private _name = _inputData splitString ":" select 0;
-	private _cls = _inputData splitString ":" select 1;
-	private _playerVault = player getVariable ["OT_arr_BankVault",[0, 0]];
-	private _playerFiat = _playerVault select 0;
-	private _playerCrypto = _playerVault select 1;
-	private _amountMultiplier = 1;
-	private _val = _amountMultiplier * _amount;
-	private _standing = server getVariable [format["standing%1",_cls],0]; //gets the faction standing from inputData from array elements in OT_allFactions;
-	private _isDone = false;
-	private _chance = 5; //This is the random value between 0 to X added to faction standings; considering 95 is cap for blueprints, 5 is generous;
-	if (_typeOfMoney isEqualTo "money") then {
-		if ((_val) > _playerFiat) then {
-			//Notify players they are poor and no money in bank to do this;
-			"You don't have enough Money in the Bank" call OT_fnc_notifyMinor;
-		} else {
-			//Adds rep to the faction and deducts players their fiat money in bank;
-			format["Transferred $%1 (%2D) from Bank of %3 to fund %4 (%5)",[_val, 1, 0, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2], OT_Nation, _name, _cls] call OT_fnc_notifyMinor;
-			_isDone = true;
-		};
-	} else {
-		if ((_val) > _playerCrypto) then {
-			//Notify players they are poor and no money in bank to do this;
-			"You don't have enough Crypto in the Exchange" call OT_fnc_notifyMinor;
-		} else {
-			//Adds rep to the faction and deducts players their fiat money in bank;
-			format["Transferred $%1 (APX) from Crypto Exchange to fund %2 (%3)",[_val, 1, 4, true] call CBA_fnc_formatNumber, _name, _cls] call OT_fnc_notifyMinor;
-			_isDone = true;
-		};
-	};
-
-	if (_isDone) then {
-		server setVariable [format["standing%1", _cls], _standing + round (random(_chance)), true];
-		//private _rep = server getVariable [format["factionrep%1",_cls], 0]; this seems like to be position based? i forgot
-		//One of the faction variables was a coordinate [x,y,z] for the spawned NPC i think, i did not use that feature here;
-		call factionDisplayAll
-	};
+	true;
 };
 
 bankTransaction = {
@@ -291,7 +266,11 @@ bankTransaction = {
 	//HANDLING Crypto: Sent/Given from player to server as well as other players (ON/OFFline);
 	params ["_transaction", "_currency", "_amount", "_faction", "_faction_arr", "_wallet", "_total_bankvault_arr", "_total_crypto", "_total_money"];
 	disableSerialization;
-	systemChat "Made it in bankTransaction";
+
+	call factionDisplayAll;
+	call cryptoDisplayAll;
+	call bankDisplayAll;
+
 	//_currency dictates handling calls of bank/exchange;
 	//_transaction is fed into the calls for bank/exchange;
 	//_amount are variably amount, or actual percentages;
@@ -303,8 +282,8 @@ bankTransaction = {
 	_total_bankvault_arr = player getVariable [format["OT_arr_BankVault"],[0, 0]]; //["money", "crypto"];
 	_total_crypto = _total_bankvault_arr select 1;
 	_total_money = _total_bankvault_arr select 0;
-	private isDone = false; //handles refresh probably;
-
+	private _isDone = false; //handles refresh probably;
+	_faction = false;
 	if (_faction) then { //declare faction RNG here from list in game.
 		_faction_arr = selectRandom OT_allFactions; //Remember this is [_clsName,_name,_side,_flag]; also _name has dupes so use _cls;
 		//Check for rep before adding it cause it matters for raising rep usage;
@@ -312,7 +291,7 @@ bankTransaction = {
 
 	if (_currency isEqualTo "crypto") then {
 		//This block handles exchange;
-		[_transaction, _amount] call handleCrypto;
+		//[_transaction, _amount] call handleCrypto;
 	};
 
 	if (_currency isEqualTo "money") then {
@@ -327,9 +306,10 @@ bankTransaction = {
 		_isDone = true;
 	};
 
-	if (_isDone) {
+	if (_isDone) then {
 		call cryptoDisplayAll;
 		call bankDisplayAll;
 		call factionDisplayAll;
 	};
+	true;
 };
