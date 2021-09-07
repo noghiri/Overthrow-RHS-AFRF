@@ -1,12 +1,12 @@
 if!(hasInterface) exitWith {};
-_amount = _this select 0;
-_total_money = (player getVariable ["money",0])+_amount;
+private _amount = _this select 0;
+private _total_money = (player getVariable ["money",0])+_amount;
 if(_total_money < 0) then {
     _total_money = 0;
 };
 player setVariable ["money",_total_money,true];
 playSound "3DEN_notificationDefault";
-_plusmin = "";
+private _plusmin = "";
 if(_amount > 0) then {
     _plusmin = "+";
 };
