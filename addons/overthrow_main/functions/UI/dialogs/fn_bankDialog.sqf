@@ -217,6 +217,7 @@ factionDonation = {
 			//Notify players they are poor and no money in bank to do this;
 			"You do not have enough Money in the Bank" call OT_fnc_notifyMinor;
 		} else {
+			[-_val] call OT_fnc_money;
 			//Adds rep to the faction and deducts players their fiat money in bank;
 			format["Transferred $%1 (%2D) from Bank of %3 to fund %4 (%5)",[_val, 1, 0, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2], OT_Nation, _name, _cls] call OT_fnc_notifyMinor;
 			_isDone = true;
@@ -226,6 +227,8 @@ factionDonation = {
 			//Notify players they are poor and no money in bank to do this;
 			"You do not have enough Crypto in the Exchange" call OT_fnc_notifyMinor;
 		} else {
+			_playerCrypto = _playerCrypto - _val;
+			player setVariable ["OT_arr_BankVault", [_playerFiat,_playerCrypto], true];
 			//Adds rep to the faction and deducts players their fiat money in bank;
 			format["Transferred $%1 (APX) from Crypto Exchange to fund %2 (%3)",[_val, 1, 4, true] call CBA_fnc_formatNumber, _name, _cls] call OT_fnc_notifyMinor;
 			_isDone = true;
@@ -299,8 +302,8 @@ bankTransaction = {
 	disableSerialization;
 
 	//call factionDisplayAll;
-	call cryptoDisplayAll;
-	call bankDisplayAll;
+	//call cryptoDisplayAll;
+	//call bankDisplayAll;
 
 	//_currency dictates handling calls of bank/exchange;
 	//_transaction is fed into the calls for bank/exchange;
@@ -314,9 +317,28 @@ bankTransaction = {
 	_total_crypto = _total_bankvault_arr select 1;
 	_total_money = _total_bankvault_arr select 0;
 	private _isDone = false; //handles refresh probably;
-	_faction = false;
+	_faction = true;
+	b_faction_arr = [];
 	if (_faction) then { //declare faction RNG here from list in game.
-		_faction_arr = selectRandom OT_allFactions; //Remember this is [_clsName,_name,_side,_flag]; also _name has dupes so use _cls;
+
+		private _dupeArray = []; //for using near _dupeCheck;
+		{
+			_x params ["_cls","_name", "_side"]; //_cls is the class name for the faction;;
+			if !(server getVariable [format["factionrep%1",_cls],[]] isEqualTo []) then {
+				//Disclaimer: FIA (IND) and FIA (OPFOR) are using the same name for rep, so use class name is advised;
+				//THerefore its merged with pushback check -1 for non unique;
+				private _dupeCheck = -1;
+				_dupeCheck = _dupeArray pushbackUnique _cls; //returned index will not be -1 when pushed uniquely;
+				if (_dupeCheck > -1) then {
+					private _rep = server getVariable [format["standing%1",_cls],0];
+					//_idx = lbAdd [1103,format["%1 (%3), Reputation: %2",_name,_rep,_cls select [0,3]]];
+					//lbSetData [1103,_idx,_name + ":" + _cls]; //params to feed in i assuem;
+					b_faction_arr pushBackUnique [_cls, _name, _rep]; 
+				};
+			};
+		}foreach(OT_allFactions);
+
+		b_faction_arr = selectRandom b_faction_arr; //Remember this is [_clsName,_name,_side,_flag]; also _name has dupes so use _cls;
 		//Check for rep before adding it cause it matters for raising rep usage;
 	};
 
@@ -340,6 +362,6 @@ bankTransaction = {
 	if (_isDone) then {
 		call cryptoDisplayAll;
 		call bankDisplayAll;
-		//call factionDisplayAll;
+		call factionDisplayAll; //Does not need to be called again because, no faction manipulation can be done; unless....
 	};
 };
