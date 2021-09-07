@@ -26,14 +26,82 @@ factionsToText = {
 	_factions_text;
 };
 
+cryptoReturn = {
+	//This returns a multiplier to the sell value of a crypto variable;
+	private _dayCheck = true; //Turn this FALSE if you want to use pure RNG per sell which would be very easily exploitable;
+	private _xAxis = 0; //It caps at 1;
+	if (_dayCheck) then {
+		_xAxis = dayTime/24; //DayTime goes from 0 to 24.00000;
+	} else {
+		_xAxis = random (100)/100;
+	};
+	private _playerTrade = player getvariable ["OT_arr_trade",[1,1]] select 1;
+	//Player Trade skill maxes out at 20, so basically the more skill you have, the better results 
+	private _tradeConstant = 0.5 * (_playerTrade/20);
+	private _ret = false;
+	//Remember cos (90) < 0.00001 because
+	// cos (90) != 0;
+
+	//This is cos (1.5*pi*x  +  pi) + 1.5; 
+	//It should restrict X to 0 to 1, float;
+	//It should imply Y to 0.5 to 2.5;
+	_ret = cos (pi*((1.5 * _xAxis) + 1)) + 1 + _tradeConstant;
+	_ret
+};
+
+globalCryptoCap = {
+	//Oh boh here comes math;
+	//One half is nato abandoned TOWNs, make sure they're towns.
+	//One half is reputation for towns.
+	private _ret = 0.0000; //toFixed 4;
+	private _TotalTowns = count (OT_allTowns);
+	private _AllTownRep = 0; //caps at count(OT_allTowns) varies per Nation/Island;
+
+	private _townPos = []; //town position of towns;
+	private _townName = ""; //town name of towns;
+	//private _stability = server getVariable [format["stability%1",_townName], 100];
+	private _support = 0; //support in towns; caps at 2525;
+
+	private _abandonedTownArray = []; //Caps at count(OT_allTowns) I think;
+	private _TotalAbandonedTowns = 0; //Additive by 1;
+	private _abandoned = server getVariable ["NATOabandoned",[]];
+	{
+		_townPos = markerPos(_x);
+		_townName = _townPos call OT_fnc_nearestTown;
+		_support = [_townName] call OT_fnc_support;
+		_AllTownRep = _AllTownRep + (_AllTownRep/2525);
+
+		if (_x in _abandoned) then {
+			_abandonedTownArray pushBackUnique _x; //gets names;
+		};
+
+	}foreach(OT_allTowns);
+
+	_AllTownRep = [(_AllTownRep / _TotalTowns) ,4] call BIS_fnc_cutDecimals; //Averages total of rep; Sets a value of 1 if all towns have good rep;
+	_AllTownRep = _AllTownRep/2; //halves it for adding later;
+	if (_AllTownRep > 0.5000) then {_AllTownRep = 0.5000};
+	_TotalAbandonedTowns = [(count(_abandonedTownArray)/_TotalTowns) ,4] call BIS_fnc_cutDecimals; //Sets a value of 1 max if all towns are abandoned;
+	_TotalAbandonedTowns = _TotalAbandonedTowns/2; //Halves it for adding later;
+	if (_TotalAbandonedTowns > 0.5000) then {_TotalAbandonedTowns = 0.5000};
+	_ret = _TotalAbandonedTowns + _AllTownRep;
+	_ret = [_ret ,4] call BIS_fnc_cutDecimals; //Making sure it's 4 digits;
+	if (_ret > 1.0000) then {_ret = 1.0000};
+	if (_ret < 0.0001) then {_ret = 0.0001};
+	//Its maximum and minimum is between 1.0000 to 0.0001;
+	_ret
+};
+
 cryptoDisplayAll = {
+	private _globalCryptoCap = call globalCryptoCap; //Should be 4 digit float value from 0.0001 to 1;
+	private _returnCryptoValue = call cryptoReturn;
 	private _bankCrypto = player getVariable ["OT_arr_BankVault",[0, 0]] select 1;
+	private _playerMoney = player getVariable ["money", 0];
 	private _ctrl = (findDisplay 8005) displayCtrl 1100;
 	private _playerMoneyStr = "Wallet: $"; //String;
 	_playerMoneyStr = _playerMoneyStr + ([player getVariable ["money", 0], 1, 0, true] call CBA_fnc_formatNumber);
 	_playerMoneyStr = _playerMoneyStr + "<br/>Your APX Storage: " + ([_bankCrypto, 1, 4, true] call CBA_fnc_formatNumber);
 	//GLOBAL APX Capacity is dictated by an algorithm and need to be re-evaluated and called upon else where;
-	private _cryptoCap = [0.1]; //Array format hopefully can expand upon in the future;
+	private _cryptoCap = [call globalCryptoCap]; //Array format hopefully can expand upon in the future;
 	_playerMoneyStr = _playerMoneyStr + "<br/>Global APX Market Cap: " + ([_cryptoCap select 0, 1, 4, true] call CBA_fnc_formatNumber);
 	_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Crypto Exchange</t><br/><t size=""1.1"">Apexium (APX)</t><br/><t size=""0.7"">Approximately 0.0001 APX to $100,000 %1 Dollars<br/>%2</t>", OT_Nation, _playerMoneyStr];
 
@@ -41,6 +109,28 @@ cryptoDisplayAll = {
 	private _idc = 0;
 	for [{private _i = 0}, {_i < 4}, {_i = _i + 1}] do {
 		_idc = _idcc + _i;
+		if (_idc isEqualTo 1602) then {
+			private _cryptoCount = 0; //presets the amount of crypto you can sell in integer;
+			if (_bankCrypto > 0.0000) then {
+				_cryptoCount = 1;
+			};
+			private _fiatQty = round(_returnCryptoValue * _cryptoCount * 100000);
+			_cryptoCount = _cryptoCount * 0.0001; //this is multiplied by 1 or 0 if player has no money;
+			ctrlSetText [_idc, format ["Sell (%1) APX for $(%2) %3D",_cryptoCount,[_fiatQty, 1, 4, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2]]];
+
+		};
+		if (_idc isEqualTo 1603) then {
+			//2000000/(100000*2.5)
+			private _wallet_cap = 2000000; //2 million cap to fiat wallet;
+			private _cryptoCount = _bankCrypto / 0.0001; //how many do you have to sell;;
+			private _cryptoMultiplier = floor ((_wallet_cap - _playerMoney)/(100000*_returnCryptoValue)); //At cost price you can sell based on wallet size;
+			if (_cryptoCount > _cryptoMultiplier) then {
+				_cryptoCount = _cryptoMultiplier;
+			};
+			private _fiatQty = round(_returnCryptoValue * _cryptoCount * 100000);
+			_cryptoCount = _cryptoCount * 0.0001; //This turns into value;
+			ctrlSetText [_idc, format ["Sell All (%1) APX for $(%2) %3D",_cryptoCount,[_fiatQty, 1, 4, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2]]];
+		};
 		ctrlEnable [_idc, true];
 		ctrlShow [_idc, true];
 	};
@@ -104,6 +194,8 @@ handleWallet = {
 	private _playerWallet = player getVariable ["money",0];
 	private _money_cap = 2000000; // 2 million cap CONSTANT;
 	private _playerBank_money = _playerBank_arr select 0;
+	private _playerBank_crypto = _playerBank_arr select 1;
+
 	private _doNotify = false;
 
 	//Legacy "money" check to see if wallet is greater than 2 million TAD;
@@ -120,8 +212,10 @@ handleWallet = {
 	};
 	private _wallet_amount = 0; // for reporting notification in end;
 	private _bank_amount = 0;// for reporting notif in end;
+	private _crypto_amount = 0.0000;
 
 	if (_terminology isEqualTo "withdrawal") then {
+
 		//Withdrawals money from bank;
 		if ((_playerWallet + _amount) > _money_cap) then {
 				//if withdrawn money is exceeding the cap;
@@ -138,7 +232,7 @@ handleWallet = {
 			[_amount] call OT_fnc_money;
 			_bank_amount = _amount;
 			_playerBank_money = _playerBank_money - _bank_amount;
-			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];	
+			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_crypto], true];	
 			_doNotify = true;
 		};
 
@@ -162,12 +256,65 @@ handleWallet = {
 
 	};
 
-	if (_terminology isEqualTo "sell") then {
-		//Sells crypto;
-	};
+	if (_terminology isEqualTo "sell" || _terminology isEqualTo "buy") then {
+		private _globalCryptoCap = call globalCryptoCap; //Should be 4 digit float value from 0.0001 to 1;
+		private _fiatRatio = 10000; //This is a constant to convert 0.0001 to 1;
+		private _cryptoReturn = call cryptoReturn;
+		_playerWallet = player getVariable ["money",0];
+		if (_terminology isEqualTo "sell") then {
+			//Sells crypto;
+			SystemChat str _amount;
+			SystemChat str _playerBank_crypto;
+			if (_amount > _playerBank_crypto) then {
+				_amount = _playerBank_crypto;
+			};
 
-	if (_terminology isEqualTo "buy") then {
-		//Buys crypto'
+			if (([_amount ,4] call BIS_fnc_cutDecimals) >= 0.0001) then {
+				//Sell Crypto because _amount is greater than minimum;
+				//Need to check player wallet is able to be filled up;
+				private _wallet_cap = 2000000; //2 million cap to fiat wallet;
+				private _cryptoCount = _amount / 0.0001; //how many you can sell;
+				private _cryptoMultiplier = floor ((_wallet_cap - _playerWallet)/(100000*_cryptoReturn)); //how many you can sell At cost price based on wallet size;
+				if (_cryptoCount > _cryptoMultiplier) then {
+					_cryptoCount = _cryptoMultiplier; //if player had 0 wallet cash, it would use this value to dictate sells;
+				};
+				private _fiatQty = round(_cryptoReturn * _cryptoCount * 100000); //this is the money you get back to your account;
+				_cryptoCount = _cryptoCount * 0.0001; //This turns into value of 0.0001 APXs to sell;;
+
+				if ((_fiatQty + _playerWallet) <= _money_cap) then {
+					_wallet_amount = _fiatQty + _playerWallet;
+					_crypto_amount = _cryptoCount;
+					_playerBank_crypto = _playerBank_crypto - _crypto_amount;
+					if (_playerBank_crypto < 0.0000) then {_playerBank_crypto = 0.0000};
+					player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_crypto], true];
+					[_wallet_amount] call OT_fnc_money;
+					_doNotify = true;
+				};
+			};
+		};
+
+		if (_terminology isEqualTo "buy") then {
+			//Buys crypto with Fiat
+			//Amount here should be in Fiat;
+			//It needs to contend with global crypto value;
+			//It needs to calculate a loop additive value of all player Cryptos; (future);
+			if (_playerWallet < 100000) then {
+				_amount = 0;
+			};
+			if (_amount > _playerWallet) then {
+				_amount = _playerWallet;
+			};
+			_crypto_amount = floor(_amount/100000)*0.0001;
+			if (_amount > 0 && (_crypto_amount + _playerBank_crypto) <= _globalCryptoCap) then {
+				//Buys crypto at cost;
+				_wallet_amount = _amount;
+				_playerBank_crypto = _crypto_amount + _playerBank_crypto;
+				player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_crypto], true];
+				[-_wallet_amount] call OT_fnc_money;
+				_doNotify = true;
+			};
+		};
+
 	};
 	
 	//For withdrawals and deposits;&& (_terminology isEqualTo "deposit" || _terminology isEqualTo "withdrawal")
@@ -318,7 +465,7 @@ bankTransaction = {
 	_total_money = _total_bankvault_arr select 0;
 	private _isDone = false; //handles refresh probably;
 	_faction = true;
-	b_faction_arr = [];
+	_faction_arr = [];
 	if (_faction) then { //declare faction RNG here from list in game.
 
 		private _dupeArray = []; //for using near _dupeCheck;
@@ -333,18 +480,25 @@ bankTransaction = {
 					private _rep = server getVariable [format["standing%1",_cls],0];
 					//_idx = lbAdd [1103,format["%1 (%3), Reputation: %2",_name,_rep,_cls select [0,3]]];
 					//lbSetData [1103,_idx,_name + ":" + _cls]; //params to feed in i assuem;
-					b_faction_arr pushBackUnique [_cls, _name, _rep]; 
+					_faction_arr pushBackUnique [_cls, _name, _rep]; 
 				};
 			};
 		}foreach(OT_allFactions);
 
-		b_faction_arr = selectRandom b_faction_arr; //Remember this is [_clsName,_name,_side,_flag]; also _name has dupes so use _cls;
+		_faction_arr = selectRandom _faction_arr; //Remember this is [_clsName,_name,_side,_flag]; also _name has dupes so use _cls;
 		//Check for rep before adding it cause it matters for raising rep usage;
 	};
 
 	if (_currency isEqualTo "crypto") then {
 		//This block handles exchange;
 		//[_transaction, _amount] call handleCrypto;
+		if (_transaction isEqualTo "buy") then {
+			//buy of Crypto using money;
+			[_amount, _transaction] call handleWallet;
+		} else {
+			//Sell Crypto;
+			[_amount, _transaction] call handleWallet;
+		}
 	};
 
 	if (_currency isEqualTo "money") then {
