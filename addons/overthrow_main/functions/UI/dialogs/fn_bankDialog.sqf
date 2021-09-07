@@ -195,6 +195,7 @@ handleWallet = {
 	private _money_cap = 2000000; // 2 million cap CONSTANT;
 	private _playerBank_money = _playerBank_arr select 0;
 	private _playerBank_crypto = _playerBank_arr select 1;
+	_playerBank_crypto = [_playerBank_crypto,4] call BIS_fnc_cutDecimals;
 
 	private _doNotify = false;
 
@@ -210,6 +211,7 @@ handleWallet = {
 		player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];
 		format["Wallet %1$(%2), Bank +$(%2)",_BDplusmin#1,[_changed_amount, 1, 0, true] call CBA_fnc_formatNumber] call OT_fnc_notifyMinor;
 	};
+
 	private _wallet_amount = 0; // for reporting notification in end;
 	private _bank_amount = 0;// for reporting notif in end;
 	private _crypto_amount = 0.0000;
@@ -232,7 +234,7 @@ handleWallet = {
 			[_amount] call OT_fnc_money;
 			_bank_amount = _amount;
 			_playerBank_money = _playerBank_money - _bank_amount;
-			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_crypto], true];	
+			player setVariable ["OT_arr_BankVault", [_playerBank_money, [_playerBank_crypto,4] call BIS_fnc_cutDecimals], true];	
 			_doNotify = true;
 		};
 
@@ -250,7 +252,7 @@ handleWallet = {
 			_playerBank_money = _playerBank_money + _amount;
 			_bank_amount = _amount;
 			[-_wallet_amount] call OT_fnc_money;
-			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_crypto], true];
+			player setVariable ["OT_arr_BankVault", [_playerBank_money, [_playerBank_crypto,4] call BIS_fnc_cutDecimals], true];
 			_doNotify = true;
 		};
 
@@ -260,7 +262,12 @@ handleWallet = {
 		private _globalCryptoCap = call globalCryptoCap; //Should be 4 digit float value from 0.0001 to 1;
 		private _fiatRatio = 10000; //This is a constant to convert 0.0001 to 1;
 		private _cryptoReturn = call cryptoReturn;
-		_playerWallet = player getVariable ["money",0];
+		//Copy pasted variables from above incase wrong;
+		private _playerBank_arr = player getVariable ["OT_arr_BankVault",[0, 0]];
+		private _playerWallet = player getVariable ["money",0];
+		private _money_cap = 2000000; // 2 million cap CONSTANT;
+		private _playerBank_money = _playerBank_arr select 0;
+		private _playerBank_crypto = _playerBank_arr select 1;
 		if (_terminology isEqualTo "sell") then {
 			//Sells crypto;
 			SystemChat str _amount;
@@ -286,10 +293,31 @@ handleWallet = {
 					_crypto_amount = _cryptoCount;
 					_playerBank_crypto = _playerBank_crypto - _crypto_amount;
 					if (_playerBank_crypto < 0.0000) then {_playerBank_crypto = 0.0000};
-					player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_crypto], true];
+					player setVariable ["OT_arr_BankVault", [_playerBank_money, [_playerBank_crypto,4] call BIS_fnc_cutDecimals], true];
 					[_wallet_amount] call OT_fnc_money;
 					_doNotify = true;
 				};
+			};
+		} else {
+		//if (_terminology isEqualTo "buy") then {
+			//Buys crypto with Fiat
+			//Amount here should be in Fiat;
+			//It needs to contend with global crypto value;
+			//It needs to calculate a loop additive value of all player Cryptos; (future);
+			if (_playerWallet < 100000) then {
+				_amount = 0;
+			};
+			if (_amount > _playerWallet) then {
+				_amount = _playerWallet;
+			};
+			_crypto_amount = (floor(_amount/100000))*0.0001;
+			if (_amount > 0 && (_crypto_amount + _playerBank_crypto) <= _globalCryptoCap) then {
+				//Buys crypto at cost;
+				_wallet_amount = _amount;
+				_playerBank_crypto = _crypto_amount + _playerBank_crypto;
+				player setVariable ["OT_arr_BankVault", [_playerBank_money, [_playerBank_crypto,4] call BIS_fnc_cutDecimals], true];
+				[-_wallet_amount] call OT_fnc_money;
+				_doNotify = true;
 			};
 		};
 
@@ -476,7 +504,8 @@ bankTransaction = {
 		} else {
 			//Sell Crypto;
 			[_amount, _transaction] call handleWallet;
-		}
+		};
+		_isDone = true;
 	};
 
 	if (_currency isEqualTo "money") then {
