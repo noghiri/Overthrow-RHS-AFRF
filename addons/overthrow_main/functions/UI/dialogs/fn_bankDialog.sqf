@@ -250,7 +250,7 @@ handleWallet = {
 			_playerBank_money = _playerBank_money + _amount;
 			_bank_amount = _amount;
 			[-_wallet_amount] call OT_fnc_money;
-			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];
+			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_crypto], true];
 			_doNotify = true;
 		};
 
@@ -290,28 +290,6 @@ handleWallet = {
 					[_wallet_amount] call OT_fnc_money;
 					_doNotify = true;
 				};
-			};
-		};
-
-		if (_terminology isEqualTo "buy") then {
-			//Buys crypto with Fiat
-			//Amount here should be in Fiat;
-			//It needs to contend with global crypto value;
-			//It needs to calculate a loop additive value of all player Cryptos; (future);
-			if (_playerWallet < 100000) then {
-				_amount = 0;
-			};
-			if (_amount > _playerWallet) then {
-				_amount = _playerWallet;
-			};
-			_crypto_amount = floor(_amount/100000)*0.0001;
-			if (_amount > 0 && (_crypto_amount + _playerBank_crypto) <= _globalCryptoCap) then {
-				//Buys crypto at cost;
-				_wallet_amount = _amount;
-				_playerBank_crypto = _crypto_amount + _playerBank_crypto;
-				player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_crypto], true];
-				[-_wallet_amount] call OT_fnc_money;
-				_doNotify = true;
 			};
 		};
 
