@@ -99,11 +99,12 @@ handleWallet = {
 
 	params ["_amount", "_terminology"]; 	//_amount is the change in money, negative/positive integers;
 	//Basically checks if player can be given money to wallet;
-	private _plusmin = ["","-", "+"]; //#0 is wallet amount indicator, #1 is bank amount indicator for notification string;
+	private _BDplusmin = ["","-", "+"]; //#0 is wallet amount indicator, #1 is bank amount indicator for notification string;
 	private _playerBank_arr = player getVariable ["OT_arr_BankVault",[0, 0]];
 	private _playerWallet = player getVariable ["money",0];
 	private _money_cap = 2000000; // 2 million cap CONSTANT;
 	private _playerBank_money = _playerBank_arr select 0;
+	private _doNotify = false;
 
 	//Legacy "money" check to see if wallet is greater than 2 million TAD;
 	if (_playerWallet > _money_cap) then {
@@ -115,7 +116,7 @@ handleWallet = {
 		_playerBank_money = _playerBank_money + _changed_amount;
 
 		player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];
-		format["Wallet %1$(%2), Bank +$(%2)",_plusmin#1,[_changed_amount, 1, 0, true] call CBA_fnc_formatNumber] call OT_fnc_notifyMinor;
+		format["Wallet %1$(%2), Bank +$(%2)",_BDplusmin#1,[_changed_amount, 1, 0, true] call CBA_fnc_formatNumber] call OT_fnc_notifyMinor;
 	};
 	private _wallet_amount = 0; // for reporting notification in end;
 	private _bank_amount = 0;// for reporting notif in end;
@@ -127,25 +128,37 @@ handleWallet = {
 				//Then make amount less;
 				_amount = _money_cap - _playerWallet;
 				if (_amount isEqualTo 0) then {
-					_plusmin = ["","",""];
+					_BDplusmin = ["","",""];
 				};
 		};
 		if (_amount > 0) then {
 			//_amount is the input change for player wallet => bank;
-			_plusmin = ["Withdrawn", "+","-"];
-
+			_BDplusmin = ["Withdrawn", "+","-"];
 			_wallet_amount = _amount;
 			[_amount] call OT_fnc_money;
 			_bank_amount = _amount;
 			_playerBank_money = _playerBank_money - _bank_amount;
-			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];			
+			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];	
+			_doNotify = true;
 		};
-		format["%1 %2$(%4) to Wallet, from Bank %3$(%5)",_plusmin#0,_plusmin#1,_plusmin#2,[_wallet_amount, 1, 0, true] call CBA_fnc_formatNumber, [_bank_amount, 1, 0, true] call CBA_fnc_formatNumber] call OT_fnc_notifyMinor;
 
 	};
 
 	if (_terminology isEqualTo "deposit") then {
-		//Deposits money into bank;
+		if ((_playerWallet < _amount)) then {
+			_amount = _playerWallet;
+		};
+
+		if (_amount > 0) then {
+			//Deposits money into bank;
+			_BDplusmin = ["Deposited","-", "+"];
+			_wallet_amount = _amount;
+			_playerBank_money = _playerBank_money + _amount;
+			_bank_amount = _amount;
+			[-_wallet_amount] call OT_fnc_money;
+			player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];
+			_doNotify = true;
+		};
 
 	};
 
@@ -156,7 +169,27 @@ handleWallet = {
 	if (_terminology isEqualTo "buy") then {
 		//Buys crypto'
 	};
-	true;
+	
+	//For withdrawals and deposits;&& (_terminology isEqualTo "deposit" || _terminology isEqualTo "withdrawal")
+	//if (_doNotify && count (_BDplusmin) == 3 && (typename _BDplusmin) isEqualTo "ARRAY") then {
+	if (_doNotify) then {
+		private _BDreply = "";
+	 	if (_terminology isEqualTo "deposit" || _terminology isEqualTo "withdrawal") then {
+			_BDreply = format["%1 %2$(%4) Wallet, %3$(%5) Bank ",
+			_BDplusmin#0,
+			_BDplusmin#1,
+			_BDplusmin#2,
+			[_wallet_amount, 1, 0, true] call CBA_fnc_formatNumber, 
+			[_bank_amount, 1, 0, true] call CBA_fnc_formatNumber
+			];
+			_BDreply call OT_fnc_notifyMinor;
+		} else {
+			//Buy/sell cryptos final notifications goes here;
+		};
+		call cryptoDisplayAll;
+		call bankDisplayAll;
+
+	};
 };
 
 factionDonation = {
@@ -205,7 +238,6 @@ factionDonation = {
 		//One of the faction variables was a coordinate [x,y,z] for the spawned NPC i think, i did not use that feature here;
 		call factionDisplayAll;
 	};
-	true;
 };
 
 handleBank = {
@@ -256,7 +288,6 @@ handleBank = {
 		call cryptoDisplayAll;
 		call bankDisplayAll;
 	};
-	true;
 };
 
 bankTransaction = {
@@ -311,5 +342,4 @@ bankTransaction = {
 		call bankDisplayAll;
 		//call factionDisplayAll;
 	};
-	true;
 };
