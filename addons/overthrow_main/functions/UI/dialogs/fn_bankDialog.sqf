@@ -184,6 +184,34 @@ call factionDisplayAll;
 call cryptoDisplayAll;
 call bankDisplayAll;
 
+handleWalletLeaked = {
+	//Returns false when player wallet does not exceed money cap of 2 million;
+	//params ["_moreCash"];
+	private _BDplusmin = ["","-", "+"]; //#0 is wallet amount indicator, #1 is bank amount indicator for notification string;
+	private _playerBank_arr = player getVariable ["OT_arr_BankVault",[0, 0]];
+	private _playerBank_money = _playerBank_arr select 0;
+	private _playerBank_crypto = _playerBank_arr select 1;
+
+	private _playerWallet = player getVariable ["money",0];
+	private _money_cap = 2000000;
+	private _ret = false;
+	if (_playerWallet > _money_cap) then {
+		//Skim player wallet til 2 million 
+		//Should not take in consideration of the _amount parameter of handleWallet;
+		//Then notify players of money moving into the bank
+		player setVariable ["money",_money_cap, true];
+		private _changed_amount = _playerWallet - _money_cap;
+		_playerBank_money = _playerBank_money + _changed_amount;
+
+		player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];
+		format["Wallet %1$(%2), Bank +$(%2)",_BDplusmin#1,[_changed_amount, 1, 0, true] call CBA_fnc_formatNumber] call OT_fnc_notifyMinor;
+		_ret = true;
+	};
+	_ret
+};
+
+call handleWalletLeaked;
+
 handleWallet = { 
 	//Handles all Fiat Dollars transactions through this;
 
@@ -200,17 +228,6 @@ handleWallet = {
 	private _doNotify = false;
 
 	//Legacy "money" check to see if wallet is greater than 2 million TAD;
-	if (_playerWallet > _money_cap) then {
-		//Skim player wallet til 2 million 
-		//Should not take in consideration of the _amount parameter of handleWallet;
-		//Then notify players of money moving into the bank
-		player setVariable ["money",_money_cap, true];
-		private _changed_amount = _playerWallet - _money_cap;
-		_playerBank_money = _playerBank_money + _changed_amount;
-
-		player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];
-		format["Wallet %1$(%2), Bank +$(%2)",_BDplusmin#1,[_changed_amount, 1, 0, true] call CBA_fnc_formatNumber] call OT_fnc_notifyMinor;
-	};
 
 	private _wallet_amount = 0; // for reporting notification in end;
 	private _bank_amount = 0;// for reporting notif in end;
@@ -280,15 +297,15 @@ handleWallet = {
 				//Sell Crypto because _amount is greater than minimum;
 				//Need to check player wallet is able to be filled up;
 				private _wallet_cap = 2000000; //2 million cap to fiat wallet;
-				private _cryptoCount = _amount / 0.0001; //how many you can sell;
-				private _cryptoMultiplier = floor ((_wallet_cap - _playerWallet)/(100000*_cryptoReturn)); //how many you can sell At cost price based on wallet size;
+				private _cryptoCount = _amount / 0.0001; //player input of how many to sell;
+				private _cryptoMultiplier = floor ((_wallet_cap - _playerWallet)/(100000*_cryptoReturn)); //how many they can sell At cost price based on wallet size;
 				if (_cryptoCount > _cryptoMultiplier) then {
 					_cryptoCount = _cryptoMultiplier; //if player had 0 wallet cash, it would use this value to dictate sells;
 				};
 				private _fiatQty = round(_cryptoReturn * _cryptoCount * 100000); //this is the money you get back to your account;
 				_cryptoCount = _cryptoCount * 0.0001; //This turns into value of 0.0001 APXs to sell;;
 
-				if ((_fiatQty + _playerWallet) <= _money_cap) then {
+				if (((_fiatQty + _playerWallet) <= _money_cap) && _fiatQty > 0) then { //_fiatQty is derived from _cryptoCount which is zero if player can not sell any;
 					_wallet_amount = _fiatQty + _playerWallet;
 					_crypto_amount = _cryptoCount;
 					_playerBank_crypto = _playerBank_crypto - _crypto_amount;

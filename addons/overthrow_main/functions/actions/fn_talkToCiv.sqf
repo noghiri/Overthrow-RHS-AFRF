@@ -257,7 +257,7 @@ if (_canBank) then {
 		if(_support < -1) then { //Bug test at -1, but real at 50;
 			format["Resistance Support in this town is too low (%1) < 50",_support] call OT_fnc_notifyMinor;
 		}else{
-			[_support, player getVariable ["money", 0]] call OT_fnc_bankDialog;
+			call OT_fnc_bankDialog;
 		};
 	}];
 
