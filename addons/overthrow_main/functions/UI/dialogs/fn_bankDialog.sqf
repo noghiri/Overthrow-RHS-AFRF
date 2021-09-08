@@ -116,7 +116,7 @@ cryptoDisplayAll = {
 			};
 			private _fiatQty = round(_returnCryptoValue * _cryptoCount * 100000);
 			_cryptoCount = _cryptoCount * 0.0001; //this is multiplied by 1 or 0 if player has no money;
-			ctrlSetText [_idc, format ["Sell (%1) APX for $(%2) %3D",_cryptoCount,[_fiatQty, 1, 4, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2]]];
+			ctrlSetText [_idc, format ["Sell (%1) APX for $(%2) %3D",_cryptoCount,[_fiatQty, 1, 0, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2]]];
 
 		};
 		if (_idc isEqualTo 1603) then {
@@ -129,7 +129,7 @@ cryptoDisplayAll = {
 			};
 			private _fiatQty = round(_returnCryptoValue * _cryptoCount * 100000);
 			_cryptoCount = _cryptoCount * 0.0001; //This turns into value;
-			ctrlSetText [_idc, format ["Sell All (%1) APX for $(%2) %3D",_cryptoCount,[_fiatQty, 1, 4, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2]]];
+			ctrlSetText [_idc, format ["Sell All (%1) APX for $(%2) %3D",_cryptoCount,[_fiatQty, 1, 0, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2]]];
 		};
 		ctrlEnable [_idc, true];
 		ctrlShow [_idc, true];
@@ -179,11 +179,6 @@ factionDisplayAll = {
 	}foreach(OT_allFactions);
 };
 
-//Initial display to show Faction and reputation list;
-call factionDisplayAll;
-call cryptoDisplayAll;
-call bankDisplayAll;
-
 handleWalletLeaked = {
 	//Returns false when player wallet does not exceed money cap of 2 million;
 	//params ["_moreCash"];
@@ -213,6 +208,11 @@ handleWalletLeaked = {
 //legacy money check upon player interacting with the priest will forcefully deposit their money into the bank;
 //@todo future all players SHOULD be funneling >2 million caps into the bank;
 call handleWalletLeaked; 
+
+//Initial display to show Faction and reputation list;
+call factionDisplayAll;
+call cryptoDisplayAll;
+call bankDisplayAll;
 
 handleWallet = { 
 	//Handles all Fiat Dollars transactions through this;
@@ -313,6 +313,7 @@ handleWallet = {
 					if (_playerBank_crypto < 0.0000) then {_playerBank_crypto = 0.0000};
 					player setVariable ["OT_arr_BankVault", [_playerBank_money, [_playerBank_crypto,4] call BIS_fnc_cutDecimals], true];
 					[_fiatQty] call OT_fnc_money;
+					_BDplusmin = ["Sold", "+","-"];
 					_doNotify = true;
 				};
 			};
@@ -339,6 +340,7 @@ handleWallet = {
 				_playerBank_crypto = _crypto_amount + _playerBank_crypto;
 				player setVariable ["OT_arr_BankVault", [_playerBank_money, [_playerBank_crypto,4] call BIS_fnc_cutDecimals], true];
 				[-_wallet_amount] call OT_fnc_money;
+				_BDplusmin = ["Bought", "-","+"];
 				_doNotify = true;
 			};
 		};
@@ -357,10 +359,19 @@ handleWallet = {
 			[_wallet_amount, 1, 0, true] call CBA_fnc_formatNumber, 
 			[_bank_amount, 1, 0, true] call CBA_fnc_formatNumber
 			];
-			_BDreply call OT_fnc_notifyMinor;
+			 //this feature is spammy if players are constantly withdraw and depositing;
 		} else {
 			//Buy/sell cryptos final notifications goes here;
+			//Idk if we need notifications here when players can just see they bought/sold an amount;
+			_BDreply = format["%1 %3$(%5) APX, %2$(%4) Wallet.",
+			_BDplusmin#0,
+			_BDplusmin#1,
+			_BDplusmin#2,
+			[_wallet_amount, 1, 0, true] call CBA_fnc_formatNumber, 
+			[_crypto_amount, 1, 4, true] call CBA_fnc_formatNumber
+			];
 		};
+		_BDreply call OT_fnc_notifyMinor;
 		call cryptoDisplayAll;
 		call bankDisplayAll;
 
