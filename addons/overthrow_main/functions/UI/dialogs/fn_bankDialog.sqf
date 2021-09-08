@@ -287,8 +287,6 @@ handleWallet = {
 		private _playerBank_crypto = _playerBank_arr select 1;
 		if (_terminology isEqualTo "sell") then {
 			//Sells crypto;
-			SystemChat str _amount;
-			SystemChat str _playerBank_crypto;
 			if (_amount > _playerBank_crypto) then {
 				_amount = _playerBank_crypto;
 			};
@@ -296,6 +294,7 @@ handleWallet = {
 			if (([_amount ,4] call BIS_fnc_cutDecimals) >= 0.0001) then {
 				//Sell Crypto because _amount is greater than minimum;
 				//Need to check player wallet is able to be filled up;
+				private _playerWallet = player getVariable ["money",0];
 				private _wallet_cap = 2000000; //2 million cap to fiat wallet;
 				private _cryptoCount = _amount / 0.0001; //player input of how many to sell;
 				private _cryptoMultiplier = floor ((_wallet_cap - _playerWallet)/(100000*_cryptoReturn)); //how many they can sell At cost price based on wallet size;
@@ -304,33 +303,37 @@ handleWallet = {
 				};
 				private _fiatQty = round(_cryptoReturn * _cryptoCount * 100000); //this is the money you get back to your account;
 				_cryptoCount = _cryptoCount * 0.0001; //This turns into value of 0.0001 APXs to sell;;
-
+					 
 				if (((_fiatQty + _playerWallet) <= _money_cap) && _fiatQty > 0) then { //_fiatQty is derived from _cryptoCount which is zero if player can not sell any;
 					_wallet_amount = _fiatQty + _playerWallet;
 					_crypto_amount = _cryptoCount;
 					_playerBank_crypto = _playerBank_crypto - _crypto_amount;
 					if (_playerBank_crypto < 0.0000) then {_playerBank_crypto = 0.0000};
 					player setVariable ["OT_arr_BankVault", [_playerBank_money, [_playerBank_crypto,4] call BIS_fnc_cutDecimals], true];
-					[_wallet_amount] call OT_fnc_money;
+					[_fiatQty] call OT_fnc_money;
 					_doNotify = true;
 				};
 			};
 		} else {
 		//if (_terminology isEqualTo "buy") then {
 			//Buys crypto with Fiat
+			//INPUT IS FIAT aka BIG NUMBERS INTEGER;
 			//Amount here should be in Fiat;
 			//It needs to contend with global crypto value;
 			//It needs to calculate a loop additive value of all player Cryptos; (future);
+			private _playerWallet = player getVariable ["money",0];
+
 			if (_playerWallet < 100000) then {
 				_amount = 0;
 			};
 			if (_amount > _playerWallet) then {
 				_amount = _playerWallet;
 			};
-			_crypto_amount = (floor(_amount/100000))*0.0001;
+			_amount = floor (_amount/100000);
+			_crypto_amount = (_amount)*0.0001;
 			if (_amount > 0 && (_crypto_amount + _playerBank_crypto) <= _globalCryptoCap) then {
 				//Buys crypto at cost;
-				_wallet_amount = _amount;
+				_wallet_amount = _amount * 100000;
 				_playerBank_crypto = _crypto_amount + _playerBank_crypto;
 				player setVariable ["OT_arr_BankVault", [_playerBank_money, [_playerBank_crypto,4] call BIS_fnc_cutDecimals], true];
 				[-_wallet_amount] call OT_fnc_money;
@@ -389,7 +392,7 @@ factionDonation = {
 		} else {
 			[-_val] call OT_fnc_money;
 			//Adds rep to the faction and deducts players their fiat money in bank;
-			format["Transferred $%1 (%2D) from Bank of %3 to fund %4 (%5)",[_val, 1, 0, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2], OT_Nation, _name, _cls] call OT_fnc_notifyMinor;
+			format["Transferred $%1 (%2D) from Bank of %3 to fund %4 (%5)",[_val, 1, 0, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2], OT_Nation, _name, _cls select [0,3]] call OT_fnc_notifyMinor;
 			_isDone = true;
 		};
 	} else {

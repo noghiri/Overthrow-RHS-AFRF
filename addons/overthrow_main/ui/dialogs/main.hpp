@@ -1387,7 +1387,7 @@ class OT_dialog_bank
 		class RscButton_1601: RscOverthrowButton
 		{
 			idc = 1601;
-			text = "Buy APX for all $(100,000) TAD"; //--- ToDo: Localize;
+			text = "Buy (0.0020) APX for $(2,000,000) TAD"; //--- ToDo: Localize;
 			x = 0.273125 * safezoneW + safezoneX;
 			y = 0.467 * safezoneH + safezoneY; //423 + 44
 			w = 0.149531 * safezoneW;
