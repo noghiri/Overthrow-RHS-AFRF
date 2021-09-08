@@ -210,7 +210,9 @@ handleWalletLeaked = {
 	_ret
 };
 
-call handleWalletLeaked;
+//legacy money check upon player interacting with the priest will forcefully deposit their money into the bank;
+//@todo future all players SHOULD be funneling >2 million caps into the bank;
+call handleWalletLeaked; 
 
 handleWallet = { 
 	//Handles all Fiat Dollars transactions through this;
@@ -473,10 +475,6 @@ bankTransaction = {
 	//HANDLING Crypto: Sent/Given from player to server as well as other players (ON/OFFline);
 	params ["_transaction", "_currency", "_amount", "_faction", "_faction_arr", "_wallet", "_total_bankvault_arr", "_total_crypto", "_total_money"];
 	disableSerialization;
-
-	//call factionDisplayAll;
-	//call cryptoDisplayAll;
-	//call bankDisplayAll;
 
 	//_currency dictates handling calls of bank/exchange;
 	//_transaction is fed into the calls for bank/exchange;
