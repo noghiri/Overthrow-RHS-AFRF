@@ -1,5 +1,7 @@
 // fnc_bankDialog calls goes here.
 
+//Dorf: I sorry I didn't make _money_cap an upper scope variable; If you want you can make it;
+//Future-Dorf: F*ck you;
 closedialog 0;
 createDialog "OT_dialog_bank";
 openMap false;
@@ -50,6 +52,8 @@ cryptoReturn = {
 };
 
 globalCryptoCap = {
+	//This is the global market capacity to contain crypto transactions within 1.0000;
+	//Maybe i should make this a server called variable, but it should update when looked upon;
 	//Oh boh here comes math;
 	//One half is nato abandoned TOWNs, make sure they're towns.
 	//One half is reputation for towns.
@@ -216,6 +220,79 @@ call factionDisplayAll;
 call cryptoDisplayAll;
 call bankDisplayAll;
 
+initPlayerCryptoArray = {
+	//takes no parameters, just initiates it cause would look ugly in the block;
+	private _playerCryptoArray = server getVariable ["OT_arr_playerCrypto", []];
+	//@TODO START Finish here;
+	{
+		if(getplayeruid _x isEqualTo _owner_uid) exitWith {_owner_isonline = true;_owner_on = "Online";_online_owner = _x};
+	}foreach(allplayers);
+
+
+	players_NS getVariable [format["name%1", _owner_uid],"Someone"]; //This gets name of player;  
+	players_NS getVariable ["OT_allplayers",[]];//this possibly gets all players UID;
+	[_owner_uid, "money"]call OT_fnc_getOfflinePlayerAttribute;
+
+	if (count (_playerCryptoArray) == 0) then {
+		//Player array is empty and should initiate loop counting all players;
+
+	};
+	//Player array exists and should avoid doing loops;
+};
+
+modifyCryptoCap = {
+	//This function assumes _modValue is not exceeding _globalCryptoCap;
+	//calculates the modified player usage on global market cap;
+	//returns if there is free server Crypto to buy from, also modifies values of itself in server variable if there is free server crypto to buy from;
+	params ["_changeTerm", "_modValue"]; //_modValue must be positive if release, or negative if not releasing;
+	private _globalCryptoCap = call globalCryptoCap; //Returns 0.000X float; from 0.0000 to 1.0000
+	private _escrowCryptoCap = server getVariable ["OT_escrowCryptoCap", _globalCryptoCap]; //from 0.0000 to 1.0000; smaller or equal to _globalCryptoCap;
+	private _newEscrowCC = _escrowCryptoCap + _modValue;
+	_newEscrowCC = [_newEscrowCC, 4] call BIS_fnc_cutDecimals;
+	private _ret = true;
+	private _seized = false;
+
+	//In theory if kept track of money by players, releasing back into the cap should not need to be checked if exceeding;
+	if (_changeTerm isEqualTo "release") then {
+		//Adding back to the cap by releasing into the _escrowCryptoCap;
+		//From players selling Crypto
+		if (_escrowCryptoCap > _globalCryptoCap) {
+			_escrowCryptoCap = _globalCryptoCap;
+		};
+
+		//Resign player from _modValue worth in database;
+ 	} else {
+		//Subtracting from the cap;
+		//Need to kept track of where globally, all players keep a finite value tally from a loop if it exceeds _escrowCryptoCap ...
+		//It will automate selling from players pockets until value is reached;
+		if (_newEscrowCC < 0) then {
+			//new _escrowCryptoCap is negative due to not enough CC left to use from the server;
+			
+			//Loops check if possible amount to seize from ON/OFFline player banks;
+
+			//If loop check succeeds then pop them off value, give players back money in bank;
+			//if loop check fails, then _ret = false;
+			_ret = false;
+			//Otherwise succeeds in popping off value from other players and return is true but is seized;
+			_seized = true;
+			//Assign player to database of an array;
+
+		} else {
+			//There is enough _escrowCryptoCap to trade the player;
+			//Subtract the cap by adding _modValue (it should be negative value);
+			//Assign player to database of an array for cap calculation;
+		};
+	};
+
+	if (_ret && !_seized) {
+		//if return is true aka operation succeeds;
+		//And if it's not seized value from other players;
+		//Then the server escrow goes up by this amount;
+		server setVariable ["OT_escrowCryptoCap", _newEscrowCC, true];
+	};
+	_ret
+};
+
 handleWallet = { 
 	//Handles all Fiat Dollars transactions through this;
 
@@ -315,12 +392,16 @@ handleWallet = {
 					if (_playerBank_crypto < 0.0000) then {_playerBank_crypto = 0.0000};
 					player setVariable ["OT_arr_BankVault", [_playerBank_money, [_playerBank_crypto,4] call BIS_fnc_cutDecimals], true];
 					[_fiatQty] call OT_fnc_money;
+
+					//Releases value of _crypto_amount into moving market cap again;
+					["release", _crypto_amount] call modifyCryptoCap;
+
 					_BDplusmin = ["Sold", "+","-"];
 					_doNotify = true;
 				};
 			};
 		} else {
-		//if (_terminology isEqualTo "buy") then {
+		//This handles Buys;
 			//Buys crypto with Fiat
 			//INPUT IS FIAT aka BIG NUMBERS INTEGER;
 			//Amount here should be in Fiat;
@@ -336,14 +417,22 @@ handleWallet = {
 			};
 			_amount = floor (_amount/100000);
 			_crypto_amount = (_amount)*0.0001;
+
+
+
 			if (_amount > 0 && (_crypto_amount + _playerBank_crypto) <= _globalCryptoCap) then {
 				//Buys crypto at cost;
 				_wallet_amount = _amount * 100000;
 				_playerBank_crypto = _crypto_amount + _playerBank_crypto;
-				player setVariable ["OT_arr_BankVault", [_playerBank_money, [_playerBank_crypto,4] call BIS_fnc_cutDecimals], true];
-				[-_wallet_amount] call OT_fnc_money;
-				_BDplusmin = ["Bought", "-","+"];
-				_doNotify = true;
+				//Seizes value of _crypto_amount from moving market cap;
+				private _seized = ["seize", -_crypto_amount] call modifyCryptoCap;
+				if (_seized) then {
+					//if successfully seized value from players or global market;
+					player setVariable ["OT_arr_BankVault", [_playerBank_money, [_playerBank_crypto,4] call BIS_fnc_cutDecimals], true];
+					[-_wallet_amount] call OT_fnc_money;
+					_BDplusmin = ["Bought", "-","+"];
+					_doNotify = true;
+				};
 			};
 		};
 
