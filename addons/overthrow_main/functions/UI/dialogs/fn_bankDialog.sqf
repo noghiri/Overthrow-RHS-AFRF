@@ -223,21 +223,49 @@ call bankDisplayAll;
 initPlayerCryptoArray = {
 	//takes no parameters, just initiates it cause would look ugly in the block;
 	private _playerCryptoArray = server getVariable ["OT_arr_playerCrypto", []];
-	//@TODO START Finish here;
-	{
-		if(getplayeruid _x isEqualTo _owner_uid) exitWith {_owner_isonline = true;_owner_on = "Online";_online_owner = _x};
-	}foreach(allplayers);
-
-
-	players_NS getVariable [format["name%1", _owner_uid],"Someone"]; //This gets name of player;  
-	players_NS getVariable ["OT_allplayers",[]];//this possibly gets all players UID;
-	[_owner_uid, "money"]call OT_fnc_getOfflinePlayerAttribute;
-
+	/*
+	Regarding OT_arr_playerCrypto:
+	-Should be sorted with Sort, and individual player info cannot be obtained individually;
+	*/
 	if (count (_playerCryptoArray) == 0) then {
 		//Player array is empty and should initiate loop counting all players;
+		//@TODO START Finish here;
+		private _allPlayers_NS = players_NS getVariable ["OT_allplayers",[]]; //this possibly gets all players UID;
+		private _allOnlinePlayers = []; //UID;
+		{
+			_allOnlinePlayers pushbackUnique getplayeruid _x;
+			//ONLINE owners need to be subjected by object name aka _x;
+			//then changes can be setVariabled to;
+			private _playerBank_arr = _x getVariable ["OT_arr_BankVault", [0,0]];
+			if !(_playerBank_arr isEqualTo [0,0]) then {
+				//if there is no OT_arr_BankVault saved in the online player.
+				//This can calculate global player crypto;
+			};
+
+		}foreach(allplayers);
+
+		private _allOfflinePlayers = []; //UID still;
+		{
+			if !(_x in _allOnlinePlayers) then {
+				_allOfflinePlayers pushbackUnique _x;
+			};
+		}foreach(_allPlayers_NS);
+
+		private _allPlayers = _allPlayers_NS + _allOnlinePlayers;
+		{
+			[_x, "OT_arr_BankVault"] call OT_fnc_getOfflinePlayerAttribute;
+			_playerCryptoArray pushBackUnique [_x, [_x, "money"] call OT_fnc_getOfflinePlayerAttribute;]
+		}foreach(_allPlayers);
+
+		players_NS getVariable [format["name%1", _aplayer_uid],"Someone"]; //This gets name of player;  
+		[_aplayer_uid, "money"] call OT_fnc_getOfflinePlayerAttribute; //this gets their wallet money;
 
 	};
 	//Player array exists and should avoid doing loops;
+	//Remember if you're calculating to pop off p-2-p currency, do not include the player themselves and use; 
+	(getplayeruid player);
+	//SetOfflinePlayerAttributes CANNOT make it work for ONLINE players;
+	//ONLINE players can only use _x in allplayers;
 };
 
 modifyCryptoCap = {

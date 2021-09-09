@@ -121,7 +121,7 @@ if(_handled) then {
 		//Subtracts money from player;
 		[-_price] call OT_fnc_money;
 
-		buildingpositions setVariable [_id,position _building,true];
+		buildingpositions setVariable [_id,position _building,true]; //idk why this variable scares me i forgot what it did...
 		_owned pushback _id;
 		[player,"Building Purchased",format["Bought: %1 in %2 for $%3. You have %4 Owned and %5 Leased", getText(configFile >> "CfgVehicles" >> (typeof _building) >> "displayName"),(getpos _building) call OT_fnc_nearestTown,_price, _total_bdgs_count, _total_lsd_count]] call BIS_fnc_createLogRecord;
 		format["You have %2 Buildings, %1 Leased, Deedlock %2/%3.", _total_lsd_count, _total_bdgs_count, _bubble_cap] call OT_fnc_notifyMinor;
