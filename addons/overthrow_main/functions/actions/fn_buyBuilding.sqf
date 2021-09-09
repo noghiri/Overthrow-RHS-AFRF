@@ -6,7 +6,7 @@ private _isfactory = false;
 //Verified for targeted individual home owners
 private _bubble_popped = false; 
 //Landlords will not be able to hold onto property when they pass X houses
-private _bubble_cap = 21;
+private _bubble_cap = 21; //DICTATES HOUSE OWNERSHIP CAP;
 //GUID of _owner_uid variable works ON/OFFLine
 private _owner_uid = ""; //_building call OT_fnc_getOwner;
 //Declares of boolean of owner is the same GUID as player 
