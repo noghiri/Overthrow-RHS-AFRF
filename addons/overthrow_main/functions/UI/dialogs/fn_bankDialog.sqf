@@ -222,45 +222,67 @@ call bankDisplayAll;
 
 initPlayerCryptoArray = {
 	//takes no parameters, just initiates it cause would look ugly in the block;
-	private _playerCryptoArray = server getVariable ["OT_arr_playerCrypto", []];
+	private _playerCryptoArray = server getVariable ["OT_arr_playerCrypto", []]; //this is an array of data in format of [crypto amount, puid];
 	/*
 	Regarding OT_arr_playerCrypto:
 	-Should be sorted with Sort, and individual player info cannot be obtained individually;
 	*/
-	if (count (_playerCryptoArray) == 0) then {
+	if (true) then { //count (_playerCryptoArray) == 0
 		//Player array is empty and should initiate loop counting all players;
 		//@TODO START Finish here;
 		private _allPlayers_NS = players_NS getVariable ["OT_allplayers",[]]; //this possibly gets all players UID;
-		private _allOnlinePlayers = []; //UID;
+		private _allOnlinePlayers = []; //UID for those with Crypto;
+		private _escrowCrypto_counter = 0.0000;
 		{
-			_allOnlinePlayers pushbackUnique getplayeruid _x;
 			//ONLINE owners need to be subjected by object name aka _x;
 			//then changes can be setVariabled to;
 			private _playerBank_arr = _x getVariable ["OT_arr_BankVault", [0,0]];
-			if !(_playerBank_arr isEqualTo [0,0]) then {
+			if !(_playerBank_arr#1 > 0) then {
 				//if there is no OT_arr_BankVault saved in the online player.
 				//This can calculate global player crypto;
+				_escrowCrypto_counter = _escrowCrypto_counter + _playerBank_arr#1;
+				_allOnlinePlayers pushbackUnique getplayeruid _x; //pushes back puid to all online players;
+
+				//Here pushing to _playerCryptoArray for existing players with Crypto;
+				_playerCryptoArray pushback [_playerBank_arr#1,getplayeruid _x];
 			};
+		}foreach(allplayers); //All online players;
 
-		}foreach(allplayers);
-
-		private _allOfflinePlayers = []; //UID still;
+		private _allOfflinePlayers = []; //UID still; for those with Crypto;
 		{
 			if !(_x in _allOnlinePlayers) then {
-				_allOfflinePlayers pushbackUnique _x;
+				private _playerBank_arr = [_x, "OT_arr_BankVault"] call OT_fnc_getOfflinePlayerAttribute;
+				
+				if !(_playerBank_arr isEqualTo "") then {
+					if (_playerBank_arr#1 > 0) then {
+						_escrowCrypto_counter = _escrowCrypto_counter + _playerBank_arr#1;
+						_allOfflinePlayers pushbackUnique _x; //_x is UID;
+
+						//Pushing to server database;
+						_playerCryptoArray pushback [_playerBank_arr#1, _x];
+					};
+				};
 			};
 		}foreach(_allPlayers_NS);
 
-		private _allPlayers = _allPlayers_NS + _allOnlinePlayers;
-		{
-			[_x, "OT_arr_BankVault"] call OT_fnc_getOfflinePlayerAttribute;
-			_playerCryptoArray pushBackUnique [_x, [_x, "money"] call OT_fnc_getOfflinePlayerAttribute;]
-		}foreach(_allPlayers);
-
-		players_NS getVariable [format["name%1", _aplayer_uid],"Someone"]; //This gets name of player;  
-		[_aplayer_uid, "money"] call OT_fnc_getOfflinePlayerAttribute; //this gets their wallet money;
-
 	};
+	private _globalCryptoCap = call globalCryptoCap;
+	_escrowCrypto_counter = _globalCryptoCap - _escrowCrypto_counter;
+	if (_escrowCrypto_counter < 0) then {_escrowCrypto_counter = 0.0000}; 
+	server setVariable ["OT_arr_playerCrypto", _playerCryptoArray];
+	server setVariable ["OT_escrowCryptoCap", _escrowCrypto_counter];
+};
+
+modifyPlayerCryptoArray = {
+	
+	{
+		[_x, "OT_arr_BankVault"] call OT_fnc_getOfflinePlayerAttribute;
+		_playerCryptoArray pushBackUnique [_x, [_x, "money"] call OT_fnc_getOfflinePlayerAttribute;]
+	}foreach(_allCryptoPUID);
+
+	players_NS getVariable [format["name%1", _aplayer_uid],"Someone"]; //This gets name of player;  
+	[_aplayer_uid, "money"] call OT_fnc_getOfflinePlayerAttribute; //this gets their wallet money;
+
 	//Player array exists and should avoid doing loops;
 	//Remember if you're calculating to pop off p-2-p currency, do not include the player themselves and use; 
 	(getplayeruid player);
@@ -273,6 +295,7 @@ modifyCryptoCap = {
 	//calculates the modified player usage on global market cap;
 	//returns if there is free server Crypto to buy from, also modifies values of itself in server variable if there is free server crypto to buy from;
 	params ["_changeTerm", "_modValue"]; //_modValue must be positive if release, or negative if not releasing;
+	call initPlayerCryptoArray;
 	private _globalCryptoCap = call globalCryptoCap; //Returns 0.000X float; from 0.0000 to 1.0000
 	private _escrowCryptoCap = server getVariable ["OT_escrowCryptoCap", _globalCryptoCap]; //from 0.0000 to 1.0000; smaller or equal to _globalCryptoCap;
 	private _newEscrowCC = _escrowCryptoCap + _modValue;
