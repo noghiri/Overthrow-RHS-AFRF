@@ -1516,7 +1516,7 @@ class OT_dialog_bank
 			y = 0.555 * safezoneH + safezoneY; //423 + 44
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[500000,""money""] call factionDonation;";
+			action="[500000,""money""] call factionDonation;"; //if you can afford half a mil, you can afford buying a whole plane;
 		};
 		////////////////////////////////////////////////////////
 		// GUI EDITOR OUTPUT END
