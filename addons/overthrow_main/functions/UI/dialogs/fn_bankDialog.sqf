@@ -201,7 +201,7 @@ handleWalletLeaked = {
 		_playerBank_money = _playerBank_money + _changed_amount;
 
 		player setVariable ["OT_arr_BankVault", [_playerBank_money, _playerBank_arr select 1], true];
-		format["Wallet %1$(%2), Bank +$(%2)",_BDplusmin#1,[_changed_amount, 1, 0, true] call CBA_fnc_formatNumber] call OT_fnc_notifyMinor;
+		format["Wallet %1$%2, Bank +$%2",_BDplusmin#1,[_changed_amount, 1, 0, true] call CBA_fnc_formatNumber] call OT_fnc_notifyMinor;
 		_ret = true;
 	};
 	_ret
@@ -354,7 +354,7 @@ handleWallet = {
 	if (_doNotify) then {
 		private _BDreply = "";
 	 	if (_terminology isEqualTo "deposit" || _terminology isEqualTo "withdrawal") then {
-			_BDreply = format["%1 %2$(%4) Wallet, %3$(%5) Bank ",
+			_BDreply = format["%1 %2$%4 Wallet, %3$%5 Bank.",
 			_BDplusmin#0,
 			_BDplusmin#1,
 			_BDplusmin#2,
@@ -365,7 +365,7 @@ handleWallet = {
 		} else {
 			//Buy/sell cryptos final notifications goes here;
 			//Idk if we need notifications here when players can just see they bought/sold an amount;
-			_BDreply = format["%1 %3$(%5) APX, %2$(%4) Wallet.",
+			_BDreply = format["%1 %3$%5 APX, %2$%4 Wallet.",
 			_BDplusmin#0,
 			_BDplusmin#1,
 			_BDplusmin#2,
@@ -397,11 +397,12 @@ factionDonation = {
 	private _playerCrypto = _playerVault select 1;
 	private _amountMultiplier = 1;
 	private _val = _amountMultiplier * _amount;
+	_val = [_val,4] call BIS_fnc_cutDecimals;
 	private _standing = server getVariable [format["standing%1",_cls],0]; //gets the faction standing from inputData from array elements in OT_allFactions;
 	private _isDone = false;
 	private _chance = 5; //This is the random value between 0 to X added to faction standings; considering 95 is cap for blueprints, 5 is generous;
 	if (_typeOfMoney isEqualTo "money") then {
-		if ((_val) > _playerFiat) then {
+		if (_val > _playerFiat) then {
 			//Notify players they are poor and no money in bank to do this;
 			"You do not have enough Money in the Bank" call OT_fnc_notifyMinor;
 		} else {
@@ -413,7 +414,9 @@ factionDonation = {
 			_isDone = true;
 		};
 	} else {
-		if ((_val) > _playerCrypto) then {
+		if ((_playerCrypto - _val) < 0) then { //if _value is more than player's bank; 
+			//Bug here when _val is 0.0001 when compared directly like fiat integers, it counts player as having no money when _val of 0.0001 > _playerFiat also of 0.0001;
+			
 			//Notify players they are poor and no money in bank to do this;
 			"You do not have enough Crypto in the Exchange" call OT_fnc_notifyMinor;
 		} else {
