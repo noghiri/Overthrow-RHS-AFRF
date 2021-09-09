@@ -1378,6 +1378,7 @@ class OT_dialog_bank
 		{
 			idc = 1600;
 			text = "Buy APX for $(100,000) TAD"; //--- ToDo: Localize;
+			tooltip = "Exchange $(100,000) Fiat currency in your wallet for Crypto currency into your storage, up to Global APX Market Cap."; //--- ToDo: Localize;
 			x = 0.273125 * safezoneW + safezoneX;
 			y = 0.423 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
@@ -1388,6 +1389,7 @@ class OT_dialog_bank
 		{
 			idc = 1601;
 			text = "Buy (0.0020) APX for $(2,000,000) TAD"; //--- ToDo: Localize;
+			tooltip = "Exchange All Fiat currency in your wallet for Crypto currency into your storage, up to Global APX Market Cap."; //--- ToDo: Localize;
 			x = 0.273125 * safezoneW + safezoneX;
 			y = 0.467 * safezoneH + safezoneY; //423 + 44
 			w = 0.149531 * safezoneW;
@@ -1398,6 +1400,7 @@ class OT_dialog_bank
 		{
 			idc = 1602; //Make money button;
 			text = "Sell (0.0001) APX for TAD"; //--- ToDo: Localize;
+			tooltip = "Exchange (0.0001) Crypto currency within your storage for Cash in your wallet. Up to $(2,000,000)"; //--- ToDo: Localize;
 			x = 0.273125 * safezoneW + safezoneX;
 			y = 0.511 * safezoneH + safezoneY; //467 + 44
 			w = 0.149531 * safezoneW;
@@ -1407,7 +1410,8 @@ class OT_dialog_bank
 		class RscButton_1603: RscOverthrowButton //RscButton_X+3
 		{
 			idc = 1603; //THis is the make money button;
-			text = "Sell (0.0001) APX for $(100,000) TAD"; //--- ToDo: Localize;
+			text = "Sell (1) APX for $(100,000) TAD"; //--- ToDo: Localize;
+			tooltip = "Exchange as much crypto currency within your storage as you can for Cash in your wallet. Up to $(2,000,000)"; //--- ToDo: Localize;
 			x = 0.273125 * safezoneW + safezoneX;
 			y = 0.555 * safezoneH + safezoneY; //511 + 44
 			w = 0.149531 * safezoneW;
@@ -1429,6 +1433,7 @@ class OT_dialog_bank
 		{
 			idc = 1604;
 			text = "Withdrawal $(100,000) TAD"; //--- ToDo: Localize;
+			tooltip = "Withdrawal Up to $(100,000) of the Bank currency into your wallet"; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.423 * safezoneH + safezoneY;
 			w = 0.149531 * safezoneW;
@@ -1439,6 +1444,7 @@ class OT_dialog_bank
 		{
 			idc = 1605;
 			text = "Withdrawal All TAD"; //--- ToDo: Localize;
+			tooltip = "Withdrawal Up to $(2,000,000) of the Bank currency into your wallet"; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.467 * safezoneH + safezoneY; //423 + 44
 			w = 0.149531 * safezoneW;
@@ -1449,6 +1455,7 @@ class OT_dialog_bank
 		{
 			idc = 1606;
 			text = "Deposit $(100,000) TAD"; //--- ToDo: Localize;
+			tooltip = "Deposit up to $(100,000) of Bank currency from your wallet into your Bank"; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.511 * safezoneH + safezoneY; //467 + 44
 			w = 0.149531 * safezoneW;
@@ -1459,6 +1466,7 @@ class OT_dialog_bank
 		{
 			idc = 1607;
 			text = "Deposit All TAD"; //--- ToDo: Localize;
+			tooltip = "Deposit up to $(2,000,000) of Bank currency from your wallet into your Bank"; //--- ToDo: Localize;
 			x = 0.427812 * safezoneW + safezoneX;
 			y = 0.555 * safezoneH + safezoneY; //511 + 44
 			w = 0.149531 * safezoneW;
@@ -1491,22 +1499,24 @@ class OT_dialog_bank
 		class RscButton_1608: RscOverthrowButton
 		{
 			idc = 1608;
-			text = "Donate 0.0001 APX"; //--- ToDo: Localize;
+			text = "Donate (0.0005) APX"; //--- ToDo: Localize;
+			tooltip = "Transfer (0.0005) APX from your storage to the selected faction."; //--- ToDo: Localize;
 			x = 0.5825 * safezoneW + safezoneX;
 			y = 0.511 * safezoneH + safezoneY; //was 0.423
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[0.0001,""crypto""] call factionDonation;";
+			action="[0.0005,""crypto""] call factionDonation;";
 		};
 		class RscButton_1609: RscOverthrowButton //RscButton_1602+3
 		{
 			idc = 1609;
-			text = "Donate $100K TAD"; //--- ToDo: Localize;
+			text = "Donate $(500,000)"; //--- ToDo: Localize;
+			tooltip = "Transfer $(500,000) from your Bank to the selected faction."; //--- ToDo: Localize;
 			x = 0.5825 * safezoneW + safezoneX;
 			y = 0.555 * safezoneH + safezoneY; //423 + 44
 			w = 0.149531 * safezoneW;
 			h = 0.044 * safezoneH;
-			action="[100000,""money""] call factionDonation;";
+			action="[500000,""money""] call factionDonation;";
 		};
 		////////////////////////////////////////////////////////
 		// GUI EDITOR OUTPUT END

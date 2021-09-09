@@ -157,7 +157,9 @@ factionDisplayAll = {
 	//Factions statistics;
 	//Faction display All is displaying the donation scroll down box on the right when initiating "where is my money?" dialogue to the priest;
 	//It is recalled to refresh the screen to update the list upon player input;
-
+	private _factionDonate_FiatCost = 500000;
+	private _faction_idc = 1609; // This is used to modify ctrlSetText;
+	ctrlSetText [_faction_idc, format ["Donate $(%1) %2D", [_factionDonate_FiatCost, 1, 0, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2]]];
 	lbClear 1103;
 	private _ctrl = (findDisplay 8005) displayCtrl 1102;
 	_ctrl ctrlSetStructuredText parseText format["<t size=""2"">Factions of %1</t><br/><t size=""1.1"">Donate a little money to keep them happy.</t>",OT_Nation];
@@ -403,7 +405,9 @@ factionDonation = {
 			//Notify players they are poor and no money in bank to do this;
 			"You do not have enough Money in the Bank" call OT_fnc_notifyMinor;
 		} else {
-			[-_val] call OT_fnc_money;
+			//[-_val] call OT_fnc_money;
+			_playerFiat = _playerFiat - _val;
+			player setVariable ["OT_arr_BankVault", [_playerFiat,_playerCrypto], true];
 			//Adds rep to the faction and deducts players their fiat money in bank;
 			format["Transferred $%1 (%2D) from Bank of %3 to fund %4 (%5)",[_val, 1, 0, true] call CBA_fnc_formatNumber, toUpper OT_Nation select [0,2], OT_Nation, _name, _cls select [0,3]] call OT_fnc_notifyMinor;
 			_isDone = true;
@@ -416,16 +420,24 @@ factionDonation = {
 			_playerCrypto = _playerCrypto - _val;
 			player setVariable ["OT_arr_BankVault", [_playerFiat,_playerCrypto], true];
 			//Adds rep to the faction and deducts players their fiat money in bank;
-			format["Transferred $%1 (APX) from Crypto Exchange to fund %2 (%3)",[_val, 1, 4, true] call CBA_fnc_formatNumber, _name, _cls] call OT_fnc_notifyMinor;
+			format["Transferred $%1 (APX) from Crypto Exchange to fund %2 (%3)",[_val, 1, 4, true] call CBA_fnc_formatNumber, _name, _cls select [0,3]] call OT_fnc_notifyMinor;
 			_isDone = true;
 		};
 	};
 
 	if (_isDone) then {
-		server setVariable [format["standing%1", _cls], _standing + round (random(_chance)), true];
+		private _chance = round (random(_chance)); //Between 0 to <X. 
+		if (_chance == 0) then {
+			format["Your %1 was lost in transit.", _typeOfMoney] call OT_fnc_notifyMinor;
+		} else {
+			playSound "3DEN_notificationDefault";
+		};
+		server setVariable [format["standing%1", _cls], (_standing + _chance), true];
 		//private _rep = server getVariable [format["factionrep%1",_cls], 0]; this seems like to be position based? i forgot
 		//One of the faction variables was a coordinate [x,y,z] for the spawned NPC i think, i did not use that feature here;
 		call factionDisplayAll;
+		call cryptoDisplayAll;
+		call bankDisplayAll;
 	};
 };
 
