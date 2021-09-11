@@ -225,7 +225,11 @@ initPlayerCryptoArray = {
 	private _playerCryptoArray = server getVariable ["OT_arr_playerCrypto", []]; //this is an array of data in format of [crypto amount, puid];
 	/*
 	Regarding OT_arr_playerCrypto:
-	-Should be sorted with Sort, and individual player info cannot be obtained individually;
+	-Should be sorted with Sort, 
+	-Sorted makes lowest crypto in the top of the list
+	-Using reverse on it will have highest crypto at 0
+	-key and value technically is K:duplicates of crypto value, Value: UID
+	-individual player info cannot be obtained individually;
 	*/
 	if (true) then { //count (_playerCryptoArray) == 0
 		//Player array is empty and should initiate loop counting all players;
@@ -253,7 +257,8 @@ initPlayerCryptoArray = {
 			if !(_x in _allOnlinePlayers) then {
 				private _playerBank_arr = [_x, "OT_arr_BankVault"] call OT_fnc_getOfflinePlayerAttribute;
 				
-				if !(_playerBank_arr isEqualTo "") then {
+				if !(_playerBank_arr isEqualTo "") then { //due to the nature of getofflineplayerattribute, no value equals "". 
+				//I don't think we can set offline player values easily;
 					if (_playerBank_arr#1 > 0) then {
 						_escrowCrypto_counter = _escrowCrypto_counter + _playerBank_arr#1;
 						_allOfflinePlayers pushbackUnique _x; //_x is UID;
@@ -263,29 +268,96 @@ initPlayerCryptoArray = {
 					};
 				};
 			};
-		}foreach(_allPlayers_NS);
+		}foreach(_allPlayers_NS); //All players online/offline;
 
 	};
 	private _globalCryptoCap = call globalCryptoCap;
-	_escrowCrypto_counter = _globalCryptoCap - _escrowCrypto_counter;
-	if (_escrowCrypto_counter < 0) then {_escrowCrypto_counter = 0.0000}; 
-	server setVariable ["OT_arr_playerCrypto", _playerCryptoArray];
-	server setVariable ["OT_escrowCryptoCap", _escrowCrypto_counter];
+	private _escrowCryptoTotal = _globalCryptoCap - _escrowCrypto_counter; //The escrow left to manipulate without counting into player loops;
+	if (_escrowCryptoTotal < 0) then {_escrowCryptoTotal = 0.0000}; 
+	sort _playerCryptoArray;
+	reverse _playerCryptoArray; 
+	server setVariable ["OT_arr_playerCrypto", _playerCryptoArray, true];
+	server setVariable ["OT_escrowCryptoCap", _escrowCryptoTotal, true];
 };
 
-modifyPlayerCryptoArray = {
-	
+subtractCryptoArray = {
+	//REcursion or Loop;
+	//Array input must not be set with active setVariables;
+	params ["_amount", "_cryptoDB_arr", "_ret"]; //_pcr is player Crypto
+	call initPlayerCryptoArray;
+	_ret = false;
+	_amount = [_amount ,4] call BIS_fnc_cutDecimals; //_amount is the number to extract up to the capacity of global escrow;
+
+	private _globalCryptoCap = call globalCryptoCap;
+	private _escrowCryptoTotal = server getVariable ["OT_escrowCryptoCap", _globalCryptoCap]; //The NPC amount left to sell to the player;
+
+	private _escrowSum = 0.0000;
+	if (_escrowCryptoTotal - _amount >= 0) then {
+		//if escrowTotal aka open pool of crypto is available to players;
+		//it will reduce from the open pool
+		//it will set the server with changed escrowCap;
+		_escrowSum = _escrowCryptoTotal - _amount;
+		//do stuff;
+		_ret = true;
+	} else {
+		//If _amount is more than _escrowCryptoTotal;
+		_escrowSum = _amount - _escrowCryptoTotal;
+	};
+	if (_escrowSum < 0.0001) then (_escrowSum = 0.0000); //if left over is less than one whole lower denomination of the crypto coin;
+	//server setVariable ["OT_escrowCryptoCap", _escrowSum]
+	if (!_ret) {
+		//This assumes _escrowSum is the left over tally to subtract from
+		private _playerUID_str = getPlayerUID player; //String of the player making the priest transaction;
+		private _added_tally = 0.0000; //previous players tally;
+		private _player_escrowSum = _escrowSum; //total to subtract from
+		private _isDone = false;
+		{
+			private _samePlayer = false;
+
+			//_x is [Credit,]
+			if (_playerUID_str isEqualTo _x#1) then {_samePlayer = true};
+			if (!_samePlayer && !_isDone) then {
+				private _currentCrWallet = _x#0; //Crypto amount for current iterated player's _cryptoDB element;
+
+				if ( (_player_escrowSum - (_currentCrWallet) ) > 0) then {
+					//if player money left to extract from cannot be completed here;
+					_player_escrowSum = _player_escrowSum - _currentCrWallet;
+					//remove money, from each players individually;
+				} else {
+					//Player money left to extract can complete here or within the value of their wallet;
+					if (_player_escrowSum - (_currentCrWallet) ) == 0) then {
+						_player_escrowSum = _player_escrowSum - _currentCrWallet;
+						//It can complete exact at the value of this player's wallet;
+					} else {
+						//It is within the value of their wallet;
+
+						//Check if they're ONLINE;
+						//If not go through OFFLINE loop;
+
+					};
+					_isDone = true;
+				};
+				_added_tally = _added_tally + _x#0;
+			};
+		}foreach(_cryptoDB_arr);
+
+		if (_added_tally )
+	};
+
+	_arr_input deleteAt 0;
+
+	/*
 	{
 		[_x, "OT_arr_BankVault"] call OT_fnc_getOfflinePlayerAttribute;
 		_playerCryptoArray pushBackUnique [_x, [_x, "money"] call OT_fnc_getOfflinePlayerAttribute;]
 	}foreach(_allCryptoPUID);
-
-	players_NS getVariable [format["name%1", _aplayer_uid],"Someone"]; //This gets name of player;  
-	[_aplayer_uid, "money"] call OT_fnc_getOfflinePlayerAttribute; //this gets their wallet money;
+	*/
+	//players_NS getVariable [format["name%1", _aplayer_uid],"Someone"]; //This gets name of player;  
+	//[_aplayer_uid, "money"] call OT_fnc_getOfflinePlayerAttribute; //this gets their wallet money;
 
 	//Player array exists and should avoid doing loops;
 	//Remember if you're calculating to pop off p-2-p currency, do not include the player themselves and use; 
-	(getplayeruid player);
+	//(getplayeruid player);
 	//SetOfflinePlayerAttributes CANNOT make it work for ONLINE players;
 	//ONLINE players can only use _x in allplayers;
 };
@@ -316,6 +388,8 @@ modifyCryptoCap = {
 		//Subtracting from the cap;
 		//Need to kept track of where globally, all players keep a finite value tally from a loop if it exceeds _escrowCryptoCap ...
 		//It will automate selling from players pockets until value is reached;
+		[abs(_modValue)] call subtractCryptoArray;
+		
 		if (_newEscrowCC < 0) then {
 			//new _escrowCryptoCap is negative due to not enough CC left to use from the server;
 			
