@@ -82,7 +82,7 @@ publicVariable "OT_nextNATOTurn";
 							_cost = _cost * _m;
 							server setVariable ["NATOattacking",_name,true];
 							server setVariable ["NATOattackstart",time,true];
-							diag_log format["Overthrow: NATO responding to %1",_name];
+							diag_log format["Overthrow: Russians responding to %1",_name];
 							if(_resources < _cost) then {_cost = _resources};
 							[_name,_cost] spawn OT_fnc_NATOResponseObjective;
 							_name setMarkerAlpha 1;
@@ -129,7 +129,7 @@ publicVariable "OT_nextNATOTurn";
 					//Send QRF to Town with >100 population
 					if(_population >= 100 && {_stability isEqualTo 0} && {!(_town in _abandoned)}) then {
 						server setVariable [format ["garrison%1",_town],0,true];
-						diag_log format["Overthrow: NATO responding to %1",_town];
+						diag_log format["Overthrow: Russians responding to %1",_town];
 						private _m = 3;
 						if(_popControl > 1000) then {_m = 4};
 						if(_popControl > 2000) then {_m = 5};
@@ -161,14 +161,14 @@ publicVariable "OT_nextNATOTurn";
 											//small chance of a support vehicle
 											_resources = _resources - 100;
 											[_obpos,_pos,100,0] spawn OT_fnc_NATOGroundSupport;
-											diag_log format["Overthrow: NATO Sent ground support to %1 from %2",_town,_obname];
+											diag_log format["Overthrow: Russians Sent ground support to %1 from %2",_town,_obname];
 										};
 									};
 									//population > 500, definitely send support
 									_resources = _resources - 100;
 									[_obpos,_pos,100,0] spawn OT_fnc_NATOGroundSupport;
 								};
-								diag_log format["Overthrow: NATO Sent ground forces to %1 from %2",_town,_obname];
+								diag_log format["Overthrow: Russians Sent ground forces to %1 from %2",_town,_obname];
 								[_obpos,_ao,_pos,false,5] spawn OT_fnc_NATOGroundReinforcements;
 							}else{
 								if(count _air > 0 && _population > 500) then {
@@ -179,14 +179,14 @@ publicVariable "OT_nextNATOTurn";
 										//small chance of CAS
 										_resources = _resources - 150;
 										[_obpos,_pos,0] spawn OT_fnc_NATOAirSupport;
-										diag_log format["Overthrow: NATO Sent CAS to %1 from %2",_town,_obname];
+										diag_log format["Overthrow: Russians Sent CAS to %1 from %2",_town,_obname];
 									};
 									private _dir = _pos getDir _obpos;
 									private _ao = [_pos,_dir] call OT_fnc_getAO;
 									_resources = _resources - 100;
 
 									[_obpos,_ao,_pos,true,15] spawn OT_fnc_NATOGroundReinforcements;
-									diag_log format["Overthrow: NATO Sent ground forces by air to %1 from %2",_town,_obname];
+									diag_log format["Overthrow: Russians Sent ground forces by air to %1 from %2",_town,_obname];
 								};
 							};
 						};
@@ -198,9 +198,9 @@ publicVariable "OT_nextNATOTurn";
 					_abandoned pushback _town;
 					server setVariable ["NATOabandoned",_abandoned,true];
 					server setVariable [format ["garrison%1",_town],0,true];
-					format["NATO has abandoned %1",_town] remoteExec ["OT_fnc_notifyGood",0,false];
+					format["Russia has abandoned %1",_town] remoteExec ["OT_fnc_notifyGood",0,false];
 					_countered = true;
-					diag_log format["Overthrow: NATO has abandoned %1",_town];
+					diag_log format["Overthrow: Russia has abandoned %1",_town];
 				};
 				if(_countered) exitWith {};
 			}foreach (_sorted);
@@ -237,7 +237,7 @@ publicVariable "OT_nextNATOTurn";
 			_numres = {side _x isEqualTo resistance || captive _x} count (_pos nearObjects ["CAManBase",50]);
 			if(_nummil isEqualTo 0 && {_numres > 0}) then {
 				_clearedFOBs pushback _x;
-				"Cleared NATO FOB" remoteExec ["OT_fnc_notifyMinor",0,false];
+				"Cleared Russian FOB" remoteExec ["OT_fnc_notifyMinor",0,false];
 				_flag = _pos nearobjects [OT_flag_NATO,50];
 				if(count _flag > 0) then{
 					deleteVehicle (_flag select 0);
@@ -278,7 +278,7 @@ publicVariable "OT_nextNATOTurn";
 						_resources = _resources - 500;
 						_x set [4,true];
 						if(([OT_nation] call OT_fnc_support) > (random 250)) then {
-							format["Intel reports that NATO has scrambled a jet to intercept %1",(typeof _target) call OT_fnc_vehicleGetName]
+							format["Intel reports that Russia has scrambled a jet to intercept %1",(typeof _target) call OT_fnc_vehicleGetName]
 						};
 						_countered = true;
 					};
@@ -289,7 +289,7 @@ publicVariable "OT_nextNATOTurn";
 						_resources = _resources - 350;
 						_x set [4,true];
 						if(([OT_nation] call OT_fnc_support) > (random 250)) then {
-							format["Intel reports that NATO has scrambled a helicopter to intercept %1",(typeof _target) call OT_fnc_vehicleGetName]
+							format["Intel reports that Russia has scrambled a helicopter to intercept %1",(typeof _target) call OT_fnc_vehicleGetName]
 						};
 						_countered = true;
 					};

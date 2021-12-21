@@ -36,16 +36,16 @@ private _c = 0;
 	if(!(_name isEqualTo OT_NATO_Unit_Police) && !(_name isEqualTo OT_NATO_Unit_PoliceCommander)) then {
 		[_name] call {
 			params ["_name"];
-			if((_name find "_TL_") > -1) exitWith {
+			if((_name find "_sergeant") > -1) exitWith {
 				OT_NATO_Unit_TeamLeader = _name;
 			};
-			if((_name find "_SL_") > -1) exitWith {
+			if((_name find "_officer_armored") > -1) exitWith {
 				OT_NATO_Unit_SquadLeader = _name;
 			};
-			if((_name find "_Officer_") > -1 || (_name find "_officer_") > -1) exitWith {
+			if((_name find "_rva_crew_officer") > -1 || (_name find "_rva_crew_officer") > -1) exitWith {
 				OT_NATO_Unit_HVT = _name
 			};
-			if((_name find "_CTRG_") > -1) exitWith {
+			if((_name find "_vdv_recon_") > -1) exitWith {
 				OT_NATO_Units_CTRGSupport pushback _name
 			};
 			if(
@@ -58,11 +58,11 @@ private _c = 0;
 			) exitWith {};
 
 			private _role = getText (_x >> "role");
-			if(_role in ["MachineGunner","Rifleman","CombatLifeSaver"]) then {OT_NATO_Units_LevelOne pushback _name};
+			if(_role in ["MachineGunner","Rifleman","CombatLifeSaver","machinegunner","rifleman","medic"]) then {OT_NATO_Units_LevelOne pushback _name};
 			if(_role in ["Grenadier","MissileSpecialist","Marksman"]) then {OT_NATO_Units_LevelTwo pushback _name};
-			if(_role == "Marksman" && (_name find "Sniper") > -1) then {OT_NATO_Unit_Sniper = _name};
-			if(_role == "Marksman" && (_name find "Spotter") > -1) then {OT_NATO_Unit_Spotter = _name};
-			if(_role == "MissileSpecialist" && (_name find "_AA_") > -1) then {OT_NATO_Unit_AA_spec = _name};
+			if(_role == "Marksman" && (_name find "sniper") > -1) then {OT_NATO_Unit_Sniper = _name};
+			if(_role == "Marksman" && (_name find "spotter") > -1) then {OT_NATO_Unit_Spotter = _name};
+			if(_role == "MissileSpecialist" && (_name find "_aa") > -1) then {OT_NATO_Unit_AA_spec = _name};
 
 			//Generate and cache alternative loadouts for this unit
 			private _loadout = getUnitLoadout _unitCfg;

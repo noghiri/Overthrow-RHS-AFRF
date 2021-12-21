@@ -38,5 +38,6 @@ OT_gangNames = [
 "%1 Triad",
 "%1 Yakuza",
 "Ghost Shadows",
-"The Runners" //Patreon: Fital Shell
+"The Runners", //Patreon: Fital Shell
+"4chan"
 ];
