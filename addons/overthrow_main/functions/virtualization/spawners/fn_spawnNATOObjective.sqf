@@ -51,6 +51,7 @@ if(_name in OT_allComms) then {
 	private _start = _posTown findEmptyPosition [2,50];
 	private _civ = _group createUnit [OT_NATO_Unit_Sniper, _start, [], 0, "NONE"];
 	_civ setVariable ["garrison",_name,false];
+	[_civ] joinSilent _group;
 	_civ setRank "CAPTAIN";
 	[_civ,_name] call OT_fnc_initMilitary;
 	_civ setBehaviour "SAFE";
@@ -61,6 +62,7 @@ if(_name in OT_allComms) then {
 		_start = _posTown findEmptyPosition [2,50];
 		_civ = _group createUnit [OT_NATO_Unit_Spotter, _start, [], 0, "NONE"];
 		_civ setVariable ["garrison",_name,false];
+		[_civ] joinSilent _group;
 		_civ setRank "CAPTAIN";
 		_civ setVariable ["VCOM_NOPATHING_Unit",true,false];
 		[_civ,_name] call OT_fnc_initMilitary;
@@ -75,6 +77,7 @@ if(_name in OT_allComms) then {
 		_start = _posTown findEmptyPosition [2,50];
 		_civ = _group createUnit [OT_NATO_Unit_AA_spec, _start, [], 0, "NONE"];
 		_civ setVariable ["garrison",_name,false];
+		[_civ] joinSilent _group;
 		_civ setRank "CAPTAIN";
 		_civ setVariable ["VCOM_NOPATHING_Unit",true,false];
 		[_civ,_name] call OT_fnc_initMilitary;
@@ -90,6 +93,7 @@ if(_name in OT_allComms) then {
 		};
 		_civ = _group createUnit [OT_NATO_Unit_AA_ass, _start, [], 0, "NONE"];
 		_civ setVariable ["garrison",_name,false];
+		[_civ] joinSilent _group;
 		_civ setRank "CAPTAIN";
 		_civ setVariable ["VCOM_NOPATHING_Unit",true,false];
 		[_civ,_name] call OT_fnc_initMilitary;
@@ -334,6 +338,7 @@ private _road = objNull;
 		_civ setVariable ["hvt_id",_id,true];
 		_civ setVariable ["NOAI",true,true];
 		_civ setRank "COLONEL";
+		[_civ] joinSilent _group;
 		_civ setBehaviour "SAFE";
 		_civ setVariable ["VCOM_NOPATHING_Unit",true,false];
 		_civ disableAI "PATH";

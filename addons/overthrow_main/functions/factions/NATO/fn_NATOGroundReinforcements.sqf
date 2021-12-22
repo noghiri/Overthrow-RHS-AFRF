@@ -12,6 +12,7 @@ _group1 deleteGroupWhenEmpty true;
 for "_i" from 1 to 4 do {
 	private _p = _frompos findEmptyPosition [15,100,_vehtype];
 	private _civ = _group1 createUnit [selectRandom OT_NATO_Units_LevelOne,_p,[],0,"NONE"];
+	[_civ] joinSilent _group1;
 };
 
 sleep 0.5;

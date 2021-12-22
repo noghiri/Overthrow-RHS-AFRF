@@ -13,6 +13,7 @@ OT_economyVersion = 2;
 OT_NATOversion = 2;
 OT_CRIMversion = 1;
 
+OT_side_NATO = "East";
 OT_faction_NATO = "OPF_F";
 OT_spawnFaction = "IND_G_F"; //This faction will have a rep in spawn town
 

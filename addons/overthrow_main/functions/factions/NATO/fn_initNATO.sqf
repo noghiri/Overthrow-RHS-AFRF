@@ -13,14 +13,14 @@ OT_NATO_Group_Engineers = "";
 	if(_numtroops > 5) then {
 		OT_NATO_GroundForces pushback _name;
 	};
-}foreach("true" configClasses (configFile >> "CfgGroups" >> "West" >> OT_faction_NATO >> "Infantry"));
+}foreach("true" configClasses (configFile >> "CfgGroups" >> OT_side_NATO >> OT_faction_NATO >> "Infantry"));
 
 {
 	private _name = configName _x;
 	if((_name find "ENG") > -1) then {
 		OT_NATO_Group_Engineers = _name;
 	};
-}foreach("true" configClasses (configFile >> "CfgGroups" >> "West" >> OT_faction_NATO >> "Support"));
+}foreach("true" configClasses (configFile >> "CfgGroups" >> OT_side_NATO >> OT_faction_NATO >> "Support"));
 
 OT_NATO_Units_LevelOne = [];
 OT_NATO_Units_LevelTwo = [];

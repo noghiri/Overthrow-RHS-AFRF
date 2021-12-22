@@ -38,6 +38,7 @@ _group = createGroup blufor;
 	_type = _x;
 	_civ = _group createUnit [_type, OT_NATO_HQPos, [],0, "NONE"];
 	_civ setRank "CAPTAIN";
+	[_civ] joinSilent _group;
 }foreach(OT_NATO_Units_CTRGSupport);
 
 sleep 0.3;

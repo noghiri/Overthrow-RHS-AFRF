@@ -40,6 +40,7 @@ _groupcount = 1;
 _start = [_start,7,_dir-90] call BIS_fnc_relPos;
 
 _civ = _group createUnit [OT_NATO_Unit_TeamLeader, _start, [],0, "NONE"];
+[_civ] joinSilent _group;
 _civ setVariable ["garrison",_name,false];
 _civ setRank "MAJOR";
 _soldiers pushBack _civ;
@@ -63,6 +64,7 @@ sleep 0.3;
 while {_count < _numNATO} do {
 	_start = [_start,2,_dir-180] call BIS_fnc_relPos;
 	_civ = _group createUnit [OT_NATO_Units_LevelTwo call BIS_fnc_selectRandom, _start, [],0, "NONE"];
+	[_civ] joinSilent _group;
 	_civ setVariable ["garrison",_name,false];
 	_soldiers pushBack _civ;
 	_civ setRank "CAPTAIN";
