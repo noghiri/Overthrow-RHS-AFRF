@@ -36,6 +36,7 @@ private _c = 0;
 	if(!(_name isEqualTo OT_NATO_Unit_Police) && !(_name isEqualTo OT_NATO_Unit_PoliceCommander)) then {
 		[_name] call {
 			params ["_name"];
+			//TODO: Change this section to work off variables.
 			if((_name find "_sergeant") > -1) exitWith {
 				OT_NATO_Unit_TeamLeader = _name;
 			};
