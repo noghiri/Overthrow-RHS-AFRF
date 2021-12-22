@@ -1,6 +1,7 @@
 # Overthrow-Remastered (2021)
 
-A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex by [armazac](https://github.com/ArmaOverthrow/Overthrow)
+A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex by [armazac](https://github.com/ArmaOverthrow/Overthrow) by [guilemouse](https://github.com/guilemouse/Overthrow)
+This further rework by (noghiri) to add better/more flexible side configuration and using CSAT/RHS AFRF/whatever for your NATO replacment.
 
 # Overthrow Wikipedia
 [For guides and more info.](https://github.com/guilemouse/Overthrow/wiki)
