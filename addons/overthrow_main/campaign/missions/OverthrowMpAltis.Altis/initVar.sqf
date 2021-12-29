@@ -15,6 +15,7 @@ OT_CRIMversion = 1;
 
 OT_side_NATO = "East";
 OT_faction_NATO = "OPF_F";
+OT_subfaction_NATO = ["rhs_faction_vdv","rhs_faction_vmf","rhs_faction_msv","rhs_faction_vmf","rhs_faction_vv"];
 OT_spawnFaction = "IND_G_F"; //This faction will have a rep in spawn town
 
 OT_flag_NATO = "rhs_Flag_Russia_F";
@@ -146,6 +147,11 @@ OT_NATO_Vehicle_AirTransport = ["RHS_Mi8mt_vv","O_Heli_Light_02_unarmed_F","O_He
 OT_NATO_Vehicle_AirTransport_Large = "RHS_Mi8mt_vv";
 OT_NATO_Vehicle_Boat_Small = "O_T_Boat_Armed_01_hmg_F";
 OT_NATO_Vehicles_APC = ["rhs_bmp2k_msv","rhs_bmp1_msv"];
+OT_NATO_HQ_Vehicles = ["B_T_APC_Tracked_01_AA_F","B_T_APC_Tracked_01_AA_F","B_GMG_01_high_F","B_GMG_01_high_F","B_GMG_01_high_F","B_HMG_01_high_F","B_HMG_01_high_F","B_HMG_01_high_F"];
+//try to make sure OT_all_NATO_Vehicles doesn't have duplicates.
+//May be set as a blank array if you want to fall back to random NATO stuff,
+//OT_all_NATO_Vehicles = [];
+OT_all_NATO_Vehicles = ["rhs_bmp2k_msv","rhs_bmp1_msv","RHS_Mi8mt_vv","O_Heli_Light_02_unarmed_F","rhs_tigr_sts_3camo_msv","rhs_btr70_msv","rhs_tigr_sts_3camo_msv","rhs_btr80a_msv","rhs_tigr_sts_msv","O_T_Boat_Armed_01_hmg_F","rhs_t90sm_tv","rhs_t72bd_tv","RHS_Ka52_vvsc","rhsgref_ins_uaz_dshkm","rhsgref_BRDM2_ins","rhsgref_ins_uaz_ags","rhsgref_tla_offroad","rhsgref_ins_gaz66","rhsgref_ins_uaz"]; 
 
 OT_NATO_Sandbag_Curved = "Land_BagFence_01_round_green_F";
 OT_NATO_Barrier_Small = "Land_HBarrier_01_line_5_green_F";

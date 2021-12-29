@@ -50,6 +50,7 @@ if(_name in OT_allComms) then {
 
 	private _start = _posTown findEmptyPosition [2,50];
 	private _civ = _group createUnit [OT_NATO_Unit_Sniper, _start, [], 0, "NONE"];
+	diag_log format ["Spawning sniper at location %1", _start];
 	_civ setVariable ["garrison",_name,false];
 	[_civ] joinSilent _group;
 	_civ setRank "CAPTAIN";
@@ -61,6 +62,7 @@ if(_name in OT_allComms) then {
 	if(_count < _numNATO) then {
 		_start = _posTown findEmptyPosition [2,50];
 		_civ = _group createUnit [OT_NATO_Unit_Spotter, _start, [], 0, "NONE"];
+		diag_log format ["Spawning spotter at location %1", _start];
 		_civ setVariable ["garrison",_name,false];
 		[_civ] joinSilent _group;
 		_civ setRank "CAPTAIN";
@@ -76,6 +78,7 @@ if(_name in OT_allComms) then {
 	if(_count < _numNATO) then {
 		_start = _posTown findEmptyPosition [2,50];
 		_civ = _group createUnit [OT_NATO_Unit_AA_spec, _start, [], 0, "NONE"];
+		diag_log format ["Spawning AA Specialist at location %1", _start];
 		_civ setVariable ["garrison",_name,false];
 		[_civ] joinSilent _group;
 		_civ setRank "CAPTAIN";
@@ -195,6 +198,7 @@ while {_count < _numNATO} do {
 	_groupcount = 1;
 
 	private _civ = _group createUnit [OT_NATO_Unit_TeamLeader, _start, [],0, "NONE"];
+	diag_log format ["Spawning team leader in squad %1 at location %2", _group, _start];
 	_civ setVariable ["garrison",_name,false];
 	_civ setRank "CAPTAIN";
 	[_civ] joinSilent _group;
@@ -205,8 +209,15 @@ while {_count < _numNATO} do {
 	_count = _count + 1;
 	while {(_count < _numNATO) && (_groupcount < 8)} do {
 		_start = _start findEmptyPosition [5,50];
-
-		_civ = _group createUnit [selectRandom (OT_NATO_Units_LevelOne + OT_NATO_Units_LevelOne + OT_NATO_Units_LevelOne + OT_NATO_Units_LevelTwo), _start, [],0, "NONE"];
+		diag_log format ["Spawning unit at %1 for %2", _start, _group];
+//added a string cast here, let's see if this stops the errors
+		private _unitsArray = [];
+		_unitsArray append OT_NATO_Units_LevelOne;
+		_unitsArray append OT_NATO_Units_LevelOne;
+		_unitsArray append OT_NATO_Units_LevelOne;
+		_unitsArray append OT_NATO_Units_LevelTwo;
+		diag_log format ["array: %1", _unitsArray]; //why are you empty :V
+		_civ = _group createUnit [selectRandom _unitsArray, _start, [],0, "NONE"];
 		_civ setVariable ["garrison",_name,false];
 		_civ setRank "LIEUTENANT";
 		[_civ] joinSilent _group;

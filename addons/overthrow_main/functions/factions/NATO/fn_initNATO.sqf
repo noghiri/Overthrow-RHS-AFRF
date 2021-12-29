@@ -2,7 +2,10 @@ if (!isServer) exitwith {};
 OT_NATO_GroundForces = [];
 OT_NATO_Group_Recon = "";
 OT_NATO_Group_Engineers = "";
-
+//making variables with all our possible groups in it
+_allSideGroups = [configFile >> "CfgGroups" >> OT_side_NATO, 2] call BIS_fnc_returnChildren;
+_natoGroupsInfantry = _allSideGroups select {(getText (_x >> "faction") in OT_subfaction_NATO) && {(getText (_x >> "aliveCategory") in ["Mechanized","Infantry","Motorized"])||(getText (_x >> "name") in ["Infantry","Mechanized Infantry","Motorized Infantry"])}};
+_natoGroupsSupport = _allSideGroups select {(getText (_x >> "faction") in OT_subfaction_NATO) && {(getText (_x >> "aliveCategory") in ["Support"])||(getText (_x >> "name") in ["Support"])}};
 {
 	private _name = configName _x;
 	if((_name find "Recon") > -1) then {
@@ -12,15 +15,16 @@ OT_NATO_Group_Engineers = "";
 	private _numtroops = count("true" configClasses _x);
 	if(_numtroops > 5) then {
 		OT_NATO_GroundForces pushback _name;
+		diag_log format["Adding %1 to ground forces.", _name];
 	};
-}foreach("true" configClasses (configFile >> "CfgGroups" >> OT_side_NATO >> OT_faction_NATO >> "Infantry"));
+}foreach(_natoGroupsInfantry);
 
 {
 	private _name = configName _x;
 	if((_name find "ENG") > -1) then {
 		OT_NATO_Group_Engineers = _name;
 	};
-}foreach("true" configClasses (configFile >> "CfgGroups" >> OT_side_NATO >> OT_faction_NATO >> "Support"));
+}foreach(_natoGroupsSupport);
 
 OT_NATO_Units_LevelOne = [];
 OT_NATO_Units_LevelTwo = [];
@@ -59,7 +63,7 @@ private _c = 0;
 			) exitWith {};
 
 			private _role = getText (_x >> "role");
-			if(_role in ["MachineGunner","Rifleman","CombatLifeSaver","machinegunner","rifleman","medic"]) then {OT_NATO_Units_LevelOne pushback _name};
+			if(_role in ["MachineGunner","Rifleman","CombatLifeSaver"]) then {OT_NATO_Units_LevelOne pushback _name};
 			if(_role in ["Grenadier","MissileSpecialist","Marksman"]) then {OT_NATO_Units_LevelTwo pushback _name};
 			if(_role == "Marksman" && (_name find "sniper") > -1) then {OT_NATO_Unit_Sniper = _name};
 			if(_role == "Marksman" && (_name find "spotter") > -1) then {OT_NATO_Unit_Spotter = _name};
@@ -79,8 +83,9 @@ private _c = 0;
 			};
 		};
 	};
-}foreach(format["(getNumber(_x >> 'scope') isEqualTo 2) && (getText(_x >> 'faction') isEqualTo '%1') && (configName _x) isKindOf 'SoldierWB'",OT_faction_NATO] configClasses (configFile >> "CfgVehicles"));
-
+}foreach(format["(getNumber(_x >> 'scope') isEqualTo 2) && (getText(_x >> 'faction') in %1) && ((configName _x) isKindOf 'SoldierWB' || (configName _x) isKindOf 'SoldierGB')", OT_subfaction_NATO] configClasses (configFile >> "CfgVehicles"));
+//previous line: this is compatible with normal Blufor and RHS Opfor/Russians. Swap SoldierGB for SoldierEB for CSAT support. don't ask me why the this. TODO: figure out better way
+//better way probably entails getting the Type of _x and finding out if it's in an array of types.
 (OT_loadingMessages call BIS_fnc_selectRandom) remoteExec['OT_fnc_notifyStart',0,false];
 
 //Generate and cache gendarm loadouts
@@ -142,8 +147,13 @@ if((server getVariable "StartupType") == "NEW" || (server getVariable ["NATOvers
 	if(_diff == 0) then {_numHVTs = 4};
 	if(_diff == 2) then {_numHVTs = 8};
 
-	//Find military objectives
-	_groundvehs = OT_allBLUOffensiveVehicles select {!((_x isKindOf "Air") || (_x isKindOf "Tank") || (_x isKindOf "Ship"))};
+	//Find military objectives. If the new map init isn't set, fall back to the default Unholy Alliance.
+	if(count OT_all_NATO_Vehicles == 0) then {
+		_groundvehs = OT_allBLUOffensiveVehicles select {!((_x isKindOf "Air") || (_x isKindOf "Tank") || (_x isKindOf "Ship"))};
+	}else
+	{
+		_groundvehs = OT_all_NATO_Vehicles select {!((_x isKindOf "Air") || (_x isKindOf "Tank") || (_x isKindOf "Ship"))};
+	};
 	{
 		_x params ["_pos","_name","_worth"];
 		if !(_name in _abandoned) then {
@@ -170,7 +180,7 @@ if((server getVariable "StartupType") == "NEW" || (server getVariable ["NATOvers
 
 			if(_name isEqualTo OT_NATO_HQ) then {
 				_garrison = 48;
-				server setVariable [format ["vehgarrison%1",_name],["B_T_APC_Tracked_01_AA_F","B_T_APC_Tracked_01_AA_F","B_GMG_01_high_F","B_GMG_01_high_F","B_GMG_01_high_F","B_HMG_01_high_F","B_HMG_01_high_F","B_HMG_01_high_F"],true];
+				server setVariable [format ["vehgarrison%1",_name],OT_NATO_HQ_Vehicles,true];
 				_garr = [];
 				{
 					_x params ["_class","_num"];
@@ -260,8 +270,12 @@ if((server getVariable "StartupType") == "NEW" || (server getVariable ["NATOvers
 			};
 		}foreach(OT_NATO_Vehicles_AirGarrison);
 
-		//Distribute some random Air vehicles
-		_airvehs = OT_allBLUOffensiveVehicles select {_x isKindOf "Air"};
+		//Distribute some random Air vehicles. Fall back to random NATO planes if the variable is empty in the initVar.sqf for the map.
+		if(count OT_all_NATO_Vehicles == 0) then {
+			_airvehs = OT_allBLUOffensiveVehicles select {_x isKindOf "Air"};
+		} else {
+			_airvehs = OT_all_NATO_Vehicles select {_x isKindOf "Air"};
+		};
 		{
 			_name = _x;
 			if((random 200) < (count _airvehs)) then {
