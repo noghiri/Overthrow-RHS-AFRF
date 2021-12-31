@@ -148,6 +148,7 @@ if((server getVariable "StartupType") == "NEW" || (server getVariable ["NATOvers
 	if(_diff == 2) then {_numHVTs = 8};
 
 	//Find military objectives. If the new map init isn't set, fall back to the default Unholy Alliance.
+	_groundvehs = [];
 	if(count OT_all_NATO_Vehicles == 0) then {
 		_groundvehs = OT_allBLUOffensiveVehicles select {!((_x isKindOf "Air") || (_x isKindOf "Tank") || (_x isKindOf "Ship"))};
 	}else
@@ -271,10 +272,13 @@ if((server getVariable "StartupType") == "NEW" || (server getVariable ["NATOvers
 		}foreach(OT_NATO_Vehicles_AirGarrison);
 
 		//Distribute some random Air vehicles. Fall back to random NATO planes if the variable is empty in the initVar.sqf for the map.
+		_airvehs = [];
 		if(count OT_all_NATO_Vehicles == 0) then {
 			_airvehs = OT_allBLUOffensiveVehicles select {_x isKindOf "Air"};
+			diag_log format["Air vehicles, fallback: %1", _airvehs]
 		} else {
 			_airvehs = OT_all_NATO_Vehicles select {_x isKindOf "Air"};
+			diag_log format["Air vehicles, init spec: %1", _airvehs]
 		};
 		{
 			_name = _x;

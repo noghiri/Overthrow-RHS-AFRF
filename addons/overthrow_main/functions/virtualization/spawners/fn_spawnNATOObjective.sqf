@@ -216,7 +216,6 @@ while {_count < _numNATO} do {
 		_unitsArray append OT_NATO_Units_LevelOne;
 		_unitsArray append OT_NATO_Units_LevelOne;
 		_unitsArray append OT_NATO_Units_LevelTwo;
-		diag_log format ["array: %1", _unitsArray]; //why are you empty :V
 		_civ = _group createUnit [selectRandom _unitsArray, _start, [],0, "NONE"];
 		_civ setVariable ["garrison",_name,false];
 		_civ setRank "LIEUTENANT";
