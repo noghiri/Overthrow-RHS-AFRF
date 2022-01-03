@@ -22,7 +22,7 @@ OT_flag_NATO = "rhs_Flag_Russia_F";
 OT_flag_CRIM = "Flag_Syndikat_F";
 OT_flag_IND = "Flag_Altis_F";
 OT_flagImage = "\A3\ui_f\data\map\markers\flags\Altis_ca.paa";
-OT_flagMarker = "flag_Tanoa";
+OT_flagMarker = "Flag_Altis_F";
 
 OT_populationMultiplier = 0.5; //Used to tweak populations per map
 
@@ -113,8 +113,8 @@ if(OT_hasJetsDLC) then {
 };
 
 OT_NATO_StaticGarrison_LevelOne = ["rhs_KORD_high_MSV"];
-OT_NATO_StaticGarrison_LevelTwo = ["rhs_KORD_high_MSV","rhs_KORD_high_MSV","rhs_KORD_high_MSV","rhs_btr60_msv"];
-OT_NATO_StaticGarrison_LevelThree = ["rhs_Kornet_9M133_2_msv","rhs_igla_AA_pod_msv","rhs_KORD_high_MSV","rhs_KORD_high_MSV","rhs_KORD_high_MSV","rhs_btr60_msv","rhs_btr80a_msv"];
+OT_NATO_StaticGarrison_LevelTwo = ["rhs_KORD_high_MSV","rhs_KORD_high_MSV","rhs_KORD_high_MSV","rhs_btr60_msv","rhs_btr80a_msv"];
+OT_NATO_StaticGarrison_LevelThree = ["rhs_Kornet_9M133_2_msv","rhs_igla_AA_pod_msv","rhs_KORD_high_MSV","rhs_KORD_high_MSV","rhs_KORD_high_MSV","rhs_btr60_msv","rhs_btr80a_msv","rhs_btr80a_msv"];
 
 OT_NATO_CommTowers = ["Land_TTowerBig_1_F","Land_TTowerBig_2_F"];
 
@@ -136,14 +136,14 @@ OT_NATO_Vehicle_Transport_Light = "rhsgref_tla_offroad";
 OT_NATO_Vehicles_PoliceSupport = ["rhsgref_ins_uaz_dshkm","rhsgref_BRDM2_ins","rhsgref_ins_uaz_ags","RHS_Mi8mt_vdv"];
 OT_NATO_Vehicles_ReconDrone = "rhs_pchela1t_vvsc";
 OT_NATO_Vehicles_CASDrone = "O_UAV_02_F";
-OT_NATO_Vehicles_AirSupport = ["RHS_Ka52_vvsc"];
+OT_NATO_Vehicles_AirSupport = ["RHS_Ka52_vvsc","RHS_Ka52_vvsc"];
 OT_NATO_Vehicles_AirSupport_Small = ["O_Heli_Light_02_F"];
 OT_NATO_Vehicles_GroundSupport = ["rhs_tigr_sts_3camo_msv","rhs_btr70_msv","rhs_tigr_sts_3camo_msv"];
 OT_NATO_Vehicles_TankSupport = ["rhs_t90sm_tv","rhs_t72bd_tv"];
 OT_NATO_Vehicles_Convoy = ["rhs_btr80a_msv","rhs_tigr_sts_msv","rhs_tigr_m_3camo_msv","rhs_tigr_m_3camo_msv","rhs_tigr_m_3camo_msv"];
 OT_NATO_Vehicles_AirWingedSupport = ["RHS_Mi24V_vvsc"];
 OT_NATO_Vehicle_AirTransport_Small = "O_Heli_Light_02_unarmed_F";
-OT_NATO_Vehicle_AirTransport = ["RHS_Mi8mt_vv","O_Heli_Light_02_unarmed_F","O_Heli_Light_02_unarmed_F"];
+OT_NATO_Vehicle_AirTransport = ["RHS_Mi8mt_vv", "RHS_Mi8mt_vv", "RHS_Mi8mt_vv","O_Heli_Light_02_unarmed_F","O_Heli_Light_02_unarmed_F"];
 OT_NATO_Vehicle_AirTransport_Large = "RHS_Mi8mt_vv";
 OT_NATO_Vehicle_Boat_Small = "O_T_Boat_Armed_01_hmg_F";
 OT_NATO_Vehicles_APC = ["rhs_bmp2k_msv","rhs_bmp1_msv"];
@@ -163,8 +163,83 @@ OT_NATO_Vehicle_HVT = "O_mas_idf_SUV_01_F";
 
 OT_NATO_Vehicle_CTRGTransport = "rhs_ka60_grey";
 
+//this currently does nothing
 OT_NATO_weapons_Police = ["rhs_weap_M590D_8RD","rhs_weap_akms","rhs_weap_aks74un"];
-OT_NATO_weapons_Pistols = ["rhs_weap_makarov_pm","rhs_weap_pya","rhs_weap_tt33","rhs_weap_cz99","rhs_weap_6p53"];
+//Leave these array empty to populate randomly from all vanilla BLUFOR sidearms (and maybe some modded, hard to say). Otherwise, fill with a list of handguns and rifles.
+OT_NATO_weapons_Pistols = ["rhs_weap_makarov_pm","rhs_weap_makarov_pmm","rhs_weap_pya","rhs_weap_tt33","rhs_weap_cz99","rhs_weap_6p53","rhs_weap_savz61_folded","hgun_Rook40_F"];
+OT_NATO_weapons_Rifles = [
+	"hlc_rifle_ak74",
+	"hlc_rifle_ak74_dirty",
+	"hlc_rifle_ak74m",
+	"hlc_rifle_ak74m_gl",
+	"hlc_rifle_ak74m_MTK",
+	"hlc_rifle_akm",
+	"hlc_rifle_akm_75rnd",
+	"hlc_rifle_akmgl",
+	"hlc_rifle_aks74",
+	"hlc_rifle_aks74u",
+	"hlc_rifle_rpk",
+	"hlc_rifle_rpk_75rnd",
+	"hlc_rifle_rpk74n",
+	"rhs_weap_ak74_3",
+	"rhs_weap_ak74m",
+	"rhs_weap_ak74m_gp25",
+	"rhs_weap_ak74mr",
+	"rhs_weap_ak74mr_gp25",
+	"rhs_weap_akm",
+	"rhs_weap_akm_gp25",
+	"rhs_weap_akms_gp25",
+	"rhs_weap_aks74un",
+	"rhs_weap_asval",
+	"rhs_weap_m21a",
+	"rhs_weap_m21s",
+	"rhs_weap_pkp",
+	"rhs_weap_pkm",
+	"rhs_weap_savz58_base",
+	"rhs_weap_savz58p",
+	"rhs_weap_savz58v",
+	"rhs_weap_savz58v_ris",
+	"rhs_weap_savz61",
+	"rhs_weap_svd_pso1",
+	"rhs_weap_svdp_pso1",
+	"rhs_weap_svds_pso1",
+	"rhs_weap_vss"
+	];
+OT_NATO_accessories = [
+	"rhs_acc_1p29",
+	"rhs_acc_1p63",
+	"rhs_acc_1p78",
+	"rhs_acc_1p87",
+	"rhs_acc_1pn34",
+	"rhs_acc_1pn93_base",
+	"rhs_acc_2dpZenit",
+	"rhs_acc_6p9_suppressor",
+	"rhs_acc_dtk",
+	"rhs_acc_dtk1",
+	"rhs_acc_dtk1983",
+	"rhs_acc_dtk1l",
+	"rhs_acc_dtk2",
+	"rhs_acc_dtk3",
+	"rhs_acc_dtk4long",
+	"rhs_acc_dtk4screws",
+	"rhs_acc_dtk4short",
+	"rhs_acc_dtkakm",
+	"rhs_acc_dtkrpk",
+	"rhs_acc_ekp1",
+	"rhs_acc_ekp8_02",
+	"rhs_acc_okp7_dovetail",
+	"rhs_acc_okp7_picatinny",
+	"rhs_acc_pbs1",
+	"rhs_acc_pbs4",
+	"rhs_acc_pgo7v",
+	"rhs_acc_pgo7v2",
+	"rhs_acc_pgo7v3",
+	"rhs_acc_pkas",
+	"rhs_acc_pgs64",
+	"rhs_acc_pso1m2",
+	"rhs_acc_pso1m21",
+	"rhs_acc_rakursPM"
+	];
 
 //Criminal stuff
 OT_CRIM_Unit = "C_man_p_fugitive_F";

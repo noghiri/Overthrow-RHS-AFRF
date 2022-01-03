@@ -393,43 +393,55 @@ diag_log "Overthrow: NATO Init Done";
 	private _mags = [];
 
 	private _done = 0;
-	private _supplyamount = (_pri - 100) + (random 200);
+	private _supplyamount = (_pri - 50) + (random 200);
+	diag_log format["Supply at %1: %2", _name, _supplyamount];
 	while {_done < _supplyamount} do {
 		private _rnd = random 100;
 		_rnd call {
 			if(_this > 90) exitWith {
 				//Add some radios (10% chance)
-				_done = _done + 25;
+				_done = _done + 13;
 				_items pushback ["ItemRadio",(2-_diff)+(round(random (5-_diff)))];
 			};
 			if(_this > 89) exitWith {
 				//Add a random launcher (1% chance)
-				_done = _done + 100;
+				_done = _done + 50;
 				_wpn = selectRandom OT_allBLULaunchers;
 				_wpns pushback [_wpn,1+(round(random (2-_diff)))];
 				_mags pushback [(getArray (configFile >> "CfgWeapons" >> _wpn >> "magazines")) select 0,5];
 			};
-			if(_this > 85) exitWith {
-				//Add a random rifle (4% chance)
-				_done = _done + 50;
-				_wpn = selectRandom OT_allBLURifles;
-				_wpns pushback [_wpn,1+(round(random (2-_diff)))];
-				_mags pushback [(getArray (configFile >> "CfgWeapons" >> _wpn >> "magazines")) select 0,5];
+			if (_this > 30) exitWith {
+				//Add a random ammo, and maybe a random weapon. 59% chance.
+				if(_this > 30) then {
+					//Add random ammunition (59% chance total).
+					_done = _done + 10;
+					_mags pushback [selectRandom OT_allBLURifleMagazines,3+(round(random (4-_diff)) * 2)];
+				};
+				if(_this > 60) exitWith {
+					//Add a random rifle (29% chance total)
+					_done = _done + 25;
+					if (count OT_NATO_weapons_Rifles != 0) then {
+						_wpn = selectRandom OT_NATO_weapons_Rifles;
+					} else {
+						_wpn = selectRandom OT_allBLURifles;
+					};
+					_wpns pushback [_wpn,1+(round(random (2-_diff)))];
+					_mags pushback [(getArray (configFile >> "CfgWeapons" >> _wpn >> "magazines")) select 0,5];
+				};
+				if(_this > 45) exitWith {
+					//Add a random pistol (15% chance total)
+					_done = _done + 12;
+					if (count OT_NATO_weapons_Pistols != 0) then {
+						_wpn = selectRandom OT_NATO_weapons_Pistols;
+					} else {
+						_wpn = selectRandom OT_allBLUPistols; 
+					};
+					_wpns pushback [_wpn,1+(round(random (3-_diff)))];
+					_mags pushback [(getArray (configFile >> "CfgWeapons" >> _wpn >> "magazines")) select 0,5];
+				};
 			};
-			if(_this > 75) exitWith {
-				//Add a random pistol (10% chance)
-				_done = _done + 25;
-				_wpn = selectRandom OT_allBLUPistols;
-				_wpns pushback [_wpn,1+(round(random (3-_diff)))];
-				_mags pushback [(getArray (configFile >> "CfgWeapons" >> _wpn >> "magazines")) select 0,5];
-			};
-			if(_this > 50) exitWith {
-				//Add random ammunition (25% chance)
-				_done = _done + 20;
-				_mags pushback [selectRandom OT_allBLURifleMagazines,3+(round(random (4-_diff)) * 2)];
-			};
-			//Add some meds (50% chance)
-			_done = _done + 40;
+			//Add some meds (% chance)
+			_done = _done + 20;
 			_items pushback [selectRandom ["ACE_fieldDressing","ACE_fieldDressing","ACE_morphine"],(2-_diff)+(round(random (5-_diff)))];
 		};
 	};

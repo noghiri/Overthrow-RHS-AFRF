@@ -8,6 +8,16 @@ params [
     ["_handguns",OT_allBLUPistols]
 ];
 
+//if the user configured a specific nato pistols list use that instead
+if (count OT_NATO_weapons_Pistols != 0) then {
+    _handguns resize 0;
+    _handguns = +OT_NATO_weapons_Pistols;
+};
+if (count OT_NATO_weapons_Rifles != 0) then {
+    _handguns resize 0;
+    _handguns = +OT_NATO_weapons_Rifles;
+};
+
 //helper functions
 private _removeMagazines = {
     params ["_newloadout","_forcls"];
