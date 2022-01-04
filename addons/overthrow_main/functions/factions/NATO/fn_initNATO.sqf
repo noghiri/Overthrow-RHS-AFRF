@@ -3,18 +3,45 @@ OT_NATO_GroundForces = [];
 OT_NATO_Group_Recon = "";
 OT_NATO_Group_Engineers = "";
 //making variables with all our possible groups in it
-_allSideGroups = [configFile >> "CfgGroups" >> OT_side_NATO, 2] call BIS_fnc_returnChildren;
-_natoGroupsInfantry = _allSideGroups select {(getText (_x >> "faction") in OT_subfaction_NATO) && {(getText (_x >> "aliveCategory") in ["Mechanized","Infantry","Motorized"])||(getText (_x >> "name") in ["Infantry","Mechanized Infantry","Motorized Infantry"])}};
-_natoGroupsSupport = _allSideGroups select {(getText (_x >> "faction") in OT_subfaction_NATO) && {(getText (_x >> "aliveCategory") in ["Support"])||(getText (_x >> "name") in ["Support"])}};
+//yes this is spaghetti
+//i don't fuckin care anymore, i hate arma
+_allFactionGroups = [];
+_natoGroupsInfantry = [];
+_natoGroupsSupport = [];
+_allSideSubfactions = "true" configClasses (configFile >> "CfgGroups" >> OT_side_NATO);
+diag_log format ["All side groups: %1", _allSideSubfactions];
+_allSubfactions = _allSideSubfactions select {configName (_x) in OT_subfaction_NATO};
+{
+	_grp = "true" configClasses (_x);
+	_allFactionGroups append _grp;
+} forEach _allSubfactions;
+diag_log format["Faction Groups: %1", _allFactionGroups];
+_natoInfantryGroupConfigs = _allFactionGroups select {(getText (_x >> "aliveCategory") in ["Mechanized","Infantry","Motorized"]) or (getText (_x >> "name") in ["Infantry","Mechanized Infantry","Motorized Infantry"])};
+{
+	_grp = "true" configClasses (_x);
+	_natoGroupsInfantry append _grp;
+} forEach _natoInfantryGroupConfigs;
+diag_log format["Infantry Groups: %1", _natoGroupsInfantry];
+_natoGroupSupportConfigs = _allFactionGroups select {(getText (_x >> "aliveCategory") in ["Support"]) or (getText (_x >> "name") in ["Support"])};
+{
+	_grp = "true" configClasses (_x);
+	_natoGroupsSupport append _grp;
+} forEach _natoGroupSupportConfigs;
+//fallback if there's no support in your preferred faction <glares at russian orbat>
+if (count _natoGroupsSupport == 0) then {
+	_natoGroupsSupport = "true" configClasses (configFile >> "CfgGroups" >> OT_side_NATO >> OT_faction_NATO >> "Support");
+	diag_log format["Support Groups: None found in factions. Falling back to %1 support units.", OT_faction_NATO];
+};
+diag_log format["Support Groups: %1", _natoGroupsSupport];
 {
 	private _name = configName _x;
 	if((_name find "Recon") > -1) then {
-		OT_NATO_Group_Recon = _name;
-		OT_NATO_Group_Engineers = _name;
+		OT_NATO_Group_Recon = _x;
+		OT_NATO_Group_Engineers = _x;
 	};
 	private _numtroops = count("true" configClasses _x);
 	if(_numtroops > 5) then {
-		OT_NATO_GroundForces pushback _name;
+		OT_NATO_GroundForces pushback _x;
 		diag_log format["Adding %1 to ground forces.", _name];
 	};
 }foreach(_natoGroupsInfantry);
@@ -22,7 +49,8 @@ _natoGroupsSupport = _allSideGroups select {(getText (_x >> "faction") in OT_sub
 {
 	private _name = configName _x;
 	if((_name find "ENG") > -1) then {
-		OT_NATO_Group_Engineers = _name;
+		OT_NATO_Group_Engineers = _x;
+		diag_log format["Adding %1 to supports.", _name];
 	};
 }foreach(_natoGroupsSupport);
 
@@ -420,6 +448,7 @@ diag_log "Overthrow: NATO Init Done";
 				if(_this > 60) exitWith {
 					//Add a random rifle (29% chance total)
 					_done = _done + 25;
+					_wpn = "";
 					if (count OT_NATO_weapons_Rifles != 0) then {
 						_wpn = selectRandom OT_NATO_weapons_Rifles;
 					} else {
@@ -431,6 +460,7 @@ diag_log "Overthrow: NATO Init Done";
 				if(_this > 45) exitWith {
 					//Add a random pistol (15% chance total)
 					_done = _done + 12;
+					_wpn = "";
 					if (count OT_NATO_weapons_Pistols != 0) then {
 						_wpn = selectRandom OT_NATO_weapons_Pistols;
 					} else {

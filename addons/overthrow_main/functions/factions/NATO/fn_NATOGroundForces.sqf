@@ -6,14 +6,14 @@ if(_byair) then {
 };
 private _squadtype = OT_NATO_GroundForces call BIS_fnc_SelectRandom;
 private _spawnpos = _frompos;
-private _group1 = [_spawnpos, WEST, (configFile >> "CfgGroups" >> OT_side_NATO >> OT_faction_NATO >> "Infantry" >> _squadtype)] call BIS_fnc_spawnGroup;
+private _group1 = [_spawnpos, WEST, (_squadtype)] call BIS_fnc_spawnGroup;
 _group1 deleteGroupWhenEmpty true;
 private _group2 = "";
 private _tgroup = false;
 if !(_byair) then {
 	sleep 0.3;
 	_squadtype = OT_NATO_GroundForces call BIS_fnc_SelectRandom;
-	_group2 = [_spawnpos, WEST, (configFile >> "CfgGroups" >> OT_side_NATO >> OT_faction_NATO >> "Infantry" >> _squadtype)] call BIS_fnc_spawnGroup;
+	_group2 = [_spawnpos, WEST, (_squadtype)] call BIS_fnc_spawnGroup;
 	_group2 deleteGroupWhenEmpty true;
 };
 sleep 0.5;
