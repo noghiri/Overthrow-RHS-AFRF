@@ -1,6 +1,6 @@
 # Overthrow-Remastered (2021)
 
-A rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex by [armazac](https://github.com/ArmaOverthrow/Overthrow)
+A rework of the rework of the dynamic and persistent revolution campaign mod for ARMA 3 Apex originally by [armazac](https://github.com/ArmaOverthrow/Overthrow) and reworked by [guilemouse](https://github.com/guilemouse/Overthrow).
 
 # Overthrow Wikipedia
 [For guides and more info.](https://github.com/guilemouse/Overthrow/wiki)
